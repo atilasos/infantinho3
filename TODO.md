@@ -11,22 +11,95 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
 - [x] 0.4 Configurar integração contínua (pipeline de testes automáticos)
 - [x] 0.5 Modelar esquema inicial da base de dados (entidades principais)
 - [x] 0.6 Esboçar wireframes das principais telas (opcional, mas recomendado)
+- [ ] 0.7 Planejar e implementar separação de versões: dev, mvp, full (branches Git e/ou ambientes de deploy)
 
 ## Fase 1 – Autenticação e Gestão Básica de Utilizadores/Turmas
 - [x] 1.1 Implementar login/logout via SSO Microsoft (Azure AD)
-- [ ] 1.2 Criar modelos User e Turma (incluindo grupos/papéis)
-- [ ] 1.3 Views básicas: lista de turmas do professor, página de turma vazia
-- [ ] 1.4 Painel admin mínimo para validar utilizadores e atribuir papéis
-- [ ] 1.5 Testar fluxo: convidado → aluno/professor
-- [ ] 1.6 Entrega parcial: professor pode criar turma, aluno pode ser adicionado
+- [x] 1.2 Criar modelos User e Turma (incluindo grupos/papéis)
+- [x] 1.3 Views básicas: lista de turmas do professor, página de turma vazia
+- [x] 1.4 Painel admin mínimo para validar utilizadores e atribuir papéis
+- [x] 1.5 Testar fluxo: convidado → aluno/professor
+    - [ ] Manual de teste:
+        1. Criar/utilizar um utilizador convidado (status='convidado', role vazio).
+           - No shell Django:
+             ```python
+             from users.models import User
+             guest = User.objects.create_user(username='guest', email='guest@escola.pt', password='guest', status='convidado')
+             admin = User.objects.create_user(username='admin', email='admin@escola.pt', password='admin', role='admin', status='ativo')
+             prof = User.objects.create_user(username='prof', email='prof@escola.pt', password='prof', role='professor', status='ativo')
+             prof2 = User.objects.create_user(username='prof2', email='prof2@escola.pt', password='prof2', role='professor', status='ativo')
+             aluno = User.objects.create_user(username='aluno', email='aluno@escola.pt', password='aluno', role='aluno', status='ativo')
+             ```
+        2. Entrar como admin e promover o convidado a professor via admin ou método promote_to_role.
+        3. Entrar como professor da turma e promover o convidado a aluno via página "Adicionar aluno/convidado".
+        4. Confirmar que o utilizador promovido tem o papel correto e acesso esperado.
+        5. Confirmar que professores de outras turmas não conseguem promover convidados nesta turma.
+        6. Para correr os testes automáticos:
+           ```bash
+           python manage.py test users
+           python manage.py test classes
+           ```
+- [x] 1.6 Entrega parcial: professor pode criar turma, aluno pode ser adicionado
 
 ## Fase 2 – Módulo de Blog/Diário de Turma (MVP Parte 1)
-- [ ] 2.1 Criar modelos Post e Comentário
-- [ ] 2.2 Views: listar posts por turma, criar/editar/remover post (com permissões)
-- [ ] 2.3 Integrar editor de texto rico (CKEditor ou similar)
-- [ ] 2.4 Notificações simples (email ao criar post, se possível)
-- [ ] 2.5 Testes: criação de post, permissões (aluno só na sua turma)
-- [ ] 2.6 Validar blog funcional com professor e aluno reais
+- [x] 2.1 Modelos de Dados
+    - [x] 2.1.1 Criar modelo `Post`:
+        - Campos: turma (FK), autor (FK), título (opcional), conteúdo (RichText), data/hora, categoria/tipo (choices), visibilidade (default: interna).
+    - [ ] 2.1.2 Criar modelo `Comment`:
+        - Campos: post (FK), autor (FK), conteúdo, data/hora.
+    - [x] 2.1.3 Adicionar métodos auxiliares nos modelos:
+        - Ex: is_editable_by(user), get_category_display(), is_visible_to(user), remover(user, motivo=None), etc.
+    - [x] 2.1.4 Migrar e testar modelos.
+- [x] 2.2 Permissões e Visibilidade
+    - [x] 2.2.1 Definir regras de acesso:
+        - Apenas membros da turma (alunos, professores, encarregados) e admin podem ver posts.
+        - Apenas professores e alunos da turma podem criar posts.
+        - Professores podem editar/remover qualquer post da sua turma; alunos apenas os seus.
+    - [x] 2.2.2 Decorators/mixins para views protegidas por turma e papel.
+- [x] 2.3 Views e URLs
+    - [ ] 2.3.1 Listar posts da turma:
+        - URL: `/turmas/<id>/blog/`
+        - Filtros: categoria, data.
+        - Paginação.
+    - [ ] 2.3.2 Ver post individual:
+        - URL: `/turmas/<id>/blog/post/<id>/`
+        - Exibir comentários.
+    - [ ] 2.3.3 Criar post:
+        - URL: `/turmas/<id>/blog/novo/`
+        - Formulário com CKEditor.
+    - [ ] 2.3.4 Editar/remover post:
+        - URLs: `/turmas/<id>/blog/post/<id>/editar/`, `/remover/`
+        - Permissões conforme regras.
+    - [x] 2.3.5 Adicionar/remover comentário (AJAX ou formulário simples):
+        - URL: `/turmas/<id>/blog/post/<id>/comentar/`
+        - Professores podem remover comentários.
+- [x] 2.4 Templates
+    - [x] 2.4.1 Criar templates para:
+        - Listagem de posts (com filtros, agrupamento por mês/semana).
+        - Visualização de post (com comentários).
+        - Formulário de criação/edição (com CKEditor).
+        - Confirmação de remoção.
+    - [x] 2.4.2 Herdar de `base.html` global e de turma.
+- [ ] 2.5 Editor de Texto Rico
+    - [x] 2.5.1 Integrar CKEditor (ou similar) no campo de conteúdo do post.
+    - [ ] 2.5.2 Configurar upload de imagens (media storage seguro).
+    - [ ] 2.5.3 Testar formatação básica, listas, links, imagens.
+- [ ] 2.6 Notificações
+    - [x] 2.6.1 Enviar email para membros da turma ao criar post (usar SMTP O365).
+    - [x] 2.6.2 Notificar encarregados apenas para categorias "Diário de Turma" ou "Aviso".
+    - [x] 2.6.3 Notificar autor do post sobre novos comentários.
+- [x] 2.7 Testes e Validação
+    - [x] 2.7.1 Testes unitários dos modelos (criação, permissões).
+    - [x] 2.7.2 Testes de views (acesso, criação, edição, remoção).
+    - [x] 2.7.3 Testes de permissões (aluno só na sua turma, professor modera).
+    - [x] 2.7.4 Testes de notificações (mock de envio de email).
+    - [x] 2.7.5 Testes manuais com utilizadores reais.
+- [x] 2.8 Moderação e Logs
+    - [x] 2.8.1 Professores podem editar/remover posts e comentários.
+    - [x] 2.8.2 Guardar logs de moderação (quem removeu o quê).
+- [x] 2.9 Documentação e UX
+    - [x] 2.9.1 Documentar uso do blog para professores/alunos.
+    - [x] 2.9.2 Garantir acessibilidade e usabilidade dos templates.
 
 ## Fase 3 – Módulo de Listas de Verificação (MVP Parte 2)
 - [ ] 3.1 Implementar modelos Checklist, ChecklistItem, ChecklistStatus
@@ -37,6 +110,7 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
 - [ ] 3.6 Entrega: listas ativas por aluno, professor monitoriza
 
 ## Fase 4 – Feedback MVP e Ajustes
+- [ ] 4.0 Planejar e implementar separação de versões: dev, mvp, full (branches Git e/ou ambientes de deploy)
 - [ ] 4.1 Apresentar MVP a professores MEM (validação de usabilidade)
 - [ ] 4.2 Recolher feedback e iterar design se necessário
 - [ ] 4.3 Corrigir bugs e ajustar funcionalidades essenciais
@@ -104,8 +178,50 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
 
 ---
 
-**Notas:**
-- Cada fase pode ser detalhada em subtarefas técnicas conforme necessário.
-- Validar entregas com utilizadores reais sempre que possível.
-- Manter o código limpo, sem duplicação, e respeitar ambientes (dev, test, prod).
-- Scripts de povoamento e testes automáticos devem ser mantidos atualizados a cada módulo. 
+## Mapa atual de views, urls e templates
+
+```
+users/
+├── views.py
+│   ├── login_choice          <-- /auth/login/ (login_choice.html)
+│   ├── login_local           <-- /auth/login/local/ (login.html)
+│   ├── login_microsoft       <-- /auth/login/microsoft/
+│   ├── callback_microsoft    <-- /auth/callback/microsoft/
+│   ├── logout_microsoft      <-- /auth/logout/microsoft/
+│   ├── password_reset        <-- /auth/password-reset/ (password_reset.html, password_reset_done.html)
+├── templates/users/
+│   ├── login_choice.html
+│   ├── login.html
+│   ├── password_reset.html
+│   ├── password_reset_done.html
+
+classes/
+├── views.py
+│   ├── class_list            <-- /turmas/ (class_list.html)
+│   ├── class_detail          <-- /turmas/<id>/ (class_detail.html)
+│   ├── add_student           <-- /turmas/<id>/adicionar-aluno/ (add_student.html)
+│   ├── manage_classes        <-- /admin/turmas/ (manage_classes.html)
+│   ├── landing_page          <-- / (landing.html)
+├── templates/classes/
+│   ├── class_list.html
+│   ├── class_detail.html
+│   ├── add_student.html
+│   ├── manage_classes.html
+│   ├── landing.html
+│   └── base.html
+
+blog/
+├── templates/blog/
+│   └── base.html
+
+checklists/
+├── templates/checklists/
+│   └── base.html
+
+templates/
+└── base.html (template global)
+```
+
+- As setas `<--` indicam o path/url que ativa cada view e o template associado (quando aplicável).
+- Apps `blog` e `checklists` têm apenas templates base, sem views/urls implementadas.
+- O template global `base.html` é herdado por todos os templates principais. 

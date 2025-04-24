@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'classes',
     'blog',
     'checklists',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'infantinho3.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,6 +124,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# CKEditor/media config
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -136,3 +142,14 @@ AZURE_AD_CLIENT_SECRET = os.environ.get('AZURE_AD_CLIENT_SECRET')
 AZURE_AD_TENANT_ID = os.environ.get('AZURE_AD_TENANT_ID')
 AZURE_AD_REDIRECT_URI = os.environ.get('AZURE_AD_REDIRECT_URI')
 AZURE_AD_AUTHORITY = os.environ.get('AZURE_AD_AUTHORITY', f'https://login.microsoftonline.com/{AZURE_AD_TENANT_ID}' if os.environ.get('AZURE_AD_TENANT_ID') else None)
+
+LOGIN_URL = '/auth/login/'
+
+# Configuração de email para notificações (SMTP O365)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.office365.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)

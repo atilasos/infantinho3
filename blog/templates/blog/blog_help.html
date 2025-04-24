@@ -1,0 +1,57 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<main role="main" aria-label="Ajuda do Blog/Diário da Turma">
+<h2><i class="bi bi-question-circle" aria-hidden="true"></i> {% trans "Ajuda do Blog/Diário da Turma" %}</h2>
+<nav aria-label="Sumário" class="mb-3">
+  <ul class="nav nav-pills flex-column flex-sm-row">
+    <li class="nav-item"><a class="nav-link" href="#o-que-e">{% trans "O que é o Blog/Diário?" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#como-usar">{% trans "Como usar" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#perfis">{% trans "Perfis e Permissões" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#moderacao">{% trans "Moderação e Segurança" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#acessibilidade">{% trans "Acessibilidade" %}</a></li>
+  </ul>
+</nav>
+<section id="o-que-e" class="mb-4">
+  <h3>{% trans "O que é o Blog/Diário?" %}</h3>
+  <p>{% trans "O Blog/Diário da Turma é um espaço digital onde alunos e professores podem registar atividades, reflexões, projetos e recados, promovendo a partilha e a memória coletiva da turma. Cada turma tem o seu próprio blog, acessível apenas aos seus membros e encarregados." %}</p>
+</section>
+<section id="como-usar" class="mb-4">
+  <h3>{% trans "Como usar" %}</h3>
+  <ul>
+    <li><strong>{% trans "Criar um post:" %}</strong> {% trans "Clique em 'Novo Post', preencha o formulário e publique. Professores e alunos podem criar posts." %}</li>
+    <li><strong>{% trans "Editar/Remover:" %}</strong> {% trans "Pode editar/remover os seus próprios posts. Professores podem moderar todos os posts da turma." %}</li>
+    <li><strong>{% trans "Restaurar post:" %}</strong> {% trans "Se um post for removido por engano, professores/admin podem restaurá-lo na página do post." %}</li>
+    <li><strong>{% trans "Comentar:" %}</strong> {% trans "Comente para dar feedback ou partilhar ideias. Professores podem remover comentários inadequados." %}</li>
+    <li><strong>{% trans "Filtrar e pesquisar:" %}</strong> {% trans "Use os filtros de categoria e data para encontrar posts específicos." %}</li>
+  </ul>
+</section>
+<section id="perfis" class="mb-4">
+  <h3>{% trans "Perfis e Permissões" %}</h3>
+  <ul>
+    <li><strong>{% trans "Alunos:" %}</strong> {% trans "Podem criar, editar e remover os seus próprios posts e comentar." %}</li>
+    <li><strong>{% trans "Professores:" %}</strong> {% trans "Podem criar posts, editar/remover qualquer post ou comentário da turma, restaurar posts e aceder aos logs de moderação." %}</li>
+    <li><strong>{% trans "Encarregados:" %}</strong> {% trans "Podem ler os posts da turma dos seus educandos e, em algumas categorias, comentar." %}</li>
+    <li><strong>{% trans "Administração:" %}</strong> {% trans "Tem acesso total a todos os blogs, incluindo moderação e logs." %}</li>
+  </ul>
+</section>
+<section id="moderacao" class="mb-4">
+  <h3>{% trans "Moderação e Segurança" %}</h3>
+  <ul>
+    <li>{% trans "Todas as ações de remoção e restauração são registadas para garantir transparência." %}</li>
+    <li>{% trans "Professores e admins podem consultar o histórico de moderação no menu 'Ver Logs de Moderação'." %}</li>
+    <li>{% trans "Motivos de remoção podem (e devem) ser indicados para referência futura." %}</li>
+    <li>{% trans "Posts removidos podem ser restaurados por professores/admins." %}</li>
+  </ul>
+</section>
+<section id="acessibilidade" class="mb-4">
+  <h3>{% trans "Acessibilidade" %}</h3>
+  <ul>
+    <li>{% trans "O blog foi desenhado para ser acessível a todos: navegação por teclado, contraste adequado, tooltips e mensagens claras." %}</li>
+    <li>{% trans "Se encontrar alguma barreira de acessibilidade, por favor informe o professor ou a equipa técnica." %}</li>
+  </ul>
+</section>
+<a href="{% url 'blog_post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Voltar ao Blog' %}">{% trans "Voltar ao Blog" %}</a>
+</main>
+{% endblock %} 

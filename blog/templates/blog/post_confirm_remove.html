@@ -1,0 +1,19 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<main role="main" aria-label="Confirmação de remoção de post">
+<h2>{% trans "Remover Post" %}</h2>
+<p role="alert">{% trans "Tem a certeza que deseja remover este post?" %}</p>
+<p><strong>{{ post.titulo|default:post.get_category_display }}</strong></p>
+<form method="post" aria-label="Formulário de remoção de post">
+  {% csrf_token %}
+  <div class="mb-2">
+    <label for="id_motivo">{% trans "Motivo (opcional):" %}</label>
+    <input type="text" name="motivo" id="id_motivo" class="form-control" aria-label="Motivo da remoção" title="{% trans 'Opcional: indique o motivo da remoção para registo de moderação.' %}">
+  </div>
+  <button type="submit" class="btn btn-danger" title="{% trans 'Remover este post' %}">{% trans "Remover" %}</button>
+  <a href="{% url 'blog_post_detail' class_id=turma.id post_id=post.id %}" class="btn btn-secondary" title="{% trans 'Cancelar e voltar ao post' %}">{% trans "Cancelar" %}</a>
+</form>
+</main>
+{% endblock %} 

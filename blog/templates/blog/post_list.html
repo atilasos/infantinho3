@@ -1,0 +1,49 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<main role="main" aria-label="Lista de posts do blog/diário da turma">
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h2>{% trans "Blog/Diário da Turma" %}</h2>
+  <a href="{% url 'blog_help' class_id=turma.id %}" class="btn btn-outline-info btn-sm" title="Ajuda sobre o Blog/Diário">
+    <i class="bi bi-question-circle" aria-hidden="true"></i> {% trans "Ajuda" %}
+  </a>
+</div>
+
+<form method="get" class="mb-3" aria-label="Filtros do blog">
+  <label for="categoria">{% trans "Categoria:" %}</label>
+  <select name="categoria" id="categoria" title="Filtrar por categoria">
+    <option value="">{% trans "Todas" %}</option>
+    {% for key, label in categorias %}
+      <option value="{{ key }}" {% if key == categoria_atual %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <label for="data">{% trans "Data:" %}</label>
+  <input type="date" name="data" id="data" value="{{ data_atual|default:'' }}" title="Filtrar por data">
+  <button type="submit" class="btn btn-primary btn-sm" title="Aplicar filtros">{% trans "Filtrar" %}</button>
+</form>
+
+{% if posts_grouped %}
+  {% for key, posts_mes in posts_grouped.items %}
+    {% with ano=key.0 mes=key.1 %}
+      <h4 class="mt-4">{{ mes }}/{{ ano }}</h4>
+      <div class="table-responsive">
+      <ul class="list-group mb-3">
+        {% for post in posts_mes %}
+          <li class="list-group-item">
+            <a href="{% url 'blog_post_detail' class_id=turma.id post_id=post.id %}" title="{% trans 'Ver detalhes do post' %} {{ post.titulo|default:post.get_category_display }}"><strong>{{ post.titulo|default:post.get_category_display }}</strong></a>
+            <br>
+            <small>{% trans "por" %} {{ post.autor.get_full_name|default:post.autor.username }} | {{ post.publicado_em|date:"d/m/Y H:i" }} | {{ post.get_category_display }}</small>
+          </li>
+        {% endfor %}
+      </ul>
+      </div>
+    {% endwith %}
+  {% endfor %}
+{% else %}
+  <p>{% trans "Nenhum post encontrado." %}</p>
+{% endif %}
+
+<a href="{% url 'blog_post_create' class_id=turma.id %}" class="btn btn-success" title="{% trans 'Criar novo post' %}">{% trans "Novo Post" %}</a>
+</main>
+{% endblock %} 

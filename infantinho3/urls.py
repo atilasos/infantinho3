@@ -15,12 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from users import views as user_views
+from classes.views import landing_page
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/login/microsoft/', user_views.login_microsoft, name='login_microsoft'),
-    path('auth/callback/microsoft/', user_views.callback_microsoft, name='callback_microsoft'),
-    path('auth/logout/microsoft/', user_views.logout_microsoft, name='logout_microsoft'),
+    path('auth/', include('users.urls')),
+    path('', include('classes.urls')),
+    path('', landing_page, name='landing_page'),
+    path('blog/', include('blog.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

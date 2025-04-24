@@ -3,6 +3,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 import msal
 from django.contrib.auth import login, get_user_model, logout
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django.contrib.auth import authenticate
+from django.shortcuts import redirect
 
 # Create your views here.
 
@@ -91,3 +94,30 @@ def logout_microsoft(request):
         azure_logout_url = f"{settings.AZURE_AD_AUTHORITY}/oauth2/v2.0/logout?post_logout_redirect_uri={settings.AZURE_AD_REDIRECT_URI}"
     # Redirecionar para o logout do Azure AD ou para a página inicial
     return HttpResponseRedirect(azure_logout_url or '/')
+
+def login_local(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect('/')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'users/login.html', {'form': form, 'local_login': True})
+
+def password_reset(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save(request=request, use_https=request.is_secure())
+            return render(request, 'users/password_reset_done.html')
+    else:
+        form = PasswordResetForm()
+    return render(request, 'users/password_reset.html', {'form': form})
+
+def login_choice(request):
+    """
+    View para o utilizador escolher entre login local e Microsoft.
+    Apenas mostra links/botões para as rotas já existentes.
+    """
+    return render(request, 'users/login_choice.html')

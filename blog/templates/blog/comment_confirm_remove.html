@@ -1,0 +1,20 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<main role="main" aria-label="Confirmação de remoção de comentário">
+<h2>{% trans "Remover Comentário" %}</h2>
+<p role="alert">{% trans "Tem a certeza que deseja remover este comentário?" %}</p>
+<p><strong>{{ comentario.autor.get_full_name|default:comentario.autor.username }}</strong> <small>{{ comentario.publicado_em|date:"d/m/Y H:i" }}</small></p>
+<p>{{ comentario.conteudo|linebreaksbr }}</p>
+<form method="post" aria-label="Formulário de remoção de comentário">
+  {% csrf_token %}
+  <div class="mb-2">
+    <label for="id_motivo">{% trans "Motivo (opcional):" %}</label>
+    <input type="text" name="motivo" id="id_motivo" class="form-control" aria-label="Motivo da remoção" title="{% trans 'Opcional: indique o motivo da remoção para registo de moderação.' %}">
+  </div>
+  <button type="submit" class="btn btn-danger" title="{% trans 'Remover este comentário' %}">{% trans "Remover" %}</button>
+  <a href="{% url 'blog_post_detail' class_id=turma.id post_id=post.id %}" class="btn btn-secondary" title="{% trans 'Cancelar e voltar ao post' %}">{% trans "Cancelar" %}</a>
+</form>
+</main>
+{% endblock %} 

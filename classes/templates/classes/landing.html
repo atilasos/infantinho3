@@ -1,0 +1,18 @@
+{% extends 'classes/base.html' %}
+{% load i18n %}
+{% block content %}
+<h1>{% trans "Bem-vindo ao Infantinho 3.0" %}</h1>
+<ul>
+  <li><a href="{% url 'class_list' %}">{% trans "Minhas Turmas" %}</a></li>
+  {% if request.user.role == 'admin' %}
+    <li><a href="{% url 'manage_classes' %}">{% trans "Gestão de Turmas (Admin)" %}</a></li>
+  {% endif %}
+  <li><a href="/admin/">{% trans "Django Admin" %}</a></li>
+  <li><a href="{% url 'logout_microsoft' %}">{% trans "Logout" %}</a></li>
+  <li><a href="{% url 'login_choice' %}">{% trans "Escolha de Login" %}</a></li>
+  <li><a href="{% url 'login_local' %}">{% trans "Login Local" %}</a></li>
+  <li><a href="{% url 'login_microsoft' %}">{% trans "Login Microsoft" %}</a></li>
+  <li><a href="{% url 'password_reset' %}">{% trans "Recuperar Palavra-passe" %}</a></li>
+</ul>
+<p>{% trans "Esta página inicial será substituída pelo blog futuramente." %}</p>
+{% endblock %} 

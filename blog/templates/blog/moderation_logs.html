@@ -1,0 +1,51 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<main role="main" aria-label="Logs de moderação do blog/diário da turma">
+<h2>{% trans "Logs de Moderação da Turma" %}</h2>
+<div class="alert alert-info" role="alert">
+  <strong>{% trans "O que são estes logs?" %}</strong><br>
+  {% trans "Aqui pode consultar todas as ações de moderação (remoção, edição, restauração) realizadas em posts e comentários do blog da turma. Apenas administradores e professores têm acesso a este painel. Cada ação regista quem a realizou, quando, o motivo e o conteúdo afetado." %}
+</div>
+<div class="table-responsive">
+<table class="table table-striped" aria-label="Tabela de logs de moderação">
+  <thead>
+    <tr>
+      <th scope="col">{% trans "Data/Hora" %}</th>
+      <th scope="col">{% trans "Ação" %}</th>
+      <th scope="col">{% trans "Por" %}</th>
+      <th scope="col">{% trans "Alvo" %}</th>
+      <th scope="col">{% trans "Motivo" %}</th>
+      <th scope="col">{% trans "Conteúdo (snapshot)" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+      <tr>
+        <td>{{ log.data|date:"d/m/Y H:i" }}</td>
+        <td>{{ log.get_acao_display }}</td>
+        <td>{{ log.user.get_full_name|default:log.user.username }}</td>
+        <td>
+          {% if log.post %}
+            <a href="{% url 'blog_post_detail' class_id=turma.id post_id=log.post.id %}" title="{% trans 'Ver detalhes do post' %} #{{ log.post.id }}">{% trans "Post" %} #{{ log.post.id }}</a>
+          {% elif log.comment %}
+            {% if log.comment.post %}
+              <a href="{% url 'blog_post_detail' class_id=turma.id post_id=log.comment.post.id %}#comment-{{ log.comment.id }}" title="{% trans 'Ver comentário no post' %} #{{ log.comment.id }}">{% trans "Comentário" %} #{{ log.comment.id }}</a>
+            {% else %}
+              {% trans "Comentário" %} #{{ log.comment.id }}
+            {% endif %}
+          {% endif %}
+        </td>
+        <td>{{ log.motivo|default:'—' }}</td>
+        <td><small>{{ log.conteudo_snapshot|truncatechars:80 }}</small></td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6">{% trans "Nenhuma ação de moderação registada." %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<a href="{% url 'blog_post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Voltar ao Blog' %}">{% trans "Voltar ao Blog" %}</a>
+</main>
+{% endblock %} 

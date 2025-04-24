@@ -1,0 +1,62 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<main role="main" aria-label="Formulário de post do blog/diário da turma">
+<h2>{% if edit_mode %}{% trans "Editar Post" %}{% else %}{% trans "Novo Post" %}{% endif %}</h2>
+<form method="post" enctype="multipart/form-data" aria-label="Formulário de post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="mb-3">
+    <label for="id_titulo" class="form-label">{% trans "Título" %}</label>
+    {{ form.titulo|add_class:'form-control' }}
+    {{ form.titulo.errors }}
+  </div>
+  <div class="mb-3">
+    <label for="id_categoria" class="form-label">{% trans "Categoria" %}</label>
+    {{ form.categoria|add_class:'form-select' }}
+    {{ form.categoria.errors }}
+  </div>
+  <div class="mb-3">
+    <label for="id_subcategoria_diario" class="form-label">{% trans "Subcategoria (Diário)" %}
+      <span tabindex="0" data-bs-toggle="tooltip" title="{% trans 'Apenas para posts do tipo Diário de Turma. Escolha o tipo de registo.' %}">
+        <i class="bi bi-info-circle" aria-label="Ajuda sobre subcategoria"></i>
+      </span>
+    </label>
+    {{ form.subcategoria_diario|add_class:'form-select' }}
+    {{ form.subcategoria_diario.errors }}
+  </div>
+  <div class="mb-3">
+    <label for="id_conteudo" class="form-label">{% trans "Conteúdo" %}</label>
+    {{ form.conteudo }}
+    {{ form.conteudo.errors }}
+  </div>
+  <div class="mb-3">
+    <label for="id_visibilidade" class="form-label">{% trans "Visibilidade" %}
+      <span tabindex="0" data-bs-toggle="tooltip" title="{% trans 'Por padrão, apenas membros da turma podem ver. Público será possível no futuro.' %}">
+        <i class="bi bi-info-circle" aria-label="Ajuda sobre visibilidade"></i>
+      </span>
+    </label>
+    {{ form.visibilidade|add_class:'form-select' }}
+    {{ form.visibilidade.errors }}
+  </div>
+  <button type="submit" class="btn btn-success" title="{% if edit_mode %}{% trans 'Guardar Alterações' %}{% else %}{% trans 'Publicar' %}{% endif %}">{% if edit_mode %}{% trans "Guardar Alterações" %}{% else %}{% trans "Publicar" %}{% endif %}</button>
+  <a href="{% url 'blog_post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Cancelar e voltar à lista' %}">{% trans "Cancelar" %}</a>
+</form>
+
+{# CKEditor JS (se necessário) #}
+{% block extra_js %}
+  <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+  <script>
+    CKEDITOR.replace('id_conteudo');
+    // Ativar tooltips Bootstrap se disponível
+    if (window.bootstrap) {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    }
+  </script>
+{% endblock %}
+</main>
+{% endblock %} 

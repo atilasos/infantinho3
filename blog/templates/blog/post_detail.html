@@ -1,0 +1,86 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<main role="main" aria-label="Detalhe do post do blog/diário da turma">
+{% if post.removido %}
+  <div class="alert alert-warning" role="alert">
+    <strong>{% trans "Post removido por moderação." %}</strong><br>
+    {% if post.motivo_remocao %}<em>{% trans "Motivo:" %} {{ post.motivo_remocao }}</em><br>{% endif %}
+    {% if request.user.is_authenticated %}
+      {% if request.user.role == 'admin' or request.user.role == 'professor' %}
+        <small>{% trans "Removido por:" %} {{ post.removido_por.get_full_name|default:post.removido_por.username }} | {{ post.removido_em|date:"d/m/Y H:i" }}</small><br>
+        <form method="post" action="{% url 'blog_post_restore' class_id=turma.id post_id=post.id %}" style="display:inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success btn-sm" title="{% trans 'Restaurar este post' %}">{% trans "Restaurar Post" %}</button>
+        </form>
+        <a href="{% url 'blog_moderation_logs' class_id=turma.id %}" class="btn btn-info btn-sm" title="{% trans 'Ver histórico de moderação da turma' %}">{% trans "Ver Logs de Moderação" %}</a>
+      {% endif %}
+    {% endif %}
+  </div>
+  {% if request.user.is_authenticated %}
+    {% if request.user.role == 'admin' or request.user.role == 'professor' %}
+      <div class="alert alert-info" role="alert">
+        <strong>{% trans "Ajuda para Moderação" %}</strong><br>
+        {% trans "Como administrador ou professor, pode restaurar posts removidos por moderação. Todas as ações ficam registadas nos logs de moderação para transparência e histórico. Use o botão abaixo para restaurar o post, se considerar adequado." %}
+      </div>
+    {% endif %}
+  {% endif %}
+  <a href="{% url 'blog_post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Voltar à lista de posts' %}">{% trans "Voltar ao Blog" %}</a>
+{% else %}
+<h2>{{ post.titulo|default:post.get_category_display }}</h2>
+<p>
+  <small>{% trans "por" %} {{ post.autor.get_full_name|default:post.autor.username }} | {{ post.publicado_em|date:"d/m/Y H:i" }} | {{ post.get_category_display }}</small>
+</p>
+<div class="mb-4">
+  {{ post.conteudo|safe }}
+</div>
+<hr>
+<h4>{% trans "Comentários" %}</h4>
+{% if comentarios %}
+  <ul class="list-group mb-3">
+    {% for comentario in comentarios %}
+      <li class="list-group-item" id="comment-{{ comentario.id }}">
+        <strong>{{ comentario.autor.get_full_name|default:comentario.autor.username }}</strong> <small>{{ comentario.publicado_em|date:"d/m/Y H:i" }}</small><br>
+        {{ comentario.conteudo|linebreaksbr }}
+        {% if request.user.is_authenticated %}
+          {% if request.user.role == 'admin' %}
+            <form method="get" action="{% url 'blog_comment_remove' class_id=turma.id post_id=post.id comment_id=comentario.id %}" style="display:inline">
+              <button type="submit" class="btn btn-danger btn-sm float-end" title="{% trans 'Remover este comentário' %}">{% trans "Remover" %}</button>
+            </form>
+          {% elif request.user.role == 'professor' and turma in request.user.turmas.all %}
+            <form method="get" action="{% url 'blog_comment_remove' class_id=turma.id post_id=post.id comment_id=comentario.id %}" style="display:inline">
+              <button type="submit" class="btn btn-danger btn-sm float-end" title="{% trans 'Remover este comentário' %}">{% trans "Remover" %}</button>
+            </form>
+          {% elif post.autor == request.user %}
+            <form method="get" action="{% url 'blog_comment_remove' class_id=turma.id post_id=post.id comment_id=comentario.id %}" style="display:inline">
+              <button type="submit" class="btn btn-danger btn-sm float-end" title="{% trans 'Remover este comentário' %}">{% trans "Remover" %}</button>
+            </form>
+          {% endif %}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>{% trans "Nenhum comentário ainda." %}</p>
+{% endif %}
+{% if request.user.is_authenticated %}
+  <form method="post" action="{% url 'blog_post_comment' class_id=turma.id post_id=post.id %}" class="mb-3" aria-label="Formulário de comentário">
+    {% csrf_token %}
+    <div class="mb-2">
+      <label for="id_comentario_conteudo" class="visually-hidden">{% trans "Conteúdo do comentário" %}</label>
+      <textarea name="conteudo" id="id_comentario_conteudo" rows="2" class="form-control" placeholder="Escreva um comentário..." aria-label="Conteúdo do comentário"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm" title="{% trans 'Publicar comentário' %}">{% trans "Comentar" %}</button>
+  </form>
+{% else %}
+  <p><em>{% trans "Autentique-se para comentar." %}</em></p>
+{% endif %}
+{% if post.is_editable_by_user %}
+  <a href="{% url 'blog_post_edit' class_id=turma.id post_id=post.id %}" class="btn btn-warning btn-sm" title="{% trans 'Editar este post' %}">{% trans "Editar" %}</a>
+  <a href="{% url 'blog_post_remove' class_id=turma.id post_id=post.id %}" class="btn btn-danger btn-sm" title="{% trans 'Remover este post' %}">{% trans "Remover" %}</a>
+{% endif %}
+<a href="{% url 'blog_post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Voltar à lista de posts' %}">{% trans "Voltar ao Blog" %}</a>
+{% endif %}
+</main>
+{% endblock %} 
