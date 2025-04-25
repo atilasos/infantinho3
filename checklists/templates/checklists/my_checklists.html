@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>As minhas listas de verificação</h2>
+
+<h3 style="margin-top:1.5em;">Ativas</h3>
+<ul>
+  {% for status in ativas %}
+    <li>
+      <a href="{% url 'checklists:checklist_detail' status.template.id %}">
+        {{ status.template.nome }} ({{ status.template.disciplina }}, {{ status.template.ano }})
+      </a>
+    </li>
+  {% empty %}
+    <li>Não tem listas de verificação ativas.</li>
+  {% endfor %}
+</ul>
+
+<h3 style="margin-top:2em;">Concluídas</h3>
+<ul>
+  {% for status in concluidas %}
+    <li style="color:#4caf50;">
+      <a href="{% url 'checklists:checklist_detail' status.template.id %}" style="color:#4caf50;">
+        {{ status.template.nome }} ({{ status.template.disciplina }}, {{ status.template.ano }}) &#10003;
+      </a>
+    </li>
+  {% empty %}
+    <li>Não tem listas de verificação concluídas.</li>
+  {% endfor %}
+</ul>
+{% endblock %} 

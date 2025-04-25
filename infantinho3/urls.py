@@ -20,6 +20,7 @@ from users import views as user_views
 from classes.views import landing_page
 from django.conf import settings
 from django.conf.urls.static import static
+from checklists.views import HelpView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,7 +28,9 @@ urlpatterns = [
     path('', include('classes.urls')),
     path('', landing_page, name='landing_page'),
     path('blog/', include('blog.urls')),
+    path('checklists/', include('checklists.urls', namespace='checklists')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('ajuda/', HelpView.as_view(), name='ajuda'),
 ]
 
 if settings.DEBUG:

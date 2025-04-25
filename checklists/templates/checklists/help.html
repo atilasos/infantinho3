@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Ajuda & Documentação – Listas de Verificação</h2>
+
+<h3>Modelos Principais</h3>
+<ul>
+  <li><b>ChecklistTemplate</b>: nome, ano, disciplina, descricao, criado_em, atualizado_em</li>
+  <li><b>ChecklistItem</b>: template (FK), descricao, criterios, ordem, contratualizado_em_conselho</li>
+  <li><b>ChecklistStatus</b>: template (FK), aluno (FK), classe (FK), percent_complete, atualizado_em</li>
+  <li><b>ChecklistMark</b>: status (FK), item (FK), estado, comentario, criado_em, marcado_por (FK), validacao_professor</li>
+</ul>
+
+<h3>Endpoints</h3>
+<ul>
+  <li><b>/checklists/minhas/</b> — Listas do aluno (ativas/concluídas)</li>
+  <li><b>/checklists/&lt;template_id&gt;/</b> — Detalhe e marcação de objetivos</li>
+  <li><b>/checklists/turma/&lt;class_id&gt;/&lt;template_id&gt;/</b> — Visão coletiva (professor)</li>
+  <li><b>/ajuda/</b> — Esta página de ajuda/documentação</li>
+</ul>
+
+<h3>Scripts de Seed</h3>
+<ul>
+  <li><b>seed_checklists_5ano.py</b> — Cria template e itens de Português 5.º ano</li>
+  <li><b>seed_checklists_6ano.py</b> — Cria template e itens de Português 6.º ano</li>
+  <li><i>Nota: só usar em dev/test. Aborta se já existir o template.</i></li>
+</ul>
+
+<h3>Instruções de Uso</h3>
+<ul>
+  <li><b>Aluno:</b> Marca objetivos, adiciona comentários, acompanha progresso.</li>
+  <li><b>Professor:</b> Vê visão coletiva, valida/retifica, acompanha progresso coletivo e individual.</li>
+</ul>
+
+<h3>Testes Automatizados</h3>
+<ul>
+  <li>Testes de criação/edição, permissões, notificações e seeds.</li>
+  <li>Para correr: <code>python manage.py test checklists</code></li>
+</ul>
+
+<p style="margin-top:2em;color:#888;font-size:0.95em;">Para mais detalhes técnicos, consulte o README.md ou contacte a equipa de desenvolvimento.</p>
+{% endblock %} 

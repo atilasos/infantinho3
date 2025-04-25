@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if messages %}
+  <div aria-live="polite" style="margin-bottom:1em;">
+    {% for message in messages %}
+      <div style="background:#d4edda;color:#256029;padding:0.8em 1em;border-radius:6px;font-size:1em;margin-bottom:0.5em;box-shadow:0 1px 4px #0001;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+<nav aria-label="breadcrumb" style="margin-bottom:1em;">
+  <ol style="list-style:none;display:flex;flex-wrap:wrap;padding:0;margin:0;font-size:1em;">
+    <li><a href="{% url 'checklists:my_checklists' %}">As minhas listas</a></li>
+    <li style="margin: 0 0.5em;">&gt;</li>
+    <li aria-current="page">{{ template.nome }} ({{ template.ano }})</li>
+  </ol>
+</nav>
+
+<h2 style="font-size:1.3em;">{{ template.nome }} <span style="font-size:0.9em;color:#666;">({{ template.disciplina }}, {{ template.ano }})</span></h2>
+
+{# Barra de progresso #}
+{% with total=total %}
+  {% with done=0 %}
+    {% for item, mark in items_and_marks %}
+      {% if mark and mark.estado == 'concluido' %}
+        {% widthratio 1 1 1 as dummy %}{% with done=done|add:1 %}{% endwith %}
+      {% endif %}
+    {% endfor %}
+    <div style="background:#e0e0e0;border-radius:8px;height:24px;width:100%;max-width:400px;margin-bottom:1em;">
+      <div style="background:#4caf50;height:24px;border-radius:8px;width:{% if total > 0 %}{{ done|floatformat:0|divisibleby:total|floatformat:0 }}{% else %}0{% endif %}%;min-width:2em;text-align:center;color:white;line-height:24px;transition:width 0.5s;">
+        {{ done }}/{{ total }} concluído{% if done == total and total > 0 %} 🎉{% endif %}
+      </div>
+    </div>
+  {% endwith %}
+{% endwith %}
+
+{# Legenda dos estados #}
+<div style="margin-bottom:1em;display:flex;gap:1em;align-items:center;flex-wrap:wrap;">
+  <span><span style="font-size:1.2em;color:#aaa;">&#9633;</span> Não iniciado</span>
+  <span><span style="font-size:1.2em;color:#2196f3;">&#9679;</span> Em progresso</span>
+  <span><span style="font-size:1.2em;color:#4caf50;">&#10003;</span> Concluído</span>
+  <span style="background:#e0e0e0; padding:2px 6px; border-radius:4px;">Autoavaliação</span>
+</div>
+
+<ul style="padding:0;list-style:none;max-width:600px;">
+  {% for item, mark in items_and_marks %}
+    <li style="margin-bottom: 1.5em; background:#fff; border-radius:8px; box-shadow:0 1px 4px #0001; padding:1em; display:flex; flex-direction:column; gap:0.5em;{% if highlight and highlight|add:'0' == item.id|stringformat:'s' %} animation: highlight-fade 2s; background:#fffbe6;{% endif %}" id="item-{{ item.id }}">
+      <div style="display:flex;align-items:center;gap:0.5em;flex-wrap:wrap;">
+        {% if mark and mark.estado == 'concluido' %}
+          <span style="font-size:1.3em;color:#4caf50;">&#10003;</span>
+        {% elif mark and mark.estado == 'em_progresso' %}
+          <span style="font-size:1.3em;color:#2196f3;">&#9679;</span>
+        {% else %}
+          <span style="font-size:1.3em;color:#aaa;">&#9633;</span>
+        {% endif %}
+        <strong{% if item.contratualizado_em_conselho %} style="color: #007bff;" title="Contratualizado em conselho"{% endif %}>{{ item.descricao }}</strong>
+        {% if item.contratualizado_em_conselho %}<span title="Contratualizado em conselho" style="font-size:1.1em;color:#007bff;">&#9733;</span>{% endif %}
+      </div>
+      {% if item.criterios %}<div style="font-size:0.95em;color:#555;"><em>Critérios: {{ item.criterios }}</em></div>{% endif %}
+      <form method="post" style="display:flex;flex-direction:column;gap:0.5em;" autocomplete="off" oninput="checkChanged(this)">
+        {% csrf_token %}
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <label style="font-size:0.98em;" for="estado-{{ item.id }}">Estado:
+          <select id="estado-{{ item.id }}" name="estado" style="font-size:1em;padding:0.3em;">
+            <option value="nao_iniciado" {% if mark and mark.estado == 'nao_iniciado' %}selected{% endif %}>Não iniciado</option>
+            <option value="em_progresso" {% if mark and mark.estado == 'em_progresso' %}selected{% endif %}>Em progresso</option>
+            <option value="concluido" {% if mark and mark.estado == 'concluido' %}selected{% endif %}>Concluído</option>
+          </select>
+        </label>
+        <label style="font-size:0.98em;" for="comentario-{{ item.id }}">Comentário:
+          <input id="comentario-{{ item.id }}" type="text" name="comentario" value="{{ mark.comentario|default:'' }}" maxlength="120" size="40" placeholder="Ex: O que fiz para atingir este objetivo?" style="font-size:1em;padding:0.3em;">
+        </label>
+        <button type="submit" style="font-size:1em;padding:0.5em 1.2em;background:#2196f3;color:white;border:none;border-radius:4px;" disabled>Guardar</button>
+        <small style="color:#888;">Última marcação: {% if mark and mark.criado_em %}{{ mark.criado_em|timesince }} atrás{% else %}—{% endif %}</small>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<a href="{% url 'checklists:my_checklists' %}" style="display:inline-block;margin-top:2em;font-size:1em;color:#2196f3;text-decoration:underline;">&larr; Voltar às minhas listas</a>
+
+{% if total > 0 %}
+  {% with done=0 %}
+    {% for item, mark in items_and_marks %}
+      {% if mark and mark.estado == 'concluido' %}
+        {% widthratio 1 1 1 as dummy %}{% with done=done|add:1 %}{% endwith %}
+      {% endif %}
+    {% endfor %}
+    {% if total == done %}
+      <div style="margin-top:2em;padding:1em;background:#e8f5e9;border-radius:8px;color:#256029;font-size:1.1em;">
+        🎉 Parabéns, concluiu todos os objetivos desta lista!
+      </div>
+    {% endif %}
+  {% endwith %}
+{% endif %}
+
+<style>
+@keyframes highlight-fade {
+  0%   { background: #fffbe6; }
+  80%  { background: #fffbe6; }
+  100% { background: #fff; }
+}
+@media (max-width: 600px) {
+  ul[style], li[style] {
+    max-width: 100% !important;
+    padding: 0.5em !important;
+  }
+  h2 { font-size: 1.1em !important; }
+  form[method="post"] input[type="text"],
+  form[method="post"] select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  button[type="submit"] {
+    width: 100%;
+    margin-top: 0.5em;
+  }
+  li[style]:focus-within {
+    outline: 2px solid #2196f3;
+    box-shadow: 0 0 0 2px #2196f3;
+  }
+}
+</style>
+<script>
+function checkChanged(form) {
+  const estado = form.querySelector('select[name="estado"]');
+  const comentario = form.querySelector('input[name="comentario"]');
+  const btn = form.querySelector('button[type="submit"]');
+  const initialEstado = estado.getAttribute('data-initial') || estado.defaultValue;
+  const initialComentario = comentario.getAttribute('data-initial') || comentario.defaultValue;
+  if (estado.value !== initialEstado || comentario.value !== initialComentario) {
+    btn.disabled = false;
+  } else {
+    btn.disabled = true;
+  }
+}
+document.querySelectorAll('form[method="post"]').forEach(form => {
+  checkChanged(form);
+  form.addEventListener('input', () => checkChanged(form));
+});
+</script>
+{% endblock %} 

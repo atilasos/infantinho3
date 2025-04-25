@@ -64,4 +64,36 @@ O MVP inclui:
 - `classes/` — Gestão de turmas
 - `blog/` — Módulo de blog/diário de turma
 - `checklists/` — Listas de verificação de aprendizagens
-- `
+
+## Deploy em Produção
+
+### Checklist de Preparação
+- [ ] Configure o arquivo `.env` a partir de `.env.example` com todas as variáveis reais (nunca suba o real para o repositório)
+- [ ] Atualize `requirements.txt` e instale dependências em ambiente virtual
+- [ ] Rode `python manage.py migrate` para aplicar as migrations
+- [ ] Rode `python manage.py collectstatic` para coletar arquivos estáticos
+- [ ] Rode `python manage.py compilemessages` para internacionalização
+- [ ] Configure o banco de dados PostgreSQL e usuário dedicado
+- [ ] Configure Gunicorn como serviço (exemplo em `deploy/gunicorn.service.example`)
+- [ ] Configure Nginx como proxy reverso (exemplo em `deploy/nginx.conf.example`)
+- [ ] Ative HTTPS (Let's Encrypt recomendado)
+- [ ] Configure backup regular do banco e da pasta `/media/`
+
+### Variáveis de Ambiente
+Veja o arquivo `deploy/.env.example` para todas as variáveis necessárias.
+
+### Comandos Essenciais
+```sh
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp deploy/.env.example .env  # edite com seus dados reais
+python manage.py migrate
+python manage.py collectstatic
+python manage.py compilemessages
+```
+
+### Exemplos de Configuração
+- Gunicorn: `deploy/gunicorn.service.example`
+- Nginx: `deploy/nginx.conf.example`
+- .env: `deploy/.env.example`

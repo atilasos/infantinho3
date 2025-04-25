@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    server_name mvp.infantinho.xyz;  # Altere para o domínio desejado se necessário
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        alias /var/www/infantinho3/static/;
+    }
+    location /media/ {
+        alias /var/www/infantinho3/media/;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Para HTTPS, use certbot depois para gerar certificado e atualizar para listen 443 ssl; 

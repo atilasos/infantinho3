@@ -1,0 +1,97 @@
+{% extends 'checklists/base.html' %}
+{% load checklists_extras %}
+{% block content %}
+<h2>Visão coletiva: {{ template.nome }} ({{ template.disciplina }}, {{ template.ano }})</h2>
+<h3>Turma: {{ turma.name }} ({{ turma.year }})</h3>
+
+<div style="margin-bottom:1em;">
+  <strong>Progresso coletivo da turma:</strong>
+  <div style="background:#e0e0e0;border-radius:8px;height:22px;width:100%;max-width:400px;display:inline-block;vertical-align:middle;margin-left:1em;">
+    <div style="background:#4caf50;height:22px;border-radius:8px;width:{{ progresso_coletivo }}%;min-width:2em;text-align:center;color:white;line-height:22px;transition:width 0.5s;">
+      {{ progresso_coletivo }}%
+    </div>
+  </div>
+</div>
+
+<table style="width:100%;border-collapse:collapse;margin-top:1.5em;">
+  <thead>
+    <tr>
+      <th style="border-bottom:2px solid #ccc;text-align:left;padding:0.5em;">Aluno</th>
+      {% for item in itens %}
+        <th style="border-bottom:2px solid #ccc;text-align:center;padding:0.5em;">
+          <span{% if item.contratualizado_em_conselho %} style="color:#007bff;" title="Contratualizado em conselho"{% endif %}>{{ item.descricao|truncatechars:32 }}</span>
+          {% if item.contratualizado_em_conselho %}<span title="Contratualizado em conselho" style="font-size:1.1em;color:#007bff;">&#9733;</span>{% endif %}
+        </th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for aluno in alunos %}
+      <tr>
+        <td style="border-bottom:1px solid #eee;padding:0.5em;min-width:180px;">
+          <div style="display:flex;align-items:center;gap:0.5em;">
+            <span>{{ aluno.get_full_name|default:aluno.username }}</span>
+            <div style="flex:1;max-width:120px;background:#e0e0e0;border-radius:6px;height:16px;position:relative;">
+              <div style="background:#2196f3;height:16px;border-radius:6px;width:{{ progresso_individual.aluno.id }}%;min-width:2em;text-align:center;color:white;line-height:16px;font-size:0.9em;transition:width 0.5s;">
+                {{ progresso_individual.aluno.id }}%
+              </div>
+            </div>
+          </div>
+        </td>
+        {% for item in itens %}
+          {% get_item marks_by_aluno_item aluno.id item.id as mark %}
+          <td style="text-align:center;border-bottom:1px solid #eee;padding:0.5em;">
+            {% if mark %}
+              {% if mark.estado == 'concluido' %}
+                <span style="color:#4caf50;font-size:1.2em;">&#10003;</span>
+              {% elif mark.estado == 'em_progresso' %}
+                <span style="color:#2196f3;font-size:1.2em;">&#9679;</span>
+              {% else %}
+                <span style="color:#aaa;font-size:1.2em;">&#9633;</span>
+              {% endif %}
+              {% if mark.comentario %}<br><span style="font-size:0.9em;color:#888;">{{ mark.comentario|truncatechars:30 }}</span>{% endif %}
+              {% if mark.validacao_professor %}<br><span style="color:#007bff;font-size:0.9em;">Validado</span>{% else %}
+                <form method="post" style="margin:0;display:inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="aluno_id" value="{{ aluno.id }}">
+                  <input type="hidden" name="item_id" value="{{ item.id }}">
+                  <input type="hidden" name="estado" value="{{ mark.estado }}">
+                  <input type="hidden" name="comentario" value="">
+                  <button type="submit" title="Validar" style="background:#007bff;color:white;border:none;padding:2px 8px;border-radius:4px;font-size:0.9em;">Validar</button>
+                </form>
+                <details style="display:inline-block;margin-left:0.5em;">
+                  <summary style="cursor:pointer;font-size:0.9em;">Retificar</summary>
+                  <form method="post" style="margin:0;display:block;">
+                    {% csrf_token %}
+                    <input type="hidden" name="aluno_id" value="{{ aluno.id }}">
+                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                    <select name="estado" style="font-size:0.95em;">
+                      <option value="nao_iniciado" {% if mark.estado == 'nao_iniciado' %}selected{% endif %}>Não iniciado</option>
+                      <option value="em_progresso" {% if mark.estado == 'em_progresso' %}selected{% endif %}>Em progresso</option>
+                      <option value="concluido" {% if mark.estado == 'concluido' %}selected{% endif %}>Concluído</option>
+                    </select>
+                    <input type="text" name="comentario" maxlength="120" size="12" placeholder="Comentário" style="font-size:0.95em;">
+                    <button type="submit" style="background:#ff9800;color:white;border:none;padding:2px 8px;border-radius:4px;font-size:0.9em;">Retificar</button>
+                  </form>
+                </details>
+              {% endif %}
+            {% else %}
+              <span style="color:#aaa;font-size:1.2em;">&#9633;</span>
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div style="margin-top:2em;">
+  <span><span style="font-size:1.2em;color:#aaa;">&#9633;</span> Não iniciado</span>
+  <span style="margin-left:1em;"><span style="font-size:1.2em;color:#2196f3;">&#9679;</span> Em progresso</span>
+  <span style="margin-left:1em;"><span style="font-size:1.2em;color:#4caf50;">&#10003;</span> Concluído</span>
+  <span style="margin-left:1em;background:#e0e0e0; padding:2px 6px; border-radius:4px;">&#9733; Contratualizado em conselho</span>
+  <span style="margin-left:1em;color:#007bff;">Validado pelo professor</span>
+</div>
+
+<a href="javascript:history.back()" style="display:inline-block;margin-top:2em;font-size:1em;color:#2196f3;text-decoration:underline;">&larr; Voltar</a>
+{% endblock %} 

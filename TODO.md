@@ -102,12 +102,36 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
     - [x] 2.9.2 Garantir acessibilidade e usabilidade dos templates.
 
 ## Fase 3 – Módulo de Listas de Verificação (MVP Parte 2)
-- [ ] 3.1 Implementar modelos Checklist, ChecklistItem, ChecklistStatus
-- [ ] 3.2 Pré-carregar templates de 1-2 disciplinas para teste
-- [ ] 3.3 UI Aluno: página para marcar objetivos
-- [ ] 3.4 UI Professor: visão geral e validação de objetivos dos alunos
-- [ ] 3.5 Testes: aluno marca, professor valida
-- [ ] 3.6 Entrega: listas ativas por aluno, professor monitoriza
+- [x] 3.1 Modelos e Estrutura de Dados
+    - Implementar modelos: ChecklistTemplate, ChecklistItem, ChecklistStatus (e opcionalmente ChecklistMark para histórico)
+    - ChecklistItem deve incluir: texto do objetivo, campo opcional de critérios/descritores, campo booleano "contratualizado_em_conselho"
+    - ChecklistStatus/ChecklistMark deve permitir comentários do aluno e do professor, armazenar data e autor de cada marcação
+    - Criar migrações e scripts de seed para os modelos
+- [x] 3.2 Pré-carregamento de Templates
+    - Pré-carregar templates de 1-2 disciplinas/anos (ex: Português 5.º ano, Matemática 7.º ano) com dados reais das Aprendizagens Essenciais
+    - Garantir que scripts de seed só afetam dev/test
+- [x] 3.3 UI Aluno: Página de Marcação de Objetivos
+    - Página "As minhas aprendizagens" listando disciplinas e itens
+    - Permitir marcação/desmarcação de itens (autoavaliação), com destaque visual de que é autoavaliação
+    - Permitir adicionar comentário em cada item
+    - (Opcional) Adicionar nota/evidência ao marcar concluído
+- [x] 3.4 UI Professor: Visão Geral e Validação
+    - Página de visão geral da turma: alunos vs. % de conclusão por disciplina
+    - Permitir validação/retificação de marcações dos alunos, com possibilidade de comentário
+    - Visualização coletiva (alunos x itens), com destaque para itens "contratualizados em conselho"
+- [x] 3.5 Lógica de Marcação, Validação e Notificações
+    - Permissões: aluno só altera o próprio status, professor valida/retifica, admin tudo
+    - Notificações para professor e aluno sobre marcações e validações
+    - Histórico de alterações de estado, incluindo data, autor e comentário
+- [x] 3.6 Testes Automatizados
+    - Testar criação/edição de templates, itens e status
+    - Testar fluxo de marcação e validação, incluindo comentários e campos pedagógicos
+    - Testar permissões e notificações
+    - Garantir que seeds/scripts não afetam produção
+- [ ] 3.7 Entrega e Monitorização
+    - Listas ativas por aluno
+    - Monitorização pelo professor (progresso coletivo e individual)
+    - Documentação dos modelos, endpoints, scripts e instruções de uso
 
 ## Fase 4 – Feedback MVP e Ajustes
 - [ ] 4.0 Planejar e implementar separação de versões: dev, mvp, full (branches Git e/ou ambientes de deploy)

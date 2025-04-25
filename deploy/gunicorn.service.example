@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve Infantinho 3.0
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/caminho/para/seu/projeto
+EnvironmentFile=/caminho/para/seu/projeto/.env
+ExecStart=/caminho/para/seu/venv/bin/gunicorn infantinho3.wsgi:application --bind 127.0.0.1:8000 --workers 3
+
+[Install]
+WantedBy=multi-user.target 
