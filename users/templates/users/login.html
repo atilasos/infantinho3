@@ -1,48 +1,78 @@
 {% extends "base.html" %}
-{% load i18n static %}
+{% load i18n static widget_tweaks %}
 
-{% block title %}{% trans "Início de Sessão | Infantinho 3.0" %}{% endblock %}
+{% block title %}{% trans "Login | Infantinho 3.0" %}{% endblock %}
 
-{% block sidebar %}{% endblock %}
+{# Hide sidebar on login page #}
+{% block sidebar_column %}{% endblock %}
 
 {% block content %}
-<div class="login-container">
-    <div class="login-logo">
-        <img src="{% static 'logo.png' %}" alt="{% trans 'Infantinho 3.0 Logo' %}" height="80">
-    </div>
-    <h1>{% trans "Iniciar Sessão" %}</h1>
-    <p class="login-help">{% trans "Alunos e professores: usem a conta Microsoft escolar. Pais e administradores: usem o início de sessão por email." %}</p>
-    <div class="login-options">
-        <form action="{% url 'login_microsoft' %}" method="post" class="login-microsoft">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-microsoft">
-                <img src="{% static 'microsoft_logo.png' %}" alt="Microsoft" class="icon"> {% trans "Entrar com Microsoft" %}
-            </button>
-            <span class="login-desc">{% trans "(Alunos e Professores)" %}</span>
-        </form>
-        <form action="{% url 'login_local' %}" method="post" class="login-local">
-            {% csrf_token %}
-            {% if login_local %}
-                {{ form.non_field_errors }}
-                <div class="form-group">
-                    <label for="id_username">{% trans "Email" %}</label>
-                    {{ form.username }}
+<div class="container mt-5 login-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <div class="login-logo text-center mb-4">
+                        <img src="{% static 'logo.png' %}" alt="{% trans 'Infantinho 3.0 Logo' %}" height="60"> {# TODO: Add logo.png #}
+                    </div>
+                    <h1 class="h3 mb-3 fw-normal text-center">{% trans "Login" %}</h1>
+                    
+                    {# Display messages #}
+                    {% include "includes/messages.html" %} 
+                    
+                    {# Local Login Form (for Parents/Admins) #}
+                    <form action="{% url 'users:login_local' %}" method="post" class="login-local-form needs-validation" novalidate>
+                        {% csrf_token %}
+                        <h2 class="h5 text-center text-muted mb-3">{% trans "Login (Guardians & Admins)" %}</h2>
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="form-floating mb-3">
+                            {% render_field form.username class+="form-control" placeholder="email@example.com" required="required" %} 
+                            <label for="{{ form.username.id_for_label }}">{% trans "Email Address" %}</label>
+                            {% if form.username.errors %}<div class="invalid-feedback d-block">{{ form.username.errors|striptags }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            {% render_field form.password class+="form-control" placeholder="Password" required="required" %} 
+                            <label for="{{ form.password.id_for_label }}">{% trans "Password" %}</label>
+                            {% if form.password.errors %}<div class="invalid-feedback d-block">{{ form.password.errors|striptags }}</div>{% endif %}
+                        </div>
+
+                        <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">
+                             <i class="bi bi-box-arrow-in-right me-2"></i> {% trans "Login" %}
+                        </button>
+                        
+                        <div class="text-center">
+                             {# Use namespaced URL #}
+                            <a href="{% url 'users:password_reset' %}">{% trans "Forgot password?" %}</a>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    {# Microsoft Login Option (for Students/Teachers) #}
+                    <div class="text-center">
+                        <h2 class="h5 text-muted mb-3">{% trans "Login (Students & Teachers)" %}</h2>
+                         {# Use namespaced URL #}
+                        <a href="{% url 'users:login_microsoft' %}" class="btn btn-lg btn-outline-primary w-100">
+                           <i class="bi bi-microsoft me-2"></i> {% trans "Login with Microsoft Account" %}
+                        </a>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-center text-muted small">
+                        <a href="{% url 'users:login_choice' %}">{% trans "Back to Login Options" %}</a>
+                    </div>
+                    
                 </div>
-                <div class="form-group">
-                    <label for="id_password">{% trans "Palavra-passe" %}</label>
-                    {{ form.password }}
-                </div>
-                <button type="submit" class="btn btn-primary">{% trans "Entrar com Email/Palavra-passe" %}</button>
-            {% else %}
-                <input type="email" name="email" id="id_email" required>
-                <input type="password" name="password" id="id_password" required>
-                <button type="submit" class="btn btn-primary">{% trans "Entrar com Email/Palavra-passe" %}</button>
-            {% endif %}
-            <span class="login-desc">{% trans "(Pais/Encarregados/Admin)" %}</span>
-        </form>
-        <div class="login-links">
-            <a href="{% url 'password_reset' %}">{% trans "Recuperar palavra-passe" %}</a>
+            </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
