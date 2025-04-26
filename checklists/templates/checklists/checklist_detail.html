@@ -1,0 +1,180 @@
+{% extends "checklists/base.html" %} {# Assuming a checklists/base.html exists #}
+{% load i18n %}
+
+{% block title %}{{ template.name }} - {% trans "Checklist Detail" %}{% endblock %}
+
+{% block content %}
+<main role="main" aria-labelledby="checklist-heading">
+
+{# Display messages from views #}
+{% if messages %}
+  <div class="messages" aria-live="polite" style="margin-bottom:1em;">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Breadcrumbs -->
+<nav aria-label="breadcrumb" style="margin-bottom:1em;">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'checklists:my_checklists' %}">{% trans "My Checklists" %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ template.name }}{% if template.grade_level %} ({% trans "Grade" %} {{ template.grade_level }}){% endif %}</li>
+  </ol>
+</nav>
+
+<!-- Heading -->
+<h2 id="checklist-heading">{{ template.name }} <small class="text-muted">({{ template.subject}}{% if template.grade_level %} - {% trans "Grade" %} {{ template.grade_level }}{% endif %})</small></h2>
+
+<!-- Progress Bar -->
+{% with percentage=status.percent_complete|floatformat:0 %}
+<div class="progress mb-3" role="progressbar" aria-label="{% trans 'Checklist progress' %}" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 25px; max-width: 400px;">
+  <div class="progress-bar bg-success" style="width: {{ percentage }}%;" >
+      {{ percentage }}% {% trans "Complete" %}
+      {% if percentage == 100 %} <i class="bi bi-check-circle-fill ms-1"></i>{% endif %}
+  </div>
+</div>
+{% endwith %}
+
+<!-- Status Legend -->
+<div class="mb-3 d-flex flex-wrap gap-3 align-items-center small text-muted">
+  <span><i class="bi bi-square text-secondary fs-5"></i> {% trans "Not Started" %}</span>
+  <span><i class="bi bi-play-circle-fill text-primary fs-5"></i> {% trans "In Progress" %}</span>
+  <span><i class="bi bi-check-circle-fill text-success fs-5"></i> {% trans "Completed" %}</span>
+  <span><i class="bi bi-patch-check-fill text-success fs-5"></i> {% trans "Validated by Teacher" %}</span>
+  <span><i class="bi bi-star-fill text-warning fs-5"></i> {% trans "Agreed in Council" %}</span>
+</div>
+
+<!-- Checklist Items List -->
+<ul class="list-unstyled" style="max-width:700px;">
+  {% for item, mark in items_and_marks %}
+    {# Determine highlight style based on GET param #}
+    {% if highlight_item_id and highlight_item_id == item.id|stringformat:"s" %}
+        {% comment %} Assign style directly without captureas {% endcomment %}
+        {% with highlight_style='animation: highlight-fade 2s; background-color: #fff3cd;' %}
+    {% else %}
+        {% with highlight_style='' %}
+    {% endif %}
+    
+    <li class="card mb-3 shadow-sm" id="item-{{ item.id }}" style="{{ highlight_style }}">
+      <div class="card-body">
+        <div class="d-flex align-items-start gap-2 mb-2">
+            {# Status Icon #}
+            <span class="fs-4 lh-1 mt-1">
+                {% if mark and mark.mark_status == 'completed' %}
+                    {% if mark.teacher_validated %}
+                        <i class="bi bi-patch-check-fill text-success" title="{% trans 'Validated by Teacher' %}"></i>
+                    {% else %}
+                        <i class="bi bi-check-circle-fill text-success" title="{% trans 'Completed' %}"></i>
+                    {% endif %}
+                {% elif mark and mark.mark_status == 'in_progress' %}
+                    <i class="bi bi-play-circle-fill text-primary" title="{% trans 'In Progress' %}"></i>
+                {% else %}
+                    <i class="bi bi-square text-secondary" title="{% trans 'Not Started' %}"></i>
+                {% endif %}
+            </span>
+            {# Item Description & Council Agreed Star #}
+            <div class="flex-grow-1">
+                <strong class="d-block">{{ item.description }}</strong>
+                {% if item.council_agreed %}
+                    <span class="badge bg-warning text-dark" title="{% trans 'Agreed in Council' %}"><i class="bi bi-star-fill"></i> {% trans "Council Focus" %}</span>
+                {% endif %}
+                {% if item.criteria %}<small class="d-block text-muted fst-italic mt-1">{% trans "Criteria:" %} {{ item.criteria }}</small>{% endif %}
+            </div>
+        </div>
+        
+        {# Item Update Form (for student) #}
+        <form method="post" class="ms-4 ps-3 border-start item-update-form" autocomplete="off">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <div class="mb-2">
+                <label for="mark_status-{{ item.id }}" class="form-label fw-bold small">{% trans "My Status:" %}</label>
+                <select id="mark_status-{{ item.id }}" name="mark_status" class="form-select form-select-sm" data-initial-status="{{ mark.mark_status|default:'not_started' }}">
+                    {# Use choices passed from context #}
+                    {% for key, label in mark_status_choices %}
+                        {# Use English keys for values #}
+                        <option value="{{ key }}" {% if mark and mark.mark_status == key %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="comment-{{ item.id }}" class="form-label small">{% trans "Comment (Optional):" %}</label>
+                <input id="comment-{{ item.id }}" type="text" name="comment" value="{{ mark.comment|default:'' }}" 
+                       class="form-control form-control-sm" maxlength="150" 
+                       placeholder="{% trans 'E.g., What I did, difficulties...' %}" 
+                       data-initial-comment="{{ mark.comment|default:'' }}">
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm item-save-btn" disabled title="{% trans 'Save changes for this item' %}">{% trans "Save" %}</button>
+            <small class="text-muted ms-2">{% trans "Last update:" %} {% if mark and mark.marked_at %}{{ mark.marked_at|timesince }} {% trans "ago" %}{% else %}---{% endif %}</small>
+        </form>
+      </div> {# End card-body #}
+    </li>
+    {% if highlight_style %}{% endwith %}{% else %}{% endwith %}{% endif %} {# Close the with block #}
+  {% endfor %}
+</ul>
+
+<!-- Back Link -->
+<a href="{% url 'checklists:my_checklists' %}" class="btn btn-link mt-3">&larr; {% trans "Back to My Checklists" %}</a>
+
+<!-- Congratulations Message -->
+{% if status.percent_complete == 100 %}
+  <div class="alert alert-success mt-4 shadow-sm" role="alert">
+    <i class="bi bi-award-fill fs-4 me-2"></i> {% trans "Congratulations, you have completed all objectives in this list!" %}
+  </div>
+{% endif %}
+
+</main>
+
+{# Inline CSS - Ideally move to a separate file #}
+<style>
+@keyframes highlight-fade {
+  0%   { background-color: #fff3cd; }
+  80%  { background-color: #fff3cd; }
+  100% { background-color: var(--bs-card-bg, white); } 
+}
+/* Basic responsive adjustments */
+@media (max-width: 600px) {
+  ul.list-unstyled {
+    max-width: 100% !important;
+  }
+  li.card .card-body {
+     padding: 0.75rem !important;
+  }
+  h2 {
+     font-size: 1.5rem;
+  }
+}
+</style>
+
+{# Inline JS for enabling save button - Ideally move to a separate file #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  function checkItemChanged(form) {
+    const statusSelect = form.querySelector('select[name="mark_status"]');
+    const commentInput = form.querySelector('input[name="comment"]');
+    const saveButton = form.querySelector('button.item-save-btn');
+    
+    const initialStatus = statusSelect.getAttribute('data-initial-status') || 'not_started';
+    const initialComment = commentInput.getAttribute('data-initial-comment') || '';
+    
+    const statusChanged = statusSelect.value !== initialStatus;
+    const commentChanged = commentInput.value !== initialComment;
+    
+    saveButton.disabled = !(statusChanged || commentChanged);
+  }
+
+  document.querySelectorAll('form.item-update-form').forEach(form => {
+    // Set initial values as data attributes for reliable comparison
+    form.querySelector('select[name="mark_status"]').setAttribute('data-initial-status', form.querySelector('select[name="mark_status"]').value);
+    form.querySelector('input[name="comment"]').setAttribute('data-initial-comment', form.querySelector('input[name="comment"]').value);
+    
+    checkItemChanged(form); // Initial check
+    form.addEventListener('input', () => checkItemChanged(form)); // Check on any input change
+  });
+});
+</script>
+
+{% endblock %}

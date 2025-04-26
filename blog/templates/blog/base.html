@@ -1,0 +1,19 @@
+{% extends "base.html" %} {# Extends the main project base template #}
+{% load i18n %}
+
+{% block title %}{% trans "Blog/Diary" %} | {% block blog_title %}{% endblock %}{% endblock %}
+
+{# This base template extends the main project base.html #}
+{# It can define specific blocks for the blog section if needed #}
+
+{% block content %}
+  {# Content from specific blog templates (list, detail, form) goes here #}
+  {% block blog_content %}
+  {% endblock blog_content %}
+{% endblock content %}
+
+{# Remove form.media rendering from here; it will be handled in the main base.html #}
+{# {% block extra_js %} #}
+{#  {{ form.media }} #}
+{#  {{ block.super }} #}
+{# {% endblock %} #}

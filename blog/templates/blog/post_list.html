@@ -1,0 +1,119 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Blog/Diary" %} - {{ turma.name }}{% endblock %}
+
+{% block content %}
+<main role="main" aria-label="Lista de posts do blog/diário da turma {{ turma.name }}">
+
+<!-- Header and Help Button -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>{% trans "Blog/Diary" %} - {{ turma.name }}</h2>
+  <div>
+    <a href="{% url 'blog:post_create' class_id=turma.id %}" class="btn btn-success" title="{% trans 'Create New Post' %}">
+      <i class="bi bi-plus-circle-fill" aria-hidden="true"></i> {% trans "New Post" %}
+    </a>
+    <a href="{% url 'blog:blog_help' class_id=turma.id %}" class="btn btn-outline-info btn-sm ms-2" title="{% trans 'Help for Blog/Diary' %}">
+      <i class="bi bi-question-circle" aria-hidden="true"></i> {% trans "Help" %}
+    </a>
+  </div>
+</div>
+
+<!-- Filter Form -->
+<form method="get" class="mb-4 p-3 bg-light border rounded" aria-label="{% trans 'Blog Filters' %}">
+  <div class="row g-2 align-items-center">
+    <div class="col-md-4">
+      <label for="categoria" class="form-label">{% trans "Category:" %}</label>
+      <select name="categoria" id="categoria" class="form-select form-select-sm" title="{% trans 'Filter by category' %}">
+        <option value="">{% trans "All" %}</option>
+        {% for key, label in categorias %}
+          <option value="{{ key }}" {% if key == categoria_atual %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label for="data" class="form-label">{% trans "Date:" %}</label>
+      <input type="date" name="data" id="data" value="{{ data_atual|default:'' }}" class="form-control form-control-sm" title="{% trans 'Filter by date' %}">
+    </div>
+    <div class="col-md-auto align-self-end">
+      <button type="submit" class="btn btn-primary btn-sm" title="{% trans 'Apply Filters' %}">{% trans "Filter" %}</button>
+    </div>
+  </div>
+</form>
+
+<!-- Post List Grouped by Month -->
+{% if posts_grouped %}
+  {% for key, posts_mes in posts_grouped.items %}
+    {% with ano=key.0 mes=key.1 %}
+      {# Use Django's month_name filter if available, otherwise display number #}
+      <h4 class="mt-4">{% blocktrans with month=mes year=ano %}{{ month }}/{{ year }}{% endblocktrans %}</h4> 
+      <div class="list-group mb-3 shadow-sm">
+        {% for post in posts_mes %}
+          <a href="{% url 'blog:post_detail' class_id=turma.id post_id=post.id %}" 
+             class="list-group-item list-group-item-action flex-column align-items-start" 
+             title="{% trans 'View details of post' %} '{{ post.titulo|default:post.get_category_display_full }}'">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{ post.titulo|default:post.get_category_display_full }}</h5>
+              <small class="text-muted">{{ post.publicado_em|date:"d/m/Y H:i" }}</small>
+            </div>
+            <p class="mb-1"><small class="text-muted">{% trans "by" %} {{ post.autor.get_full_name|default:post.autor.username }} | {{ post.get_category_display_full }}</small></p>
+            {# Optionally display a snippet of content here #}
+            {# <small>{{ post.conteudo|striptags|truncatewords:20 }}</small> #}
+          </a>
+        {% endfor %}
+      </div>
+    {% endwith %}
+  {% endfor %}
+{% elif categoria_atual or data_atual %}
+   <div class="alert alert-info" role="alert">
+     {% trans "No posts found matching your filters." %}
+   </div>
+{% else %}
+  <div class="alert alert-secondary" role="alert">
+    {% trans "No posts have been created in this blog yet." %}
+  </div>
+{% endif %}
+
+<!-- Pagination Controls -->
+{% if posts.has_other_pages %}
+  <nav aria-label="{% trans 'Post navigation' %}">
+    <ul class="pagination justify-content-center">
+      {% if posts.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1{% if categoria_atual %}&categoria={{ categoria_atual }}{% endif %}{% if data_atual %}&data={{ data_atual }}{% endif %}" aria-label="{% trans 'First' %}">&laquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ posts.previous_page_number }}{% if categoria_atual %}&categoria={{ categoria_atual }}{% endif %}{% if data_atual %}&data={{ data_atual }}{% endif %}" aria-label="{% trans 'Previous' %}">{% trans "Previous" %}</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+        <li class="page-item disabled"><span class="page-link">{% trans "Previous" %}</span></li>
+      {% endif %}
+
+      {% for i in posts.paginator.page_range %}
+          {% if posts.number == i %}
+              <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+          {% elif i > posts.number|add:'-3' and i < posts.number|add:'3' %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}{% if categoria_atual %}&categoria={{ categoria_atual }}{% endif %}{% if data_atual %}&data={{ data_atual }}{% endif %}">{{ i }}</a></li>
+          {% elif i == posts.number|add:'-3' or i == posts.number|add:'3' %}
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+          {% endif %}
+      {% endfor %}
+
+      {% if posts.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ posts.next_page_number }}{% if categoria_atual %}&categoria={{ categoria_atual }}{% endif %}{% if data_atual %}&data={{ data_atual }}{% endif %}" aria-label="{% trans 'Next' %}">{% trans "Next" %}</a>
+        </li>
+         <li class="page-item">
+          <a class="page-link" href="?page={{ posts.paginator.num_pages }}{% if categoria_atual %}&categoria={{ categoria_atual }}{% endif %}{% if data_atual %}&data={{ data_atual }}{% endif %}" aria-label="{% trans 'Last' %}">&raquo;</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">{% trans "Next" %}</span></li>
+        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}
+
+</main>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Confirm Post Removal" %} - {{ turma.name }}{% endblock %}
+
+{% block content %}
+<main role="main" aria-label="{% trans 'Confirm post removal' %}">
+<h2>{% trans "Remove Post" %}</h2>
+<p role="alert">{% trans "Are you sure you want to remove this post? This action might be logged." %}</p>
+<p><strong>{{ post.titulo|default:post.get_category_display_full }}</strong></p>
+
+<form method="post" aria-label="{% trans 'Post removal form' %}">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_motivo" class="form-label">{% trans "Reason (optional):" %}</label>
+    <input type="text" name="motivo" id="id_motivo" class="form-control" 
+           aria-label="{% trans 'Reason for removal' %}" 
+           title="{% trans 'Optional: provide a reason for the moderation log.' %}">
+  </div>
+  <button type="submit" class="btn btn-danger" title="{% trans 'Confirm removal of this post' %}">{% trans "Confirm Removal" %}</button>
+  {# Updated URL namespace #}
+  <a href="{% url 'blog:post_detail' class_id=turma.id post_id=post.id %}" class="btn btn-secondary" title="{% trans 'Cancel and return to post' %}">{% trans "Cancel" %}</a>
+</form>
+</main>
+{% endblock %} 

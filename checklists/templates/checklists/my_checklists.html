@@ -1,0 +1,60 @@
+{% extends "checklists/base.html" %} {# Assuming a checklists/base.html exists #}
+{% load i18n %}
+
+{% block title %}{% trans "My Checklists" %}{% endblock %}
+
+{% block content %}
+<main role="main" aria-labelledby="my-checklists-heading">
+
+<h2 id="my-checklists-heading">{% trans "My Checklists" %}</h2>
+
+<!-- Active Checklists -->
+<section class="mb-4" aria-labelledby="active-checklists-heading">
+  <h3 id="active-checklists-heading">{% trans "Active" %}</h3>
+  {% if active_checklists %}
+    <ul class="list-group shadow-sm">
+      {# Use the renamed context variable 'active_checklists' #}
+      {% for status in active_checklists %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="{% url 'checklists:checklist_detail' status.template.id %}" title="{% blocktrans with name=status.template.name %}View checklist {{ name }}{% endblocktrans %}">
+            {# Use renamed template fields: name, subject, grade_level #}
+            {{ status.template.name }} 
+            <small class="text-muted">({{ status.template.subject}}{% if status.template.grade_level %} - {% trans "Grade" %} {{ status.template.grade_level }}{% endif %})</small>
+          </a>
+          {# Show progress #}
+          <span class="badge bg-primary rounded-pill">{{ status.percent_complete|floatformat:0 }}%</span> 
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{% trans "You have no active checklists." %}</p>
+  {% endif %}
+</section>
+
+<!-- Completed Checklists -->
+<section aria-labelledby="completed-checklists-heading">
+  <h3 id="completed-checklists-heading">{% trans "Completed" %}</h3>
+  {% if completed_checklists %}
+    <ul class="list-group shadow-sm">
+      {# Use the renamed context variable 'completed_checklists' #}
+      {% for status in completed_checklists %}
+        <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-success">
+          <a href="{% url 'checklists:checklist_detail' status.template.id %}" 
+             class="text-success text-decoration-none" 
+             title="{% blocktrans with name=status.template.name %}Review completed checklist {{ name }}{% endblocktrans %}">
+            {# Use renamed template fields: name, subject, grade_level #}
+            {{ status.template.name }} 
+             <small class="text-muted">({{ status.template.subject}}{% if status.template.grade_level %} - {% trans "Grade" %} {{ status.template.grade_level }}{% endif %})</small> 
+             <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+          </a>
+           <span class="badge bg-success rounded-pill">100%</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{% trans "You have no completed checklists." %}</p>
+  {% endif %}
+</section>
+
+</main>
+{% endblock %}

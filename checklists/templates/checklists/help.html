@@ -1,0 +1,67 @@
+{% extends "checklists/base.html" %} {# Assuming checklists/base.html exists #}
+{% load i18n %}
+
+{% block title %}{% trans "Checklists Documentation" %}{% endblock %}
+
+{% block content %}
+<main role="main" aria-labelledby="checklist-docs-heading">
+
+<h2 id="checklist-docs-heading">{% trans "Checklists Module - Technical Overview" %}</h2>
+<p class="lead">{% trans "Brief documentation for developers regarding the Checklists module." %}</p>
+
+<section aria-labelledby="models-heading" class="mb-4">
+    <h3 id="models-heading">{% trans "Core Models" %}</h3>
+    <dl class="row">
+        <dt class="col-sm-3">ChecklistTemplate</dt>
+        <dd class="col-sm-9">name, grade_level, subject, description, created_at, updated_at</dd>
+        
+        <dt class="col-sm-3">ChecklistItem</dt>
+        <dd class="col-sm-9">template (FK), description, criteria, order, council_agreed</dd>
+        
+        <dt class="col-sm-3">ChecklistStatus</dt>
+        <dd class="col-sm-9">template (FK), student (FK), student_class (FK), percent_complete, updated_at</dd>
+        
+        <dt class="col-sm-3">ChecklistMark</dt>
+        <dd class="col-sm-9">status (FK), item (FK), mark_status, comment, created_at, marked_by (FK), marked_at, teacher_validated</dd>
+    </dl>
+</section>
+
+<section aria-labelledby="admin-heading" class="mb-4">
+    <h3 id="admin-heading">{% trans "Admin Interface" %}</h3>
+    <p>{% blocktrans %}Checklist Templates and their Items can be managed via the Django Admin interface (/admin/). Items are managed inline within their respective Template.{% endblocktrans %}</p>
+</section>
+
+<section aria-labelledby="endpoints-heading" class="mb-4">
+    <h3 id="endpoints-heading">{% trans "URL Endpoints (under /checklists/)" %}</h3>
+    <ul>
+        <li><code>minhas/</code> {% trans "(my_checklists)" %} &mdash; {% trans "Lists checklists for the logged-in student." %}</li>
+        <li><code>&lt;int:template_id&gt;/</code> {% trans "(checklist_detail)" %} &mdash; {% trans "Detail and marking page for a student." %}</li>
+        <li><code>turma/&lt;int:class_id&gt;/&lt;int:template_id&gt;/</code> {% trans "(checklist_turma)" %} &mdash; {% trans "Class overview grid for teachers/admins." %}</li>
+    </ul>
+</section>
+
+{# Removed Seed Scripts section #}
+
+<section aria-labelledby="usage-heading" class="mb-4">
+    <h3 id="usage-heading">{% trans "Basic Usage Summary" %}</h3>
+    <ul>
+        <li><strong>{% trans "Student:" %}</strong> {% trans "Marks objectives, adds comments, tracks progress via 'My Checklists'." %}</li>
+        <li><strong>{% trans "Teacher:" %}</strong> {% trans "Views class overview, validates/rectifies marks, tracks collective and individual progress." %}</li>
+        <li><strong>{% trans "Admin/Teacher:" %}</strong> {% trans "Manages Checklist Templates and Items via the Admin interface." %}</li>
+    </ul>
+</section>
+
+<section aria-labelledby="tests-heading" class="mb-4">
+    <h3 id="tests-heading">{% trans "Automated Tests" %}</h3>
+    <ul>
+        {# Updated test description #}
+        <li>{% trans "Tests cover model logic, view permissions, and basic interactions." %}</li>
+        <li>{% trans "Run with:" %} <code>python manage.py test checklists</code></li>
+    </ul>
+</section>
+
+<hr>
+<p class="mt-4 text-muted small">{% trans "For more technical details, refer to the README.md file or contact the development team." %}</p>
+
+</main>
+{% endblock %}

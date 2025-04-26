@@ -1,0 +1,13 @@
+{% extends 'classes/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "Minhas Turmas" %}</h1>
+<ul>
+  {% for turma in turmas %}
+    <li><a href="{% url 'class_detail' turma.id %}">{{ turma.name }} ({{ turma.year }})</a></li>
+  {% empty %}
+    <li>{% trans "Não tem turmas atribuídas." %}</li>
+  {% endfor %}
+</ul>
+{% endblock %} 

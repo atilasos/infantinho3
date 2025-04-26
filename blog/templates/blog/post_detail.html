@@ -1,0 +1,167 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block title %}{{ post.titulo|default:post.get_category_display_full }} - {{ turma.name }}{% endblock %}
+
+{% block content %}
+<main role="main" aria-label="{% blocktrans with title=post.titulo|default:post.get_category_display_full %}Detail of post {{ title }}{% endblocktrans %}">
+
+  <!-- Check if Post is Removed -->
+  {% if post.removido %}
+    <div class="alert alert-warning shadow-sm" role="alert">
+      <h4 class="alert-heading">{% trans "Post Removed" %}</h4>
+      <p>{% trans "This post was removed by moderation." %}</p>
+      <hr>
+      {% if post.motivo_remocao %}
+        <p class="mb-1"><strong>{% trans "Reason:" %}</strong> {{ post.motivo_remocao }}</p>
+      {% endif %}
+      {% if post.removido_por %}
+        <p class="mb-0"><small>{% trans "Removed by:" %} {{ post.removido_por.get_full_name|default:post.removido_por.username }} | {{ post.removido_em|date:"d/m/Y H:i" }}</small></p>
+      {% endif %}
+    </div>
+
+    <!-- Restore Option for Moderators -->
+    {% if request.user.is_authenticated %}
+      {% comment %} Check if user is admin or teacher of this specific class {% endcomment %}
+      {% if user.is_superuser or (user.role == 'professor' and turma in user.classes_taught.all()) %}
+        <div class="card mb-3 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{% trans "Moderation Action" %}</h5>
+            <p class="card-text">{% trans "As a moderator for this class, you can restore this post." %}</p>
+            <form method="post" action="{% url 'blog:post_restore' class_id=turma.id post_id=post.id %}" style="display:inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success btn-sm" title="{% trans 'Restore this post' %}">
+                <i class="bi bi-arrow-counterclockwise"></i> {% trans "Restore Post" %}
+              </button>
+            </form>
+            <a href="{% url 'blog:moderation_logs' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm ms-2" title="{% trans 'View moderation history for this class' %}">
+              <i class="bi bi-journal-text"></i> {% trans "View Moderation Log" %}
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+    <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-secondary mt-2" title="{% trans 'Return to post list' %}">{% trans "Back to Blog" %}</a>
+  
+  <!-- Display Post Content if Not Removed -->
+  {% else %}
+    <article>
+      <header class="mb-3 pb-2 border-bottom">
+        <h2>{{ post.titulo|default:post.get_category_display_full }}</h2>
+        <p class="text-muted">
+          <small>
+            {% blocktrans with author=post.autor.get_full_name|default:post.autor.username date=post.publicado_em|date:"d/m/Y H:i" category=post.get_category_display_full %}
+              By {{ author }} | Published: {{ date }} | Category: {{ category }}
+            {% endblocktrans %}
+          </small>
+        </p>
+      </header>
+      
+      <!-- Post Content -->
+      <div class="post-content mb-4">
+        {{ post.conteudo|safe }}
+      </div>
+
+      <!-- Post Action Buttons (Edit/Remove) -->
+      <div class="post-actions mb-4">
+          {% if can_edit_post %}
+            <a href="{% url 'blog:post_edit' class_id=turma.id post_id=post.id %}" class="btn btn-warning btn-sm" title="{% trans 'Edit this post' %}">
+              <i class="bi bi-pencil-square"></i> {% trans "Edit" %}
+            </a>
+          {% endif %}
+          {% if can_remove_post %}
+            {# Trigger a confirmation modal or page #}
+            <a href="#" class="btn btn-danger btn-sm" 
+               data-bs-toggle="modal" data-bs-target="#removePostModal-{{ post.id }}" 
+               title="{% trans 'Remove this post' %}">
+              <i class="bi bi-trash"></i> {% trans "Remove" %}
+            </a>
+          {% endif %}
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Comments Section -->
+    <section id="comments" aria-labelledby="comments-heading">
+      <h4 id="comments-heading">{% trans "Comments" %}</h4>
+      
+      <!-- List Existing Comments -->
+      <div class="comments-list mb-4">
+        {% if comentarios %}
+          {% for comentario in comentarios %}
+            <div class="card mb-2 shadow-sm" id="comment-{{ comentario.id }}">
+              <div class="card-body p-2">
+                <p class="card-text">{{ comentario.conteudo|linebreaksbr }}</p>
+                <footer class="blockquote-footer mb-0">
+                  {{ comentario.autor.get_full_name|default:comentario.autor.username }} 
+                  <cite title="{% trans 'Publication date' %}"><small> - {{ comentario.publicado_em|date:"d/m/Y H:i" }}</small></cite>
+                  
+                  <!-- Comment Remove Button (for Moderators) -->
+                  {% if comentario.is_removable_by(request.user) %}
+                    <form method="post" action="{% url 'blog:comment_remove' class_id=turma.id post_id=post.id comment_id=comentario.id %}" 
+                          class="d-inline float-end" 
+                          onsubmit="return confirm('{% trans "Are you sure you want to remove this comment?" %}');">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger btn-sm py-0 px-1" title="{% trans 'Remove this comment' %}">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  {% endif %}
+                </footer>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>{% trans "No comments yet." %}</p>
+        {% endif %}
+      </div>
+
+      <!-- Add Comment Form -->
+      {% if request.user.is_authenticated %}
+        <h5>{% trans "Add your comment" %}</h5>
+        <form method="post" action="{% url 'blog:post_comment' class_id=turma.id post_id=post.id %}" class="mb-3" aria-label="{% trans 'Comment form' %}">
+          {% csrf_token %}
+          {{ comment_form.as_p }} {# Use Django form rendering #}
+          <button type="submit" class="btn btn-primary btn-sm" title="{% trans 'Publish comment' %}">{% trans "Comment" %}</button>
+        </form>
+      {% else %}
+        <p><em><a href="{% url 'login_choice' %}?next={{ request.path }}">{% trans "Log in" %}</a> {% trans "to add a comment." %}</em></p>
+      {% endif %}
+    </section>
+
+    <!-- Back Button -->
+    <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-secondary mt-3" title="{% trans 'Return to post list' %}">{% trans "Back to Blog" %}</a>
+  {% endif %} 
+
+</main>
+
+<!-- Modal for Remove Post Confirmation -->
+{% if not post.removido and post.is_removable_by(request.user) %}
+<div class="modal fade" id="removePostModal-{{ post.id }}" tabindex="-1" aria-labelledby="removePostModalLabel-{{ post.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'blog:post_remove' class_id=turma.id post_id=post.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="removePostModalLabel-{{ post.id }}">{% trans "Confirm Removal" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+        </div>
+        <div class="modal-body">
+          <p>{% blocktrans with title=post.titulo|default:post.get_category_display_full %}Are you sure you want to remove the post "{{ title }}"?{% endblocktrans %}</p>
+          <div class="mb-3">
+            <label for="motivo-{{ post.id }}" class="form-label">{% trans "Reason (optional):" %}</label>
+            <input type="text" class="form-control" name="motivo" id="motivo-{{ post.id }}">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+          <button type="submit" class="btn btn-danger">{% trans "Confirm Removal" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

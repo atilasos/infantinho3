@@ -1,0 +1,474 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>Igor Alexandre da Silva Godinho de Almeida</Author>
+  <LastAuthor>Igor Alexandre da Silva Godinho de Almeida</LastAuthor>
+  <Created>2025-02-06T11:15:34Z</Created>
+  <LastSaved>2025-04-22T19:47:53Z</LastSaved>
+  <Version>16.00</Version>
+ </DocumentProperties>
+ <CustomDocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <ContentTypeId dt:dt="string">0x01010096BCA8E24DD08D4AABD0AEDC25BC1DE0</ContentTypeId>
+ </CustomDocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <AllowPNG/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <SupBook>
+   <Path>Folha2</Path>
+   <SheetName>Folha2</SheetName>
+  </SupBook>
+  <WindowHeight>17265</WindowHeight>
+  <WindowWidth>32767</WindowWidth>
+  <WindowTopX>32767</WindowTopX>
+  <WindowTopY>32767</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Aptos Narrow" x:Family="Swiss" ss:Size="12"
+    ss:Color="#000000"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s62">
+   <Protection ss:Protected="0"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Folha1">
+  <Table ss:ExpandedColumnCount="5" ss:ExpandedRowCount="49" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="66" ss:DefaultRowHeight="15.75">
+   <Column ss:Width="1065.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="98.25"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">Aprendizagens essenciais</Data></Cell>
+    <Cell><Data ss:Type="String">estado</Data></Cell>
+    <Cell><Data ss:Type="String">apoio</Data></Cell>
+    <Cell><Data ss:Type="String">ajuda</Data></Cell>
+    <Cell><Data ss:Type="String">avaliação</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">OC1. Esclarecer, com fundamentação adequada, sentidos implícitos.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">OC2. Distinguir factos de opiniões na explicitação de argumentos.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">OE1. Comunicar, em contexto formal, informação essencial (paráfrase, resumo) e opiniões fundamentadas.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">OE2. Planificar, produzir e avaliar textos orais (relato, descrição, apreciação crítica), com definição de tema e sequência lógica de tópicos (organização do discurso, correção gramatical), individualmente ou em grupo.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">OE3. Fazer uma apresentação oral, devidamente estruturada, sobre um tema.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">OE4. Captar e manter a atenção da audiência (olhar, gesto, recurso eventual a suportes digitais).</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">OE5. Utilizar, de modo intencional e sistemático, processos de coesão textual: anáforas lexicais e pronominais, frases complexas, expressões adverbiais, tempos e modos verbais, conectores frásicos.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L1. Ler textos com características narrativas de maior complexidade, associados a finalidades várias (lúdicas, estéticas, publicitárias e informativas) e em suportes variados.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L2. Caraterística expositivas de maior complexidade, associados a finalidades várias (lúdicas, estéticas, publicitárias e informativas) e em suportes variados.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L3. Realizar leitura em voz alta, silenciosa e autónoma.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L4. Explicitar o sentido global de um texto.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L5. Fazer inferências, justificando-as.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L6. Identificar tema(s), ideias principais e pontos de vista.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L7. Reconhecer a forma como o texto está estruturado (partes e subpartes).</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L8. Compreender a utilização de recursos expressivos para a construção de sentido do texto.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L9. Utilizar procedimentos de registo e tratamento de informação.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L10. Distinguir nos textos características da notícia, da entrevista, do anúncio publicitário e do roteiro (estruturação, finalidade).</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">L11. Conhecer os objetivos e as formas de publicidade na sociedade atual.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL1. Ler integralmente obras literárias narrativas, poéticas e dramáticas.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL2. Interpretar adequadamente os textos de acordo com o género literário.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL3. Analisar o sentido conotativo de palavras e expressões.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL4. Identificar marcas formais do texto poético: estrofe, rima, esquema rimático, métrica.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL5. Reconhecer, na organização do texto dramático: ato, cena, fala, indicações cénicas.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL6. Analisar o modo como os temas, as experiências e os valores são representados.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL7. Valorizar a diversidade de culturas, de vivências e de mundivisões presente nos textos.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL8. Explicar recursos expressivos utilizados na construção de textos literários (anáfora e metáfora).</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL9. Expressar reações aos livros lidos e partilhar leituras através de declamações, representações teatrais, escrita criativa, apresentações orais.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">EL10. Desenvolver um projeto de leitura que integre explicitação de objetivos de leitura pessoais e comparação de temas comuns em obras, em géneros e em manifestações artísticas diferentes.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">E1. Escrever textos de caráter narrativo, integrando o diálogo e a descrição.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">E2. Utilizar sistematicamente processos de planificação, textualização e revisão de textos.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">E3. Utilizar processadores de texto e recursos da Web para a escrita, revisão e partilha de textos.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">E4. Intervir em blogues e em fóruns, por meio de textos adequados ao género e à situação de comunicação.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">E5. Redigir textos de âmbito escolar, como a exposição e o resumo.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">E6. Produzir textos de opinião com juízos de valor sobre situações vividas e sobre leituras feitas.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G1. Identificar a classe de palavras: nome próprio, comum e comum coletivo, verbo copulativo, verbo auxiliar, conjunção, locução conjuncional, determinante indefinido, pronome indefinido, quantificador.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G2. Conjugar verbos regulares e irregulares no presente, no pretérito imperfeito e no futuro do modo conjuntivo.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G3. Conjugar verbos regulares e irregulares no modo condicional.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G4. Utilizar apropriadamente os tempos verbais na construção de frases complexas e de textos.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G5. Empregar adequadamente o modo conjuntivo como forma superlativa do imperativo.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G6. Identificar funções sintáticas: predicativo do sujeito, complementos (oblíquo e agente da passiva) e modificador (do grupo verbal).</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G7. Transformar a frase ativa em frase passiva (e vice-versa).</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G8. Transformar o discurso direto em discurso indireto (e vice-versa).</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G9. Colocar corretamente as formas átonas do pronome pessoal adjacentes ao verbo (próclise, ênclise e mesóclise).</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G10. Compreender a ligação de orações por coordenação e por subordinação.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G11. Classificar orações coordenadas copulativas e adversativas e orações subordinadas adverbiais temporais e causais.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G12. Distinguir derivação de composição.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G13. Explicar a utilização de sinais de pontuação em função da construção da frase.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">G14. Mobilizar no relacionamento interpessoal formas de tratamento adequadas a contextos formais.</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
+   </PageSetup>
+   <Unsynced/>
+   <Zoom>125</Zoom>
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>3</ActiveRow>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+   <AllowSort/>
+  </WorksheetOptions>
+  <DataValidation xmlns="urn:schemas-microsoft-com:office:excel">
+   <Range>R2C2:R49C2,R2C3:R49C5</Range>
+   <Type>List</Type>
+   <Value>Folha2!#REF!</Value>
+  </DataValidation>
+  <ConditionalFormatting xmlns="urn:schemas-microsoft-com:office:excel">
+   <Range>R2C2:R49C2</Range>
+   <Condition>
+    <Value1>NOT(ISERROR(SEARCH(&quot;Concluido&quot;,RC)))</Value1>
+    <Format Style='background:#92D050'/>
+   </Condition>
+   <Condition>
+    <Value1>NOT(ISERROR(SEARCH(&quot;Em Progresso&quot;,RC)))</Value1>
+    <Format Style='background:yellow'/>
+   </Condition>
+   <Condition>
+    <Value1>NOT(ISERROR(SEARCH(&quot;Não Iniciado&quot;,RC)))</Value1>
+    <Format Style='background:red'/>
+   </Condition>
+  </ConditionalFormatting>
+ </Worksheet>
+ <Worksheet ss:Name="Folha2">
+  <Table ss:ExpandedColumnCount="2" ss:ExpandedRowCount="4" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="66" ss:DefaultRowHeight="15.75">
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">estado</Data></Cell>
+    <Cell><Data ss:Type="String">boolean</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">Não Iniciado</Data></Cell>
+    <Cell><Data ss:Type="String">SIM</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">Em Progresso</Data></Cell>
+    <Cell><Data ss:Type="String">NÃO</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">Concluido</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
+   </PageSetup>
+   <Unsynced/>
+   <Visible>SheetHidden</Visible>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>3</ActiveRow>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>

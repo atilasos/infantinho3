@@ -1,0 +1,71 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Blog/Diary Help" %} - {{ turma.name }}{% endblock %}
+
+{% block content %}
+<main role="main" aria-label="{% trans 'Help page for the Class Blog/Diary' %}">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-question-circle-fill" aria-hidden="true"></i> {% trans "Blog/Diary Help" %}</h2>
+    <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-secondary btn-sm" title="{% trans 'Return to Blog' %}">{% trans "Back to Blog" %}</a>
+</div>
+
+<!-- Navigation for help sections -->
+<nav aria-label="{% trans 'Help sections summary' %}" class="mb-4 sticky-top bg-light p-2 rounded shadow-sm" style="top: 10px; z-index: 1000;"> {# Basic sticky nav #}
+  <ul class="nav nav-pills nav-fill flex-column flex-sm-row">
+    <li class="nav-item"><a class="nav-link" href="#o-que-e">{% trans "What is it?" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#como-usar">{% trans "How to Use" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#perfis">{% trans "Roles & Permissions" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#moderacao">{% trans "Moderation" %}</a></li>
+  </ul>
+</nav>
+
+<!-- Help Content Sections -->
+<div data-bs-spy="scroll" data-bs-target="#help-nav" data-bs-offset="100" tabindex="0">
+    <section id="o-que-e" class="mb-5 pt-4">
+      <h3>{% trans "What is the Blog/Diary?" %}</h3>
+      <p>{% blocktrans %}The Class Blog/Diary is a digital space where students and teachers can record activities, reflections, projects, and announcements, promoting sharing and the collective memory of the class. Each class has its own blog, accessible only to its members (students, teachers) and associated guardians.{% endblocktrans %}</p>
+    </section>
+    
+    <section id="como-usar" class="mb-5 pt-4">
+      <h3>{% trans "How to Use" %}</h3>
+      <ul>
+        <li><strong>{% trans "Create a post:" %}</strong> {% blocktrans %}Click 'New Post', fill out the form, and publish. Both teachers and students can create posts.{% endblocktrans %}</li>
+        <li><strong>{% trans "Edit a post:" %}</strong> {% blocktrans %}You can edit your own posts using the 'Edit' button on the post page (if you are the author).{% endblocktrans %}</li>
+        <li><strong>{% trans "Remove a post:" %}</strong> {% blocktrans %}Teachers and administrators can remove any post in the class using the 'Remove' button (a reason can be provided). Removed posts are hidden but can be restored.{% endblocktrans %}</li>
+        <li><strong>{% trans "Restore a post:" %}</strong> {% blocktrans %}If a post was removed, teachers/admins will see a 'Restore Post' button on its page.{% endblocktrans %}</li>
+        <li><strong>{% trans "Comment:" %}</strong> {% blocktrans %}Use comments to provide feedback, ask questions, or share ideas. Teachers and admins can remove inappropriate comments.{% endblocktrans %}</li>
+        <li><strong>{% trans "Filter posts:" %}</strong> {% blocktrans %}Use the category and date filters at the top of the blog list to find specific posts.{% endblocktrans %}</li>
+      </ul>
+    </section>
+    
+    <section id="perfis" class="mb-5 pt-4">
+      <h3>{% trans "Roles and Permissions" %}</h3>
+      <ul>
+        <li><strong>{% trans "Students:" %}</strong> {% blocktrans %}Can create posts, edit their own posts, and comment on posts.{% endblocktrans %}</li>
+        <li><strong>{% trans "Teachers:" %}</strong> {% blocktrans %}Can create posts, edit their own posts, remove any post or comment in their class, restore posts, and view moderation logs.{% endblocktrans %}</li>
+        <li><strong>{% trans "Guardians:" %}</strong> {% blocktrans %}Can read posts in their child's class blog and add comments.{% endblocktrans %}</li> {# Assuming guardians can comment based on Section 3.2 table #}
+        <li><strong>{% trans "Administrators:" %}</strong> {% blocktrans %}Have full access to all blogs, including editing, removal, restoration, and logs.{% endblocktrans %}</li>
+      </ul>
+    </section>
+    
+    <section id="moderacao" class="mb-5 pt-4">
+      <h3>{% trans "Moderation and Safety" %}</h3>
+      <ul>
+        <li>{% blocktrans %}All removal and restoration actions are logged to ensure transparency.{% endblocktrans %}</li>
+        <li>{% blocktrans %}Teachers and admins can view the moderation history via the 'View Moderation Log' link (visible on removed posts or potentially elsewhere).{% endblocktrans %}</li>
+        <li>{% blocktrans %}Reasons for removal can (and should) be provided for future reference.{% endblocktrans %}</li>
+        <li>{% blocktrans %}Removed posts/comments are initially hidden from regular view but can be restored by moderators.{% endblocktrans %}</li>
+      </ul>
+    </section>
+    
+    {# Removed Accessibility section as it's more general platform info #}
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Return to Blog' %}">{% trans "Back to Blog" %}</a>
+</div>
+
+</main>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'classes/base.html' %}
+{% load i18n %}
+{% block content %}
+<h1>{% blocktrans %}Turma: {{ turma.name }} ({{ turma.year }}){% endblocktrans %}</h1>
+<p>{% trans "Esta página da turma está em construção." %}</p>
+{% if request.user.role == 'professor' and request.user in turma.teachers.all %}
+  <a href="{% url 'add_student' turma.id %}" class="btn btn-primary">Adicionar aluno/convidado</a>
+{% endif %}
+{% endblock %} 

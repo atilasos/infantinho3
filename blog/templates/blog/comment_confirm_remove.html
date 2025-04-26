@@ -1,0 +1,40 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Confirm Comment Removal" %} - {{ turma.name }}{% endblock %}
+
+{% block content %}
+<main role="main" aria-label="{% trans 'Confirm comment removal' %}">
+
+<h2>{% trans "Remove Comment" %}</h2>
+<p role="alert">{% trans "Are you sure you want to remove this comment? This action might be logged." %}</p>
+
+<!-- Display comment details -->
+<div class="card mb-3 bg-light">
+  <div class="card-body p-2">
+      <blockquote class="blockquote mb-0">
+          <p>{{ comentario.conteudo|linebreaksbr }}</p>
+          <footer class="blockquote-footer">
+              {{ comentario.autor.get_full_name|default:comentario.autor.username }} 
+              <cite title="{% trans 'Publication date' %}"><small> - {{ comentario.publicado_em|date:"d/m/Y H:i" }}</small></cite>
+          </footer>
+      </blockquote>
+  </div>
+</div>
+
+<!-- Confirmation Form -->
+<form method="post" aria-label="{% trans 'Comment removal form' %}">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_motivo" class="form-label">{% trans "Reason (optional):" %}</label>
+    <input type="text" name="motivo" id="id_motivo" class="form-control" 
+           aria-label="{% trans 'Reason for removal' %}" 
+           title="{% trans 'Optional: provide a reason for the moderation log.' %}">
+  </div>
+  <button type="submit" class="btn btn-danger" title="{% trans 'Confirm removal of this comment' %}">{% trans "Confirm Removal" %}</button>
+  {# Updated URL namespace #}
+  <a href="{% url 'blog:post_detail' class_id=turma.id post_id=post.id %}#comment-{{ comentario.id }}" class="btn btn-secondary" title="{% trans 'Cancel and return to post' %}">{% trans "Cancel" %}</a>
+</form>
+
+</main>
+{% endblock %} 

@@ -1,0 +1,38 @@
+{% extends 'classes/base.html' %}
+{% load i18n %}
+{% block content %}
+<h2>{% trans "Gestão de Turmas" %}</h2>
+
+<h3>{% trans "Criar nova turma" %}</h3>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">{% trans "Criar turma" %}</button>
+</form>
+
+<h3>{% trans "Turmas existentes" %}</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>{% trans "Nome" %}</th>
+      <th>{% trans "Ano" %}</th>
+      <th>{% trans "Professores" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for turma in turmas %}
+      <tr>
+        <td>{{ turma.name }}</td>
+        <td>{{ turma.year }}</td>
+        <td>
+          {% for prof in turma.teachers.all %}
+            {{ prof.get_full_name|default:prof.username }}{% if not forloop.last %}, {% endif %}
+          {% empty %}-{% endfor %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="3">{% trans "Nenhuma turma criada ainda." %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %} 

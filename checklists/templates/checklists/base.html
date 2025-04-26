@@ -1,0 +1,19 @@
+{% extends "base.html" %} {# Extends the main project base template #}
+{% load i18n %}
+
+{% block title %}{% trans "Checklists" %} | {% block checklist_title %}{% endblock %}{% endblock %}
+
+{# This base template can define specific blocks for the checklists section #}
+{# For example, a sidebar or specific navigation if needed later #}
+
+{% block content %}
+  {# Content from specific checklist templates (list, detail, turma) goes here #}
+  {% block checklist_content %}
+  {% endblock checklist_content %}
+{% endblock content %}
+
+{# Ensure necessary JS/CSS for this app are included #}
+{# For now, no specific JS needed just for checklists base #}
+{% block extra_js %}
+  {{ block.super }} {# Include JS from parent templates #}
+{% endblock %}

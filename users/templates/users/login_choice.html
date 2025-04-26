@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="login-choice-container">
+    <div class="login-logo">
+        <img src="{% static 'logo.png' %}" alt="{% trans 'Infantinho 3.0 Logo' %}" height="80">
+    </div>
+    <h1>{% trans "Início de Sessão" %}</h1>
+    <p class="login-help">{% trans "Alunos e professores: usem a conta Microsoft escolar. Pais e administradores: usem o início de sessão por email." %}</p>
+    <div class="login-options">
+        <a href="{% url 'login_microsoft' %}" class="btn btn-microsoft">
+            <img src="{% static 'microsoft_logo.png' %}" alt="Microsoft" class="icon"> {% trans "Entrar com Microsoft" %}
+            <span class="login-desc">{% trans "(Alunos e Professores)" %}</span>
+        </a>
+        <a href="{% url 'login_local' %}" class="btn btn-primary">
+            {% trans "Entrar com Email/Palavra-passe" %}
+            <span class="login-desc">{% trans "(Pais/Encarregados/Admin)" %}</span>
+        </a>
+    </div>
+    <div class="login-links">
+        <a href="{% url 'password_reset' %}">{% trans "Recuperar palavra-passe" %}</a>
+    </div>
+</div>
+{% endblock %} 
