@@ -1,25 +1,42 @@
 {% extends "base.html" %}
 {% load i18n static %}
 
+{% block title %}{% trans "Login Choice" %}{% endblock %}
+
 {% block content %}
-<div class="login-choice-container">
-    <div class="login-logo">
-        <img src="{% static 'logo.png' %}" alt="{% trans 'Infantinho 3.0 Logo' %}" height="80">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body p-4 text-center">
+          <div class="login-logo mb-3">
+              <img src="{% static 'logo.png' %}" alt="{% trans 'Infantinho 3.0 Logo' %}" height="60"> {# TODO: Add logo.png #}
+          </div>
+          <h1 class="h3 mb-3 fw-normal">{% trans "Login" %}</h1>
+          <p class="login-help text-muted mb-4">{% trans "Select your login method:" %}</p>
+          
+          <div class="d-grid gap-3 login-options">
+              {# Use namespaced URL #}
+              <a href="{% url 'users:login_microsoft' %}" class="btn btn-outline-primary btn-lg">
+                  <i class="bi bi-microsoft me-2"></i> {# Using Bootstrap Icons #}
+                  {% trans "Microsoft Account" %}
+                  <small class="d-block text-muted">({% trans "Students & Teachers" %})</small>
+              </a>
+              {# Use namespaced URL #}
+              <a href="{% url 'users:login_local' %}" class="btn btn-outline-secondary btn-lg">
+                  <i class="bi bi-envelope-at me-2"></i> {# Using Bootstrap Icons #}
+                  {% trans "Email & Password" %}
+                  <small class="d-block text-muted">({% trans "Guardians & Admins" %})</small>
+              </a>
+          </div>
+
+          <div class="mt-4 login-links">
+              {# Use namespaced URL #}
+              <a href="{% url 'users:password_reset' %}">{% trans "Forgot password?" %}</a>
+          </div>
+        </div>
+      </div>
     </div>
-    <h1>{% trans "Início de Sessão" %}</h1>
-    <p class="login-help">{% trans "Alunos e professores: usem a conta Microsoft escolar. Pais e administradores: usem o início de sessão por email." %}</p>
-    <div class="login-options">
-        <a href="{% url 'login_microsoft' %}" class="btn btn-microsoft">
-            <img src="{% static 'microsoft_logo.png' %}" alt="Microsoft" class="icon"> {% trans "Entrar com Microsoft" %}
-            <span class="login-desc">{% trans "(Alunos e Professores)" %}</span>
-        </a>
-        <a href="{% url 'login_local' %}" class="btn btn-primary">
-            {% trans "Entrar com Email/Palavra-passe" %}
-            <span class="login-desc">{% trans "(Pais/Encarregados/Admin)" %}</span>
-        </a>
-    </div>
-    <div class="login-links">
-        <a href="{% url 'password_reset' %}">{% trans "Recuperar palavra-passe" %}</a>
-    </div>
+  </div>
 </div>
-{% endblock %} 
+{% endblock %}

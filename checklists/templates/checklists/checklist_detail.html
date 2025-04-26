@@ -1,14 +1,13 @@
-{% extends "checklists/base.html" %} {# Assuming a checklists/base.html exists #}
-{% load i18n %}
+{% extends "checklists/base.html" %} {# Assumes checklists/base.html extends main base.html #}
+{% load i18n tz %}
 
-{% block title %}{{ template.name }} - {% trans "Checklist Detail" %}{% endblock %}
+{% block checklist_title %}{{ template.name }} - {% trans "Checklist Detail" %}{% endblock %}
 
-{% block content %}
-<main role="main" aria-labelledby="checklist-heading">
+{% block checklist_content %}
 
-{# Display messages from views #}
+{# Display messages #}
 {% if messages %}
-  <div class="messages" aria-live="polite" style="margin-bottom:1em;">
+  <div class="messages mb-3" aria-live="polite">
     {% for message in messages %}
       <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
         {{ message }}
@@ -19,7 +18,7 @@
 {% endif %}
 
 <!-- Breadcrumbs -->
-<nav aria-label="breadcrumb" style="margin-bottom:1em;">
+<nav aria-label="breadcrumb" class="mb-3">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'checklists:my_checklists' %}">{% trans "My Checklists" %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ template.name }}{% if template.grade_level %} ({% trans "Grade" %} {{ template.grade_level }}){% endif %}</li>
@@ -27,97 +26,100 @@
 </nav>
 
 <!-- Heading -->
-<h2 id="checklist-heading">{{ template.name }} <small class="text-muted">({{ template.subject}}{% if template.grade_level %} - {% trans "Grade" %} {{ template.grade_level }}{% endif %})</small></h2>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h1 class="h2" id="checklist-heading">{{ template.name }} <small class="text-muted">({{ template.subject}}{% if template.grade_level %} - {% trans "Grade" %} {{ template.grade_level }}{% endif %})</small></h1>
+    {# Optional: Add Help Link? #}
+</div>
+
 
 <!-- Progress Bar -->
 {% with percentage=status.percent_complete|floatformat:0 %}
-<div class="progress mb-3" role="progressbar" aria-label="{% trans 'Checklist progress' %}" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 25px; max-width: 400px;">
-  <div class="progress-bar bg-success" style="width: {{ percentage }}%;" >
-      {{ percentage }}% {% trans "Complete" %}
+<div class="progress mb-3" role="progressbar" aria-label="{% trans 'Checklist progress' %}" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 25px;">
+  <div class="progress-bar progress-bar-striped bg-success" style="width: {{ percentage }}%;" >
+      {{ percentage }}% 
       {% if percentage == 100 %} <i class="bi bi-check-circle-fill ms-1"></i>{% endif %}
   </div>
 </div>
 {% endwith %}
 
 <!-- Status Legend -->
-<div class="mb-3 d-flex flex-wrap gap-3 align-items-center small text-muted">
-  <span><i class="bi bi-square text-secondary fs-5"></i> {% trans "Not Started" %}</span>
-  <span><i class="bi bi-play-circle-fill text-primary fs-5"></i> {% trans "In Progress" %}</span>
-  <span><i class="bi bi-check-circle-fill text-success fs-5"></i> {% trans "Completed" %}</span>
-  <span><i class="bi bi-patch-check-fill text-success fs-5"></i> {% trans "Validated by Teacher" %}</span>
-  <span><i class="bi bi-star-fill text-warning fs-5"></i> {% trans "Agreed in Council" %}</span>
+<div class="mb-4 p-2 bg-light border rounded d-flex flex-wrap justify-content-around gap-2 small text-muted">
+  <span><i class="bi bi-square text-secondary me-1"></i> {% trans "Not Started" %}</span>
+  <span><i class="bi bi-play-circle-fill text-primary me-1"></i> {% trans "In Progress" %}</span>
+  <span><i class="bi bi-check-circle-fill text-success me-1"></i> {% trans "Completed" %}</span>
+  <span><i class="bi bi-patch-check-fill text-success me-1"></i> {% trans "Validated" %}</span>
+  <span><i class="bi bi-star-fill text-warning me-1"></i> {% trans "Council Focus" %}</span>
 </div>
 
 <!-- Checklist Items List -->
-<ul class="list-unstyled" style="max-width:700px;">
+<div class="list-group">
   {% for item, mark in items_and_marks %}
-    {# Determine highlight style based on GET param #}
-    {% if highlight_item_id and highlight_item_id == item.id|stringformat:"s" %}
-        {% comment %} Assign style directly without captureas {% endcomment %}
-        {% with highlight_style='animation: highlight-fade 2s; background-color: #fff3cd;' %}
-    {% else %}
-        {% with highlight_style='' %}
-    {% endif %}
-    
-    <li class="card mb-3 shadow-sm" id="item-{{ item.id }}" style="{{ highlight_style }}">
-      <div class="card-body">
-        <div class="d-flex align-items-start gap-2 mb-2">
-            {# Status Icon #}
-            <span class="fs-4 lh-1 mt-1">
-                {% if mark and mark.mark_status == 'completed' %}
-                    {% if mark.teacher_validated %}
-                        <i class="bi bi-patch-check-fill text-success" title="{% trans 'Validated by Teacher' %}"></i>
-                    {% else %}
-                        <i class="bi bi-check-circle-fill text-success" title="{% trans 'Completed' %}"></i>
-                    {% endif %}
-                {% elif mark and mark.mark_status == 'in_progress' %}
-                    <i class="bi bi-play-circle-fill text-primary" title="{% trans 'In Progress' %}"></i>
-                {% else %}
-                    <i class="bi bi-square text-secondary" title="{% trans 'Not Started' %}"></i>
-                {% endif %}
-            </span>
-            {# Item Description & Council Agreed Star #}
-            <div class="flex-grow-1">
-                <strong class="d-block">{{ item.description }}</strong>
-                {% if item.council_agreed %}
-                    <span class="badge bg-warning text-dark" title="{% trans 'Agreed in Council' %}"><i class="bi bi-star-fill"></i> {% trans "Council Focus" %}</span>
-                {% endif %}
-                {% if item.criteria %}<small class="d-block text-muted fst-italic mt-1">{% trans "Criteria:" %} {{ item.criteria }}</small>{% endif %}
+    {# Highlight item if needed #}
+    {% with is_highlighted=False %}
+        {% if highlight_item_id and highlight_item_id == item.id|stringformat:"s" %}
+            {% with is_highlighted=True %}{% endwith %}
+        {% endif %}
+        <div class="list-group-item {% if is_highlighted %}list-group-item-warning highlight-item{% endif %}" id="item-{{ item.id }}">
+          <div class="row align-items-center">
+            {# Status Icon and Item Description Column #}
+            <div class="col-md-8 col-lg-9 d-flex align-items-start gap-3 mb-2 mb-md-0">
+              <span class="fs-4 lh-1 pt-1">
+                  {% if mark and mark.mark_status == 'completed' %}
+                      {% if mark.teacher_validated %}
+                          <i class="bi bi-patch-check-fill text-success" title="{% trans 'Validated by Teacher' %}"></i>
+                      {% else %}
+                          <i class="bi bi-check-circle-fill text-success" title="{% trans 'Completed' %}"></i>
+                      {% endif %}
+                  {% elif mark and mark.mark_status == 'in_progress' %}
+                      <i class="bi bi-play-circle-fill text-primary" title="{% trans 'In Progress' %}"></i>
+                  {% else %}
+                      <i class="bi bi-square text-secondary" title="{% trans 'Not Started' %}"></i>
+                  {% endif %}
+              </span>
+              <div class="flex-grow-1">
+                  <strong class="d-block">{{ item.description }}</strong>
+                  {% if item.council_agreed %}
+                      <span class="badge bg-warning text-dark small" title="{% trans 'Agreed in Council' %}"><i class="bi bi-star-fill"></i> {% trans "Council Focus" %}</span>
+                  {% endif %}
+                  {% if item.criteria %}<small class="d-block text-muted fst-italic mt-1">{% trans "Criteria:" %} {{ item.criteria }}</small>{% endif %}
+              </div>
             </div>
-        </div>
-        
-        {# Item Update Form (for student) #}
-        <form method="post" class="ms-4 ps-3 border-start item-update-form" autocomplete="off">
-            {% csrf_token %}
-            <input type="hidden" name="item_id" value="{{ item.id }}">
-            <div class="mb-2">
-                <label for="mark_status-{{ item.id }}" class="form-label fw-bold small">{% trans "My Status:" %}</label>
-                <select id="mark_status-{{ item.id }}" name="mark_status" class="form-select form-select-sm" data-initial-status="{{ mark.mark_status|default:'not_started' }}">
-                    {# Use choices passed from context #}
-                    {% for key, label in mark_status_choices %}
-                        {# Use English keys for values #}
-                        <option value="{{ key }}" {% if mark and mark.mark_status == key %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
+
+            {# Student Update Form Column #}
+            <div class="col-md-4 col-lg-3">
+              <form method="post" class="item-update-form" autocomplete="off">
+                  {% csrf_token %}
+                  <input type="hidden" name="item_id" value="{{ item.id }}">
+                  <div class="input-group input-group-sm mb-1">
+                      <label class="input-group-text" for="mark_status-{{ item.id }}"><i class="bi bi-check2-square"></i></label>
+                      <select id="mark_status-{{ item.id }}" name="mark_status" class="form-select" data-initial-status="{{ mark.mark_status|default:'not_started' }}">
+                          {% for key, label in mark_status_choices %}
+                              <option value="{{ key }}" {% if mark and mark.mark_status == key %}selected{% endif %}>{{ label }}</option>
+                          {% endfor %}
+                      </select>
+                  </div>
+                  <div class="input-group input-group-sm mb-1">
+                       <label class="input-group-text" for="comment-{{ item.id }}"><i class="bi bi-chat-left-text"></i></label>
+                      <input id="comment-{{ item.id }}" type="text" name="comment" value="{{ mark.comment|default:'' }}" 
+                             class="form-control" maxlength="150" 
+                             placeholder="{% trans 'Comment (optional)' %}" 
+                             aria-label="{% trans 'Comment' %}"
+                             data-initial-comment="{{ mark.comment|default:'' }}">
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                      <button type="submit" class="btn btn-primary btn-sm item-save-btn" disabled title="{% trans 'Save changes for this item' %}"><i class="bi bi-save"></i> {% trans "Save" %}</button>
+                      <small class="text-muted">{% if mark and mark.marked_at %}<i class="bi bi-clock-history"></i> {{ mark.marked_at|timesince }}{% endif %}</small>
+                  </div>
+              </form>
             </div>
-            <div class="mb-2">
-                <label for="comment-{{ item.id }}" class="form-label small">{% trans "Comment (Optional):" %}</label>
-                <input id="comment-{{ item.id }}" type="text" name="comment" value="{{ mark.comment|default:'' }}" 
-                       class="form-control form-control-sm" maxlength="150" 
-                       placeholder="{% trans 'E.g., What I did, difficulties...' %}" 
-                       data-initial-comment="{{ mark.comment|default:'' }}">
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm item-save-btn" disabled title="{% trans 'Save changes for this item' %}">{% trans "Save" %}</button>
-            <small class="text-muted ms-2">{% trans "Last update:" %} {% if mark and mark.marked_at %}{{ mark.marked_at|timesince }} {% trans "ago" %}{% else %}---{% endif %}</small>
-        </form>
-      </div> {# End card-body #}
-    </li>
-    {% if highlight_style %}{% endwith %}{% else %}{% endwith %}{% endif %} {# Close the with block #}
+          </div>
+        </div> {# End list-group-item #}
+    {% endwith %}
   {% endfor %}
-</ul>
+</div>
 
 <!-- Back Link -->
-<a href="{% url 'checklists:my_checklists' %}" class="btn btn-link mt-3">&larr; {% trans "Back to My Checklists" %}</a>
+<a href="{% url 'checklists:my_checklists' %}" class="btn btn-outline-secondary mt-4"><i class="bi bi-arrow-left"></i> {% trans "Back to My Checklists" %}</a>
 
 <!-- Congratulations Message -->
 {% if status.percent_complete == 100 %}
@@ -126,55 +128,40 @@
   </div>
 {% endif %}
 
-</main>
-
-{# Inline CSS - Ideally move to a separate file #}
+{# Remove Inline CSS - Move to infantinho3.css or similar #}
+{# 
 <style>
 @keyframes highlight-fade {
   0%   { background-color: #fff3cd; }
   80%  { background-color: #fff3cd; }
   100% { background-color: var(--bs-card-bg, white); } 
 }
-/* Basic responsive adjustments */
-@media (max-width: 600px) {
-  ul.list-unstyled {
-    max-width: 100% !important;
-  }
-  li.card .card-body {
-     padding: 0.75rem !important;
-  }
-  h2 {
-     font-size: 1.5rem;
-  }
-}
+li.highlight-item { animation: highlight-fade 2s; }
 </style>
+ #}
 
-{# Inline JS for enabling save button - Ideally move to a separate file #}
+{# Remove Inline JS - Move to a separate static JS file #}
+{# 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   function checkItemChanged(form) {
     const statusSelect = form.querySelector('select[name="mark_status"]');
     const commentInput = form.querySelector('input[name="comment"]');
     const saveButton = form.querySelector('button.item-save-btn');
-    
     const initialStatus = statusSelect.getAttribute('data-initial-status') || 'not_started';
     const initialComment = commentInput.getAttribute('data-initial-comment') || '';
-    
     const statusChanged = statusSelect.value !== initialStatus;
     const commentChanged = commentInput.value !== initialComment;
-    
     saveButton.disabled = !(statusChanged || commentChanged);
   }
-
   document.querySelectorAll('form.item-update-form').forEach(form => {
-    // Set initial values as data attributes for reliable comparison
     form.querySelector('select[name="mark_status"]').setAttribute('data-initial-status', form.querySelector('select[name="mark_status"]').value);
     form.querySelector('input[name="comment"]').setAttribute('data-initial-comment', form.querySelector('input[name="comment"]').value);
-    
-    checkItemChanged(form); // Initial check
-    form.addEventListener('input', () => checkItemChanged(form)); // Check on any input change
+    checkItemChanged(form); 
+    form.addEventListener('input', () => checkItemChanged(form)); 
   });
 });
 </script>
+ #}
 
-{% endblock %}
+{% endblock checklist_content %}

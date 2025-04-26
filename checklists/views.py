@@ -8,8 +8,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from collections import OrderedDict # For grouping marks in Turma view
-import itertools # For grouping marks
+from django.utils import timezone # Needed for update_or_create
+from collections import OrderedDict
+import itertools
 
 from .models import ChecklistStatus, ChecklistTemplate, ChecklistItem, ChecklistMark
 from classes.models import Class
@@ -35,7 +36,7 @@ class MyChecklistsView(ListView):
     """
     model = ChecklistStatus
     template_name = 'checklists/my_checklists.html'
-    context_object_name = 'checklist_statuses' # Renamed for clarity
+    context_object_name = 'checklist_statuses'
 
     def get_queryset(self):
         """Fetches checklist statuses only for the logged-in user (student)."""
@@ -71,17 +72,16 @@ class ChecklistDetailView(View):
         items = ChecklistItem.objects.filter(template=template).order_by('order')
         
         # Fetch the latest mark for each item for this student's status
-        # Order by item, then by latest marked_at within that item
         marks_qs = ChecklistMark.objects.filter(status=status).order_by('item_id', '-marked_at')
         
         latest_marks_by_item = {}
         for mark in marks_qs:
             if mark.item_id not in latest_marks_by_item:
-                latest_marks_by_item[mark.item_id] = mark # First one is latest due to ordering
+                latest_marks_by_item[mark.item_id] = mark 
                 
         items_and_marks = [(item, latest_marks_by_item.get(item.id)) for item in items]
         
-        highlight = request.GET.get('highlight')
+        highlight = request.GET.get('highlight') 
         context = {
             'template': template,
             'status': status,
@@ -103,15 +103,20 @@ class ChecklistDetailView(View):
         
         item = get_object_or_404(ChecklistItem, id=item_id, template=template)
         
-        # --- Logic to create/update mark (keeping history) ---
-        mark = ChecklistMark.objects.create(
+        # --- Logic to update or create mark (respecting unique constraint) ---
+        mark, created = ChecklistMark.objects.update_or_create(
             status=status,
             item=item,
-            mark_status=new_mark_status,
-            comment=comment_text,
-            marked_by=request.user,
-            teacher_validated=False 
+            defaults={
+                'mark_status': new_mark_status,
+                'comment': comment_text,
+                'marked_by': request.user,
+                'marked_at': timezone.now(), # Explicitly set marked_at on update/create
+                # teacher_validated is reset automatically in model save method if status != completed
+            }
         )
+        # Note: update_or_create handles the unique constraint.
+        # The model's save() method handles resetting teacher_validated if needed and updating parent %.
         
         # --- Send Notification to Teachers --- 
         student_class = status.student_class
@@ -148,7 +153,7 @@ class ChecklistTurmaView(View):
     def dispatch(self, request, *args, **kwargs):
         class_id = kwargs.get('class_id')
         turma = get_object_or_404(Class, id=class_id)
-        if not is_prof_or_admin(request.user, turma): # Using helper for now
+        if not is_prof_or_admin(request.user, turma):
             messages.error(request, _('Access restricted to teachers of this class or administrators.'))
             return redirect('class_detail', class_id=class_id) 
         return super().dispatch(request, *args, **kwargs)
@@ -161,20 +166,18 @@ class ChecklistTurmaView(View):
         students = turma.students.all().order_by('first_name', 'last_name')
         items = ChecklistItem.objects.filter(template=template).order_by('order')
         
-        # Fetch relevant statuses for students in this class
         status_qs = ChecklistStatus.objects.filter(template=template, student_class=turma)
         status_map = {s.student_id: s for s in status_qs}
         
-        # Fetch all relevant marks for these statuses
+        # Fetch all relevant marks ordered to easily find the latest per student/item in Python
         all_marks = ChecklistMark.objects.filter(
             status__in=status_qs
-        ).select_related('marked_by').order_by('status__student_id', 'item_id', '-marked_at') # Order is crucial
+        ).select_related('marked_by').order_by('status__student_id', 'item_id', '-marked_at')
 
-        # Process in Python to get the latest mark per student/item (compatible with SQLite)
         marks_by_student_item = {}
         for mark in all_marks:
             key = (mark.status.student_id, mark.item_id)
-            if key not in marks_by_student_item: # Since ordered by -marked_at, first encountered is latest
+            if key not in marks_by_student_item:
                 marks_by_student_item[key] = mark
 
         # Calculate individual progress based on the latest marks found
@@ -185,10 +188,9 @@ class ChecklistTurmaView(View):
                 mark = marks_by_student_item.get((student_user.id, item.id))
                 if mark and mark.mark_status == 'completed':
                     done += 1
-            total = items.count() # Use count() instead of len() for queryset
+            total = items.count()
             progresso_individual[student_user.id] = int((done / total) * 100) if total > 0 else 0
             
-        # Calculate collective progress
         progresso_coletivo = 0
         if students.exists():
             progresso_coletivo = int(sum(progresso_individual.values()) / students.count())
@@ -223,15 +225,20 @@ class ChecklistTurmaView(View):
         item = get_object_or_404(ChecklistItem, id=item_id, template=template)
         status = get_object_or_404(ChecklistStatus, template=template, student_class=turma, student=student_user)
         
-        # --- Logic for teacher update (creates new mark, sets validated=True) --- 
-        mark = ChecklistMark.objects.create(
+        # --- Logic for teacher update (update or create, set validated=True) --- 
+        mark, created = ChecklistMark.objects.update_or_create(
             status=status,
             item=item,
-            mark_status=new_mark_status,
-            comment=comment_text,
-            marked_by=request.user,
-            teacher_validated=True     # Mark as teacher validated
+            defaults={
+                'mark_status': new_mark_status,
+                'comment': comment_text,
+                'marked_by': request.user,    # Teacher is the marker
+                'marked_at': timezone.now(),  # Update timestamp
+                'teacher_validated': True     # Teacher action always validates
+            }
         )
+        # Note: update_or_create handles the unique constraint.
+        # The model's save() method handles updating parent %.
 
         # --- Send Notification to Student --- 
         if student_user.email:
@@ -257,8 +264,3 @@ View your checklist: {detail_url}"""
 class HelpView(TemplateView):
     """Renders the static help page for the checklists module."""
     template_name = 'checklists/help.html'
-    # Potentially add class context if help is class-specific
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     # context['turma'] = get_object_or_404(Class, id=self.kwargs.get('class_id'))
-    #     return context

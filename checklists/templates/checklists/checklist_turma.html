@@ -1,52 +1,44 @@
-{% extends "checklists/base.html" %} {# Assuming checklists/base.html exists #}
-{% load i18n checklists_extras %} {# Load i18n and custom tags #}
+{% extends "checklists/base.html" %} 
+{% load i18n checklists_extras %} 
 
-{% block title %}{{ template.name }} - {% trans "Class Overview" %}{% endblock %}
+{% block checklist_title %}{{ template.name }} - {% trans "Class Overview" %}{% endblock %}
 
-{% block content %}
-<main role="main" aria-labelledby="class-checklist-heading">
+{% block checklist_content %}
 
-{# Heading #}
-<h2 id="class-checklist-heading">{% blocktrans with name=template.name %}Class Overview: {{ name }}{% endblocktrans %}</h2>
-<h3 class="text-muted mb-3">{% blocktrans with name=turma.name year=turma.year %}Class: {{ name }} ({{ year }}){% endblocktrans %}</h3>
+{# Heading and Breadcrumbs could be added here if needed #}
+<div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+    <h1 class="h2">{% blocktrans with name=template.name %}Class Overview: {{ name }}{% endblocktrans %}</h1>
+    {# Optional: Link back to class page or other actions #}
+    <a href="{% url 'class_detail' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> {% trans "Back to Class" %}</a>
+</div>
+<h2 class="h4 text-muted mb-3">{% blocktrans with name=turma.name year=turma.year %}Class: {{ name }} ({{ year }}){% endblocktrans %}</h2>
 
 <!-- Overall Class Progress -->
-<div class="mb-3">
-  <strong>{% trans "Overall Class Progress:" %}</strong>
+<div class="mb-4">
+  <label for="overall-progress" class="form-label"><strong>{% trans "Overall Class Progress:" %}</strong></label>
   {% with percentage=progresso_coletivo|floatformat:0 %}
-  <div class="progress mt-1" role="progressbar" aria-label="{% trans 'Overall class progress' %}" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 20px; max-width: 400px;">
-    <div class="progress-bar bg-info" style="width: {{ percentage }}%;" >{{ percentage }}%</div>
+  <div class="progress" id="overall-progress" role="progressbar" aria-label="{% trans 'Overall class progress' %}" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
+    <div class="progress-bar progress-bar-striped bg-info" style="width: {{ percentage }}%;" >{{ percentage }}%</div>
   </div>
   {% endwith %}
 </div>
 
 {# Display messages #}
-{% if messages %}
-  <div class="messages" aria-live="polite" style="margin-bottom:1em;">
-      {% for message in messages %}
-          <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
-          </div>
-      {% endfor %}
-  </div>
-{% endif %}
+{% include "includes/messages.html" %}
 
 <!-- Checklist Table -->
-<div class="table-responsive shadow-sm mt-4">
-  <table class="table table-bordered table-hover table-sm align-middle" style="/* Ideally move styles to CSS */ table-layout: fixed;" aria-label="{% trans 'Class checklist progress table' %}">
+<div class="table-responsive shadow-sm border rounded">
+  <table class="table table-bordered table-hover table-sm align-middle checklist-turma-table" aria-label="{% trans 'Class checklist progress table' %}">
     <thead class="table-light">
-      <tr>
-        <th scope="col" style="width: 200px; vertical-align: bottom;">{% trans "Student" %}</th>
+      <tr class="text-center">
+        <th scope="col" class="text-start student-col">{% trans "Student" %}</th>
         {# Checklist Items as Columns #}
         {% for item in items %}
-          <th scope="col" class="text-center" style="width: 150px; vertical-align: bottom;" title="{{ item.description }}">
-            {# Use english field name council_agreed #}
+          <th scope="col" class="item-col" title="{{ item.description }}">
             {% if item.council_agreed %}
                 <i class="bi bi-star-fill text-warning me-1" title="{% trans 'Agreed in Council' %}"></i>
             {% endif %}
-            {# Use english field name description #}
-            <small>{{ item.description|truncatechars:35 }}</small>
+            <span class="item-header-text">{{ item.description|truncatechars:40 }}</span>
           </th>
         {% endfor %}
       </tr>
@@ -55,116 +47,124 @@
       {% for student_user in students %}
         <tr>
           {# Student Name and Progress Bar #}
-          <td class="fw-bold">
+          <td class="fw-bold student-col text-start">
             <div>{{ student_user.get_full_name|default:student_user.username }}</div>
-            {# Access progresso_individual using get_item tag #}
             {% get_item progresso_individual student_user.id as individual_progress %}
             {% with percentage=individual_progress|default:0|floatformat:0 %}
-            <div class="progress mt-1" role="progressbar" aria-label="{% trans 'Student progress' %}" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 10px;">
+            <div class="progress mt-1" role="progressbar" aria-label="{% trans 'Student progress' %}" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 8px;">
                 <div class="progress-bar bg-primary" style="width: {{ percentage }}%;"></div>
             </div>
             {% endwith %}
           </td>
           {# Status per Item #}
           {% for item in items %}
-            {# Use custom tag to get the specific mark for this student/item #}
             {% get_item marks_by_student_item student_user.id item.id as mark %}
-            <td class="text-center small">
-              {% if mark %}
+            <td class="text-center item-cell">
+              <div class="mark-display mb-1">
                   {# Display Status Icon based on mark_status #}
-                  {% if mark.mark_status == 'completed' %}
+                  {% if mark and mark.mark_status == 'completed' %}
                       {% if mark.teacher_validated %}
                           <i class="bi bi-patch-check-fill text-success fs-4" title="{% trans 'Validated by Teacher' %}"></i>
                       {% else %}
                           <i class="bi bi-check-circle-fill text-success fs-4" title="{% trans 'Completed' %}"></i>
                       {% endif %}
-                  {% elif mark.mark_status == 'in_progress' %}
+                  {% elif mark and mark.mark_status == 'in_progress' %}
                       <i class="bi bi-play-circle-fill text-primary fs-4" title="{% trans 'In Progress' %}"></i>
-                  {% else %}{# Assumed not_started #}
+                  {% else %}
                       <i class="bi bi-square text-secondary fs-4" title="{% trans 'Not Started' %}"></i>
                   {% endif %}
                   
-                  {# Display Comment if exists #}
+                  {# Display Comment Icon if exists #}
                   {% if mark.comment %}
-                      <div class="text-muted fst-italic" title="{{ mark.comment }}">{{ mark.comment|truncatechars:20 }}</div>
+                      <i class="bi bi-chat-left-text text-muted ms-1" title="{{ mark.comment }}"></i>
+                  {% endif %}
+              </div>
+              
+              {# Teacher Actions: Validate / Rectify #}
+              <div class="teacher-actions">
+                  {% if mark and not mark.teacher_validated and mark.mark_status == 'completed' %}
+                      {# Simple Validate Button #}
+                      <form method="post" class="d-inline">
+                          {% csrf_token %}
+                          <input type="hidden" name="student_id" value="{{ student_user.id }}">
+                          <input type="hidden" name="item_id" value="{{ item.id }}">
+                          <input type="hidden" name="mark_status" value="completed">
+                          <input type="hidden" name="comment" value="{{ mark.comment|default:'' }}">
+                          <button type="submit" class="btn btn-outline-success btn-sm py-0 px-1" title="{% trans 'Validate this completion' %}"><i class="bi bi-check-lg"></i></button>
+                      </form>
                   {% endif %}
                   
-                  {# Teacher Actions: Validate / Rectify #}
-                  <div class="mt-1">
-                      {% if not mark.teacher_validated and mark.mark_status == 'completed' %}
-                          {# Simple Validate Button (sets validated=True) #}
-                          <form method="post" class="d-inline">
-                              {% csrf_token %}
-                              <input type="hidden" name="student_id" value="{{ student_user.id }}">
-                              <input type="hidden" name="item_id" value="{{ item.id }}">
-                              <input type="hidden" name="mark_status" value="completed"> {# Keep status #}
-                              <input type="hidden" name="comment" value="{{ mark.comment|default:'' }}"> {# Keep comment #}
-                              <button type="submit" class="btn btn-outline-success btn-sm py-0 px-1" title="{% trans 'Validate this completion' %}">{% trans "Validate" %}</button>
-                          </form>
-                      {% endif %}
-                      
-                      {# Rectify Button/Form (within details dropdown) #}
-                      <details class="d-inline ms-1">
-                          <summary class="btn btn-outline-warning btn-sm py-0 px-1" title="{% trans 'Change status or add comment' %}">{% trans "Rectify" %}</summary>
-                          <form method="post" class="mt-1 p-1 border rounded bg-light d-inline-block text-start">
-                              {% csrf_token %}
-                              <input type="hidden" name="student_id" value="{{ student_user.id }}">
-                              <input type="hidden" name="item_id" value="{{ item.id }}">
-                              <select name="mark_status" class="form-select form-select-sm mb-1">
-                                  {# Use choices from context #}
-                                  {% for key, label in mark_status_choices %}
-                                      <option value="{{ key }}" {% if mark and mark.mark_status == key %}selected{% endif %}>{{ label }}</option>
-                                  {% endfor %}
-                              </select>
-                              <input type="text" name="comment" class="form-control form-control-sm mb-1" maxlength="150" 
-                                     placeholder="{% trans 'Comment (optional)' %}" value="{{ mark.comment|default:'' }}">
-                              <button type="submit" class="btn btn-warning btn-sm w-100">{% trans "Save" %}</button>
-                          </form>
-                      </details>
-                  </div>
-              {% else %}
-                  {# If no mark exists, show default icon and rectify form #}
-                   <i class="bi bi-square text-secondary fs-4" title="{% trans 'Not Started' %}"></i>
-                   <div class="mt-1">
-                       <details class="d-inline ms-1">
-                          <summary class="btn btn-outline-secondary btn-sm py-0 px-1" title="{% trans 'Set initial status or comment' %}">{% trans "Set" %}</summary>
-                          <form method="post" class="mt-1 p-1 border rounded bg-light d-inline-block text-start">
-                              {% csrf_token %}
-                              <input type="hidden" name="student_id" value="{{ student_user.id }}">
-                              <input type="hidden" name="item_id" value="{{ item.id }}">
-                              <select name="mark_status" class="form-select form-select-sm mb-1">
-                                  {% for key, label in mark_status_choices %}
-                                      <option value="{{ key }}" {% if key == 'not_started' %}selected{% endif %}>{{ label }}</option>
-                                  {% endfor %}
-                              </select>
-                              <input type="text" name="comment" class="form-control form-control-sm mb-1" maxlength="150" 
-                                     placeholder="{% trans 'Comment (optional)' %}" value="">
-                              <button type="submit" class="btn btn-warning btn-sm w-100">{% trans "Save" %}</button>
-                          </form>
-                      </details>
-                   </div>
-              {% endif %}
+                  {# Rectify Button/Form (Using Popover/Dropdown - Requires JS) #}
+                  {# Using a simpler <details> for now #}
+                  <details class="d-inline ms-1 details-reset">
+                      <summary class="btn btn-outline-secondary btn-sm py-0 px-1" title="{% trans 'Change status or add comment' %}"><i class="bi bi-pencil"></i></summary>
+                      <form method="post" class="rectify-form mt-1 p-2 border rounded bg-white shadow text-start">
+                          {% csrf_token %}
+                          <input type="hidden" name="student_id" value="{{ student_user.id }}">
+                          <input type="hidden" name="item_id" value="{{ item.id }}">
+                          <label class="form-label small" for="rectify-status-{{student_user.id}}-{{item.id}}">{% trans "Status:" %}</label>
+                          <select name="mark_status" id="rectify-status-{{student_user.id}}-{{item.id}}" class="form-select form-select-sm mb-1">
+                              {% for key, label in mark_status_choices %}
+                                  <option value="{{ key }}" {% if mark and mark.mark_status == key %}selected{% endif %}>{{ label }}</option>
+                              {% endfor %}
+                          </select>
+                          <label class="form-label small" for="rectify-comment-{{student_user.id}}-{{item.id}}">{% trans "Comment:" %}</label>
+                          <input type="text" name="comment" id="rectify-comment-{{student_user.id}}-{{item.id}}" class="form-control form-control-sm mb-1" maxlength="150" 
+                                 placeholder="{% trans 'Comment (optional)' %}" value="{{ mark.comment|default:'' }}">
+                          <button type="submit" class="btn btn-warning btn-sm w-100">{% trans "Save" %}</button>
+                      </form>
+                  </details>
+              </div>
             </td>
           {% endfor %}
         </tr>
       {% empty %}
-        <tr><td colspan="{{ items|length|add:1 }}" class="text-center text-muted">{% trans "No students in this class." %}</td></tr>
+        <tr><td colspan="{{ items|length|add:1 }}" class="text-center text-muted p-3">{% trans "No students in this class." %}</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 
 <!-- Legend -->
-<div class="mt-4 small text-muted d-flex flex-wrap gap-3">
+<div class="mt-4 small text-muted d-flex flex-wrap gap-3 justify-content-center border-top pt-3">
   <span><i class="bi bi-square text-secondary"></i> {% trans "Not Started" %}</span>
   <span><i class="bi bi-play-circle-fill text-primary"></i> {% trans "In Progress" %}</span>
   <span><i class="bi bi-check-circle-fill text-success"></i> {% trans "Completed" %}</span>
-  <span><i class="bi bi-patch-check-fill text-success"></i> {% trans "Validated by Teacher" %}</span>
-  <span><i class="bi bi-star-fill text-warning"></i> {% trans "Agreed in Council" %}</span>
+  <span><i class="bi bi-patch-check-fill text-success"></i> {% trans "Validated" %}</span>
+  <span><i class="bi bi-star-fill text-warning"></i> {% trans "Council Focus" %}</span>
 </div>
 
-<!-- Back Link -->
-<a href="{% url 'class_detail' class_id=turma.id %}" class="btn btn-link mt-3">&larr; {% trans "Back to Class Page" %}</a> {# Assuming class_detail is the name #}
+{# Add some custom CSS (ideally move to infantinho3.css) #}
+<style>
+.checklist-turma-table th, .checklist-turma-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.checklist-turma-table th.item-col {
+  max-width: 150px;
+  min-width: 100px;
+}
+.checklist-turma-table td.student-col {
+  width: 200px;
+  max-width: 200px;
+}
+.checklist-turma-table span.item-header-text {
+    display: block;
+    white-space: normal;
+    line-height: 1.2;
+}
+.rectify-form {
+    position: absolute;
+    z-index: 10; /* Ensure form appears above table content */
+    width: 200px; /* Adjust width as needed */
+}
+details > summary {
+    list-style: none; /* Remove default marker */
+}
+details > summary::-webkit-details-marker {
+    display: none; /* Remove default marker for Chrome */
+}
+</style>
 
-</main>
-{% endblock %}
+{% endblock checklist_content %}

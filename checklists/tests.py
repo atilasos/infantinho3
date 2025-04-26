@@ -1,5 +1,5 @@
 # checklists/tests.py
-from django.test import TestCase, Client, override_settings # Import override_settings
+from django.test import TestCase, Client # Removed override_settings for now
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -9,8 +9,6 @@ from .models import ChecklistTemplate, ChecklistItem, ChecklistStatus, Checklist
 from classes.models import Class
 
 User = get_user_model()
-
-# Remove _force_slash helper
 
 # --- Model Tests --- 
 
@@ -45,52 +43,41 @@ class ChecklistModelTests(TestCase):
     def test_status_creation(self):
         self.assertEqual(
             str(self.status),
-            f"student1 - Math Basics (Test Class) - 0%" # Initial percentage
+            f"student1 - Math Basics (Test Class) - 0%"
         )
         self.assertEqual(self.status.percent_complete, 0)
 
     def test_mark_creation_and_status_update(self):
-        # Initial state
         self.assertEqual(ChecklistMark.objects.count(), 0)
         self.assertEqual(self.status.percent_complete, 0)
-
-        # Mark item 1 as completed
         mark1 = ChecklistMark.objects.create(
             status=self.status, item=self.item1, mark_status='completed', marked_by=self.student
         )
         self.assertEqual(ChecklistMark.objects.count(), 1)
         self.assertEqual(mark1.mark_status, 'completed')
         self.assertFalse(mark1.teacher_validated)
-        # Status should be updated via mark save signal/method
         self.status.refresh_from_db()
-        self.assertEqual(self.status.percent_complete, 50.0) # 1 out of 2 items
-
-        # Mark item 2 as in progress
+        self.assertEqual(self.status.percent_complete, 50.0)
         mark2 = ChecklistMark.objects.create(
             status=self.status, item=self.item2, mark_status='in_progress', marked_by=self.student
         )
         self.assertEqual(ChecklistMark.objects.count(), 2)
-        # Status percentage shouldn't change
         self.status.refresh_from_db()
         self.assertEqual(self.status.percent_complete, 50.0)
-
-        # Mark item 2 as completed
         mark2.mark_status = 'completed'
         mark2.save()
         self.status.refresh_from_db()
         self.assertEqual(self.status.percent_complete, 100.0)
-        
-        # Mark item 1 back to in_progress (should reset validation and percentage)
         mark1.mark_status = 'in_progress' 
-        mark1.teacher_validated = True # Simulate it was validated before
+        mark1.teacher_validated = True 
         mark1.save()
-        self.assertFalse(mark1.teacher_validated) # Should be reset by save method
+        self.assertFalse(mark1.teacher_validated)
         self.status.refresh_from_db()
-        self.assertEqual(self.status.percent_complete, 50.0) # Back to 1 out of 2
+        self.assertEqual(self.status.percent_complete, 50.0)
 
 # --- View Tests --- 
 
-@override_settings(APPEND_SLASH=False) # Disable APPEND_SLASH for view tests
+# Removed @override_settings
 class ChecklistViewTests(TestCase):
     """Tests for the Checklist views and workflow."""
     def setUp(self):
@@ -110,26 +97,28 @@ class ChecklistViewTests(TestCase):
         
         self.status = ChecklistStatus.objects.create(template=self.template, student=self.student, student_class=self.turma)
         
-        # URLs (no need for _force_slash now)
+        # URLs 
         self.my_checklists_url = reverse('checklists:my_checklists')
         self.detail_url = reverse('checklists:checklist_detail', args=[self.template.id])
         self.turma_url = reverse('checklists:checklist_turma', args=[self.turma.id, self.template.id])
-        self.login_url = reverse('users:login_choice') # Assuming namespace 'users'
-        self.class_detail_url = reverse('class_detail', args=[self.turma.id]) # No namespace needed if global
+        # Make sure login URL name and namespace are correct
+        self.login_url = reverse('users:login_choice') # Assuming users app namespace
+        self.class_detail_url = reverse('class_detail', args=[self.turma.id])
 
     # --- Basic Access Tests --- 
 
     def test_my_checklists_view_requires_login(self):
-        response = self.client.get(self.my_checklists_url)
-        # Expect redirect (302) to login
+        # Use follow=True on the GET request
+        response = self.client.get(self.my_checklists_url, follow=True) 
+        # Assert the final redirect destination and status code (usually 302 for login)
         self.assertRedirects(response, f"{self.login_url}?next={self.my_checklists_url}", status_code=302)
 
     def test_checklist_detail_view_requires_login(self):
-        response = self.client.get(self.detail_url)
+        response = self.client.get(self.detail_url, follow=True)
         self.assertRedirects(response, f"{self.login_url}?next={self.detail_url}", status_code=302)
 
     def test_checklist_turma_view_requires_login(self):
-        response = self.client.get(self.turma_url)
+        response = self.client.get(self.turma_url, follow=True)
         self.assertRedirects(response, f"{self.login_url}?next={self.turma_url}", status_code=302)
 
     # --- Workflow Tests --- 
@@ -138,23 +127,23 @@ class ChecklistViewTests(TestCase):
         """Test student accesses detail view and marks an item via POST."""
         self.client.force_login(self.student)
         
-        # GET request 
-        response_get = self.client.get(self.detail_url)
-        self.assertEqual(response_get.status_code, 200) # Expect 200 OK directly
+        # GET request - Use follow=True 
+        response_get = self.client.get(self.detail_url, follow=True)
+        self.assertEqual(response_get.status_code, 200) 
+        self.assertEqual(response_get.request['PATH_INFO'], self.detail_url)
         self.assertContains(response_get, self.template.name)
         self.assertContains(response_get, self.item1.description)
         
-        # POST request to mark item1 as completed
+        # POST request - follow=True is already default for POST redirects
         response_post = self.client.post(self.detail_url, {
             'item_id': self.item1.id, 
             'mark_status': 'completed', 
             'comment': 'Finished it!' 
         }, follow=True) 
-        self.assertEqual(response_post.status_code, 200) # Should redirect back to detail view
+        self.assertEqual(response_post.status_code, 200) 
         self.assertContains(response_post, "Objective updated successfully!")
         self.assertEqual(response_post.request['PATH_INFO'], self.detail_url)
         
-        # Verify mark was created correctly in DB
         mark = ChecklistMark.objects.filter(item=self.item1, status=self.status).latest('marked_at')
         self.assertEqual(mark.mark_status, 'completed')
         self.assertEqual(mark.comment, 'Finished it!')
@@ -167,25 +156,25 @@ class ChecklistViewTests(TestCase):
         
         self.client.force_login(self.teacher)
         
-        # GET request 
-        response_get = self.client.get(self.turma_url)
-        self.assertEqual(response_get.status_code, 200) # Expect 200 OK
+        # GET request - Use follow=True
+        response_get = self.client.get(self.turma_url, follow=True)
+        self.assertEqual(response_get.status_code, 200) 
+        self.assertEqual(response_get.request['PATH_INFO'], self.turma_url)
         self.assertContains(response_get, self.template.name)
         self.assertContains(response_get, self.student.username)
         self.assertContains(response_get, self.item1.description)
 
-        # POST request to validate/rectify item1 for the student
+        # POST request
         response_post = self.client.post(self.turma_url, {
             'student_id': self.student.id, 
             'item_id': self.item1.id, 
             'mark_status': 'completed', 
             'comment': 'Validated by teacher' 
         }, follow=True)
-        self.assertEqual(response_post.status_code, 200) # Redirects back to turma view
+        self.assertEqual(response_post.status_code, 200) 
         self.assertContains(response_post, "Mark validated/rectified")
         self.assertEqual(response_post.request['PATH_INFO'], self.turma_url)
 
-        # Verify a new mark was created with validation
         mark = ChecklistMark.objects.filter(item=self.item1, status=self.status).latest('marked_at')
         self.assertEqual(mark.mark_status, 'completed')
         self.assertEqual(mark.comment, 'Validated by teacher')
@@ -197,22 +186,24 @@ class ChecklistViewTests(TestCase):
     def test_other_student_cannot_access_checklist_detail(self):
         """Test a student cannot access checklist detail if not assigned."""
         self.client.force_login(self.other_student)
-        response = self.client.get(self.detail_url)
-        # Expect 404 because the ChecklistStatus object doesn't exist for this student/template
+        # Use follow=True and expect 404 at the end
+        response = self.client.get(self.detail_url, follow=True) 
         self.assertEqual(response.status_code, 404) 
         
-        response_post = self.client.post(self.detail_url, {'item_id': self.item1.id, 'mark_status': 'completed'})
+        response_post = self.client.post(self.detail_url, {'item_id': self.item1.id, 'mark_status': 'completed'}, follow=True)
         self.assertEqual(response_post.status_code, 404)
 
     def test_other_teacher_cannot_access_checklist_turma(self):
         """Test a teacher not assigned to the class cannot access turma view."""
         self.client.force_login(self.other_teacher)
-        response = self.client.get(self.turma_url)
-        # Permission check in view dispatch redirects (302) to class detail page
-        self.assertRedirects(response, self.class_detail_url, status_code=302)
+        # Use follow=True for GET
+        response = self.client.get(self.turma_url, follow=True)
+        # Check the final redirect target (class detail page)
+        self.assertRedirects(response, self.class_detail_url, status_code=302, target_status_code=200) # Expect final page to be OK
         
-        response_post = self.client.post(self.turma_url, {'student_id': self.student.id, 'item_id': self.item1.id, 'mark_status': 'completed'})
-        self.assertRedirects(response_post, self.class_detail_url, status_code=302)
+        # Use follow=True for POST
+        response_post = self.client.post(self.turma_url, {'student_id': self.student.id, 'item_id': self.item1.id, 'mark_status': 'completed'}, follow=True)
+        self.assertRedirects(response_post, self.class_detail_url, status_code=302, target_status_code=200)
 
     # --- Notification Tests --- 
 
@@ -222,7 +213,8 @@ class ChecklistViewTests(TestCase):
         # Student marks item -> teachers should be notified
         self.client.force_login(self.student)
         post_response = self.client.post(self.detail_url, {'item_id': self.item1.id, 'mark_status': 'completed', 'comment': 'Done'})
-        self.assertEqual(post_response.status_code, 302) # Check POST redirects 
+        # Check POST redirects successfully (status 302)
+        self.assertEqual(post_response.status_code, 302) # POST should redirect before following
 
         self.assertTrue(mock_send_mail.called, "send_mail was not called after student update")
         args, kwargs = mock_send_mail.call_args
@@ -237,7 +229,7 @@ class ChecklistViewTests(TestCase):
             'mark_status': 'completed', 
             'comment': 'Good job'
         })
-        self.assertEqual(post_response_teacher.status_code, 302)
+        self.assertEqual(post_response_teacher.status_code, 302) # POST should redirect
         
         self.assertTrue(mock_send_mail.called, "send_mail was not called after teacher update")
         args2, kwargs2 = mock_send_mail.call_args

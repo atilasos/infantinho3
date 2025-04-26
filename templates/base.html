@@ -6,8 +6,14 @@
     <meta charset="utf-8">
     <title>{% block title %}Infantinho 3.0{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {# Main Stylesheets #}
-    <link rel="stylesheet" href="{% static 'css/main.mini.dehonianos.css' %}">
+    
+    {# Bootstrap 5 CSS (CDN) #}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    {# Bootstrap Icons (CDN) #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    {# Project Custom CSS (Loads AFTER Bootstrap to allow overrides) #}
+    {# <link rel="stylesheet" href="{% static 'css/main.mini.dehonianos.css' %}"> #} {# Keep or remove Dehonianos CSS? #}
     <link rel="stylesheet" href="{% static 'css/infantinho3.css' %}">
     
     {# Include CSS needed by forms (e.g., CKEditor) #}
@@ -20,66 +26,116 @@
     
 </head>
 <body>
-    <header class="header">
-        <a href="{% url 'landing_page' %}" class="logo-link"><img src="{% static 'logo.png' %}" alt="{% trans 'Infantinho 3.0 Logo' %}" class="logo"></a> {# TODO: Add logo.png #}
-        <span class="portal-title">{% trans "Infantinho 3.0" %}</span>
-        {% block user_menu %}
-            {# Placeholder for user-specific menu (Login/Logout/Profile) #}
-            <div class="user-menu">
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-sm sticky-top mb-3">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'landing_page' %}">
+          {# <img src="{% static 'logo.png' %}" alt="{% trans 'Infantinho 3.0 Logo' %}" height="30" class="d-inline-block align-text-top"> #} {# TODO: Add logo.png #}
+          <i class="bi bi-house-heart-fill text-primary fs-4 me-2"></i> {# Temporary Icon #}
+          {% trans "Infantinho 3.0" %}
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="{% trans 'Toggle navigation' %}">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          {# Left-aligned nav items (can add main navigation here later) #}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+             {# Example Nav Item #}
+             {# <li class="nav-item"><a class="nav-link" href="#">Link</a></li> #}
+          </ul>
+          
+          {# Right-aligned User Menu #}
+          <div class="navbar-nav ms-auto">
+            {% block user_menu %}
                 {% if user.is_authenticated %}
-                    <span>{% trans "Welcome" %}, {{ user.get_full_name|default:user.username }}!</span>
-                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                    <span class="navbar-text me-2">{% trans "Welcome" %}, {{ user.get_full_name|default:user.username }}!</span>
+                    <form method="post" action="{% url 'users:logout' %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-link">{% trans "Logout" %}</button>
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">{% trans "Logout" %}</button>
                     </form>
                 {% else %}
-                    <a href="{% url 'login_choice' %}" class="btn btn-primary">{% trans "Login" %}</a> {# Assuming login_choice is the name #}
+                    <a href="{% url 'users:login_choice' %}" class="btn btn-primary btn-sm">{% trans "Login" %}</a> 
                 {% endif %}
-            </div>
-        {% endblock %}
-    </header>
-    
-    <div class="layout">
-        {% block sidebar %}
-        {# Sidebar Navigation #}
-        <nav class="sidebar">
-            <ul>
-                {# TODO: Update links and permissions based on user role #}
-                <li><a href="{% url 'landing_page' %}">{% trans "Dashboard" %}</a></li> 
-                <li><a href="{% url 'class_list' %}">{% trans "Classes" %}</a></li>
-                {# Maybe add links to My Checklists, etc. based on role #}
-                <li><a href="{% url 'ajuda' %}">{% trans "Help / Documentation" %}</a></li>
-            </ul>
-        </nav>
-        {% endblock %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Layout (Container with Optional Sidebar) -->
+    <div class="container-fluid">
+      <div class="row">
         
-        {# Main Content Area #}
-        <main class="main-content container mt-3">
-            {# Display Django messages framework output #}
-            {% if messages %}
-              <div class="messages" aria-live="polite">
-                  {% for message in messages %}
-                      <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
-                          {{ message }}
-                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
-                      </div>
-                  {% endfor %}
-              </div>
-            {% endif %}
-            
-            {# Content from child templates goes here #}
-            {% block content %}{% endblock %}
-        </main>
-    </div>
+        <!-- Sidebar Column -->
+        {% block sidebar_column %}
+          <div class="col-lg-2 col-md-3 d-none d-md-block bg-light border-end" style="min-height: calc(100vh - 100px);"> {# Adjust min-height as needed #}
+              {% block sidebar %}
+                  {# Sidebar Navigation #}
+                  <nav class="pt-3">
+                      <ul class="nav flex-column">
+                          <li class="nav-item">
+                              <a class="nav-link {% if request.resolver_match.url_name == 'landing_page' %}active{% endif %}" href="{% url 'landing_page' %}">
+                                <i class="bi bi-house-door me-2"></i>{% trans "Dashboard" %}
+                              </a>
+                          </li> 
+                          <li class="nav-item">
+                              <a class="nav-link {% if request.resolver_match.url_name == 'class_list' or request.resolver_match.url_name == 'class_detail' %}active{% endif %}" href="{% url 'class_list' %}">
+                                <i class="bi bi-people me-2"></i>{% trans "Classes" %}
+                              </a>
+                          </li>
+                          {% if user.is_authenticated and user.role == 'aluno' %}
+                            <li class="nav-item">
+                              <a class="nav-link {% if request.resolver_match.app_name == 'checklists' %}active{% endif %}" href="{% url 'checklists:my_checklists' %}">
+                                <i class="bi bi-check2-square me-2"></i>{% trans "My Checklists" %}
+                              </a>
+                            </li>
+                          {% endif %}
+                           {# Add other role-based links here - e.g., teacher views #}
+                          <li class="nav-item mt-auto">
+                              <hr>
+                              <a class="nav-link {% if request.resolver_match.url_name == 'ajuda' %}active{% endif %}" href="{% url 'ajuda' %}">
+                                <i class="bi bi-question-circle me-2"></i>{% trans "Help" %}
+                              </a>
+                          </li>
+                      </ul>
+                  </nav>
+              {% endblock sidebar %}
+          </div>
+        {% endblock sidebar_column %}
+        
+        <!-- Main Content Column -->
+        <div class="col-lg-10 col-md-9 ms-sm-auto">
+          <main class="main-content pt-3 pb-5" role="main">
+              {# Display Django messages framework output #}
+              {% if messages %}
+                <div class="messages container" aria-live="polite">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+              {% endif %}
+              
+              {# Content from child templates goes here #}
+              {% block content %}{% endblock %}
+          </main>
+        </div>
+      </div> {# End Row #}
+    </div> {# End Container-fluid #}
     
-    {# Footer #}
-    <footer class="footer mt-auto py-3 bg-light">
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-light border-top">
       <div class="container text-center">
           <small class="text-muted">&copy; {% now "Y" %} Infantinho 3.0</small>
       </div>
     </footer>
     
-    {# Include JS needed by forms (e.g., CKEditor) before other scripts #}
+    {# Bootstrap 5 JS Bundle (includes Popper) #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    {# Include JS needed by forms (e.g., CKEditor) #}
     {% if form.media.js %}
         {{ form.media.js }}
     {% endif %}
@@ -87,7 +143,5 @@
     {# Block for extra JS at the end of the body #}
     {% block extra_js %}{% endblock %}
 
-    {# Example: Include Bootstrap JS bundle if needed globally #}
-    {# <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.x.x/dist/js/bootstrap.bundle.min.js" ...></script> #}
 </body>
 </html> 
