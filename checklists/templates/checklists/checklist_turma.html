@@ -8,7 +8,6 @@
 {# Heading and Breadcrumbs could be added here if needed #}
 <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
     <h1 class="h2">{% blocktrans with name=template.name %}Class Overview: {{ name }}{% endblocktrans %}</h1>
-    {# Optional: Link back to class page or other actions #}
     <a href="{% url 'class_detail' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> {% trans "Back to Class" %}</a>
 </div>
 <h2 class="h4 text-muted mb-3">{% blocktrans with name=turma.name year=turma.year %}Class: {{ name }} ({{ year }}){% endblocktrans %}</h2>
@@ -23,8 +22,17 @@
   {% endwith %}
 </div>
 
-{# Display messages #}
-{% include "includes/messages.html" %}
+{# Display messages (Directly in template) #}
+{% if messages %}
+  <div class="messages mb-3" aria-live="polite">
+      {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
+          </div>
+      {% endfor %}
+  </div>
+{% endif %}
 
 <!-- Checklist Table -->
 <div class="table-responsive shadow-sm border rounded">
@@ -49,6 +57,7 @@
           {# Student Name and Progress Bar #}
           <td class="fw-bold student-col text-start">
             <div>{{ student_user.get_full_name|default:student_user.username }}</div>
+            {# Corrected: Use get_item tag with ONE key #}
             {% get_item progresso_individual student_user.id as individual_progress %}
             {% with percentage=individual_progress|default:0|floatformat:0 %}
             <div class="progress mt-1" role="progressbar" aria-label="{% trans 'Student progress' %}" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 8px;">
@@ -58,6 +67,7 @@
           </td>
           {# Status per Item #}
           {% for item in items %}
+            {# Use custom tag with two keys for marks #}
             {% get_item marks_by_student_item student_user.id item.id as mark %}
             <td class="text-center item-cell">
               <div class="mark-display mb-1">
@@ -94,8 +104,7 @@
                       </form>
                   {% endif %}
                   
-                  {# Rectify Button/Form (Using Popover/Dropdown - Requires JS) #}
-                  {# Using a simpler <details> for now #}
+                  {# Rectify Button/Form #}
                   <details class="d-inline ms-1 details-reset">
                       <summary class="btn btn-outline-secondary btn-sm py-0 px-1" title="{% trans 'Change status or add comment' %}"><i class="bi bi-pencil"></i></summary>
                       <form method="post" class="rectify-form mt-1 p-2 border rounded bg-white shadow text-start">

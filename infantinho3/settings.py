@@ -1,3 +1,4 @@
+# settings.py
 """
 Django settings for infantinho3 project.
 
@@ -13,6 +14,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from django.urls import reverse_lazy # Use reverse_lazy for settings
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,11 +26,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-insecure-key')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-placeholder-@dev') # Changed placeholder
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if not DEBUG else []
+
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
+# Add localhost and common dev hosts if DEBUG is True
+if DEBUG and not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -39,11 +46,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
-    'classes',
-    'blog',
-    'checklists',
+    
+    # Third-party apps
     'ckeditor',
+    # 'ckeditor_uploader', # Not currently used
+    # 'widget_tweaks', # Not currently installed/used
+    
+    # Local apps
+    'users.apps.UsersConfig', # Use AppConfig for apps
+    'classes.apps.ClassesConfig',
+    'blog.apps.BlogConfig',
+    'checklists.apps.ChecklistsConfig',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +78,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -134,89 +148,108 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = os.environ.get('STATIC_URL', '/static/')
-STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'staticfiles')
+STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'staticfiles') # For collectstatic
+STATICFILES_DIRS = [
+    BASE_DIR / "static", # Add project-level static directory
+]
+
+# Media files (User uploads)
 MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', BASE_DIR / 'media')
 
-# CKEditor/media config
-CKEDITOR_UPLOAD_PATH = 'uploads/'
+# CKEditor Config (Basic - No uploader for now)
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'basic',
+        'height': 150,
+        'width': '100%',
+    },
+}
+# CKEDITOR_UPLOAD_PATH = "uploads/" # Only needed for ckeditor_uploader
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Custom User Model
 AUTH_USER_MODEL = 'users.User'
 
-# Configuração MSAL/Azure AD
+# Login/Logout URLs
+# Use reverse_lazy because URLs might not be loaded when settings are processed
+LOGIN_URL = reverse_lazy('users:login_choice') # Point to login choice page
+LOGIN_REDIRECT_URL = reverse_lazy('class_list') # Redirect after successful login (e.g., to class list)
+LOGOUT_REDIRECT_URL = reverse_lazy('landing_page') # Redirect after logout
+
+
+# Azure AD Config (using environment variables)
 AZURE_AD_CLIENT_ID = os.environ.get('AZURE_AD_CLIENT_ID')
 AZURE_AD_CLIENT_SECRET = os.environ.get('AZURE_AD_CLIENT_SECRET')
 AZURE_AD_TENANT_ID = os.environ.get('AZURE_AD_TENANT_ID')
 AZURE_AD_REDIRECT_URI = os.environ.get('AZURE_AD_REDIRECT_URI')
 AZURE_AD_AUTHORITY = os.environ.get('AZURE_AD_AUTHORITY', f'https://login.microsoftonline.com/{AZURE_AD_TENANT_ID}' if os.environ.get('AZURE_AD_TENANT_ID') else None)
 
-LOGIN_URL = '/auth/login/'
 
-# Configuração de email para notificações (SMTP O365)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Email Config (using environment variables)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # Use SMTP for real sending
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Use console for testing
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.office365.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
-# --- Segurança para produção ---
-# Só para testes locais, permite HTTP e mostra o debug page
-if DEBUG:
-    SECURE_SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE   = False
-    CSRF_COOKIE_SECURE      = False
-    # Se estiveres a usar HSTS:
-    SECURE_HSTS_SECONDS     = 0
-    print("DEBUG")
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 3600
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
-    print("PROD")
 
-# --- Configuração de IA (OpenAI, Google, etc) ---
+# Security Settings (Basic defaults, adjust for production)
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
+SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False') == 'True'
+CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'False') == 'True'
+SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', 0))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False') == 'True'
+SECURE_HSTS_PRELOAD = os.environ.get('SECURE_HSTS_PRELOAD', 'False') == 'True'
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+
+# AI Config (Placeholders)
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
-# --- Logging para produção ---
-if not DEBUG:
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'file': {
-                'level': 'WARNING',
-                'class': 'logging.FileHandler',
-                'filename': os.environ.get('DJANGO_LOG_FILE', BASE_DIR / 'django.log'),
-            },
+
+# Logging (Basic console logging for dev)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
         },
-        'loggers': {
-            'django': {
-                'handlers': ['file'],
-                'level': 'WARNING',
-                'propagate': True,
-            },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
         },
-    }
-# --- Importação de settings específicos de ambiente ---
+    },
+}
+
+# --- Import environment-specific settings if they exist --- 
+# (Allows overriding settings in prod.py or local.py without version control)
 try:
     from .prod import *
+    print("Loaded prod settings")
 except ImportError:
     pass
 try:
     from .local import *
+    print("Loaded local settings")
 except ImportError:
     pass
