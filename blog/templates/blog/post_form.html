@@ -1,6 +1,5 @@
 {% extends 'blog/base.html' %}
-{% load i18n %}
-{% load widget_tweaks %} {# Assuming widget_tweaks or similar is used for add_class, or replace with your tag library #}
+{% load i18n widget_tweaks %} {# Added widget_tweaks #}
 
 {% block title %}{% if edit_mode %}{% trans "Edit Post" %}{% else %}{% trans "New Post" %}{% endif %} - {{ turma.name }}{% endblock %}
 

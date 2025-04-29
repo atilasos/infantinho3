@@ -21,6 +21,7 @@ from classes.views import landing_page # Used for root path
 from django.conf import settings
 from django.conf.urls.static import static
 from checklists.views import HelpView # Used for /ajuda/
+from blog.views import post_list_public # Import the new public view
 
 urlpatterns = [
     # Admin site
@@ -29,16 +30,22 @@ urlpatterns = [
     # Authentication URLs (login, logout, password reset, etc.)
     path('auth/', include('users.urls')),
     
-    # Class-related URLs (listing classes, class detail)
-    # Assuming classes.urls contains paths like 'turmas/', 'turmas/<int:class_id>/'
-    path('', include('classes.urls')),
+    # --- Impersonate URLs ---
+    path('impersonate/', include('impersonate.urls')),
+    # ------------------------
     
-    # Landing page (consider moving this into classes.urls if it's the root)
-    path('', landing_page, name='landing_page'), 
+    # --- Nested Diary URLs under Classes --- 
+    path('turmas/<int:class_id>/diario/', include('diary.urls', namespace='diary')), 
+    # ---------------------------------------
     
-    # Blog URLs - Nested under a specific class ID
-    # This will make blog URLs like /turmas/123/blog/ and /turmas/123/blog/post/456/
-    path('turmas/<int:class_id>/blog/', include('blog.urls', namespace='blog')), 
+    # Class-related URLs (including landing page at root)
+    path('turmas/', include('classes.urls')), # Keep other class URLs under /turmas/
+    
+    # --- Root path now points to the public blog list --- 
+    path('', post_list_public, name='landing_page'), # Use the same name for simplicity for now
+    
+    # --- Blog URLs are now global under /blog/ --- 
+    path('blog/', include('blog.urls', namespace='blog')), 
     
     # Checklists URLs
     path('checklists/', include('checklists.urls', namespace='checklists')),

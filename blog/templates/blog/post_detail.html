@@ -1,167 +1,190 @@
-{% extends "blog/base.html" %}
-{% load i18n tz %}
+{% extends "base.html" %}
+{% load i18n tz widget_tweaks %}
 
-{% block blog_title %}{{ post.titulo|default:post.get_category_display_full }} - {{ turma.name }}{% endblock %}
+{% block title %}{{ post.titulo|default:_('(No Title)') }} | {% trans "Blog" %} | {{ block.super }}{% endblock %}
 
-{% block blog_content %}
-
-{# Display messages from views if any #}
-{% if messages %}
-  <div class="messages" aria-live="polite" style="margin-bottom:1em;">
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
-      </div>
-    {% endfor %}
-  </div>
-{% endif %}
-
-<!-- Main Article Section -->
-<article aria-labelledby="post-heading">
-
-  <!-- Display if Post is Removed -->
-  {% if post.removido %}
-    <div class="alert alert-warning shadow-sm mb-3" role="alert">
-      <h4 class="alert-heading">{% trans "Post Removed" %}</h4>
-      <p>{% trans "This post was removed by moderation." %}</p>
-      <hr>
-      {% if post.motivo_remocao %}
-        <p class="mb-1"><strong>{% trans "Reason:" %}</strong> {{ post.motivo_remocao }}</p>
-      {% endif %}
-      {% if post.removido_por %}
-        <p class="mb-0"><small>{% trans "Removed by:" %} {{ post.removido_por.get_full_name|default:post.removido_por.username }} | {{ post.removido_em|timezone:request.user.timezone|date:"SHORT_DATETIME_FORMAT" }}</small></p>
-      {% endif %}
-    </div>
-
-    <!-- Restore Option for Moderators -->
-    {% if request.user.is_authenticated %}
-      {# Check if user is admin or teacher of this specific class #}
-      {% if user.is_superuser or (user.role == 'professor' and turma in user.classes_taught.all()) %}
-        <div class="card mb-3 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">{% trans "Moderation Action" %}</h5>
-            <p class="card-text">{% trans "As a moderator for this class, you can restore this post." %}</p>
-            <form method="post" action="{% url 'blog:post_restore' class_id=turma.id post_id=post.id %}" class="d-inline">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-success btn-sm" title="{% trans 'Restore this post' %}">
-                <i class="bi bi-arrow-counterclockwise"></i> {% trans "Restore Post" %}
-              </button>
-            </form>
-            {# Link to moderation logs #}
-            <a href="{% url 'blog:moderation_logs' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm ms-2" title="{% trans 'View moderation history for this class' %}">
-              <i class="bi bi-journal-text"></i> {% trans "View Moderation Log" %}
-            </a>
-          </div>
-        </div>
-      {% endif %}
-    {% endif %}
-    {# Back button for removed post state #}
-    <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-secondary mt-2" title="{% trans 'Return to post list' %}">&larr; {% trans "Back to Blog" %}</a>
-  
-  <!-- Display Post Content if Not Removed -->
-  {% else %}
-    <header class="mb-3 pb-2 border-bottom">
-      <h1 class="h2" id="post-heading">{{ post.titulo|default:post.get_category_display_full }}</h1>
-      <p class="text-muted small">
-          {% blocktrans with author=post.autor.get_full_name|default:post.autor.username date=post.publicado_em|timezone:request.user.timezone|date:"SHORT_DATETIME_FORMAT" category=post.get_category_display_full %}
-            By {{ author }} | Published: {{ date }} | Category: {{ category }}
-          {% endblocktrans %}
-      </p>
-    </header>
-    
-    <!-- Post Content -->
-    <div class="post-content mb-4">
-      {{ post.conteudo|safe }}
-    </div>
-
-    <!-- Post Action Buttons (Edit/Remove) -->
-    <div class="post-actions mb-4 border-top pt-3">
-        {% if can_edit_post %}
-          <a href="{% url 'blog:post_edit' class_id=turma.id post_id=post.id %}" class="btn btn-warning btn-sm me-2" title="{% trans 'Edit this post' %}">
-            <i class="bi bi-pencil-square"></i> {% trans "Edit" %}
-          </a>
-        {% endif %}
-        {% if can_remove_post %}
-          <button type="button" class="btn btn-danger btn-sm" 
-             data-bs-toggle="modal" data-bs-target="#removePostModal-{{ post.id }}" 
-             title="{% trans 'Remove this post' %}">
-            <i class="bi bi-trash"></i> {% trans "Remove" %}
-          </button>
-        {% endif %}
-        {# Add back button here as well #}
-         <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm ms-2" title="{% trans 'Return to post list' %}">&larr; {% trans "Back to Blog List" %}</a>
-    </div>
- 
-    <hr>
-
-    <!-- Comments Section -->
-    <section id="comments" aria-labelledby="comments-heading">
-      <h3 id="comments-heading" class="h4">{% trans "Comments" %} <span class="badge bg-secondary rounded-pill">{{ comentarios.count }}</span></h3>
-      
-      <!-- List Existing Comments -->
-      <div class="comments-list mb-4">
-        {% if comentarios %}
-          {% for comentario in comentarios %}
-            <div class="card mb-2 shadow-sm" id="comment-{{ comentario.id }}">
-              <div class="card-body p-3">
-                <p class="card-text">{{ comentario.conteudo|linebreaksbr }}</p>
-                <footer class="blockquote-footer mb-0 d-flex justify-content-between align-items-center">
-                  <div>
-                    {{ comentario.autor.get_full_name|default:comentario.autor.username }} 
-                    <cite title="{% trans 'Publication date' %}"><small> - {{ comentario.publicado_em|timezone:request.user.timezone|date:"SHORT_DATETIME_FORMAT" }}</small></cite>
-                  </div>
-                  {# Comment Remove Button (for Moderators) #}
-                  {% if comentario.is_removable_by(request.user) %}
-                    <form method="post" action="{% url 'blog:comment_remove' class_id=turma.id post_id=post.id comment_id=comentario.id %}" 
-                          class="d-inline" 
-                          onsubmit="return confirm('{% trans "Are you sure you want to remove this comment?" %}');">
-                      {% csrf_token %}
-                      <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-1" title="{% trans 'Remove this comment' %}">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </form>
-                  {% endif %}
-                </footer>
-              </div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <p>{% trans "No comments yet." %}</p>
-        {% endif %}
-      </div>
-
-      <!-- Add Comment Form -->
-      {% if request.user.is_authenticated %}
-        <div class="add-comment-form mt-4 pt-3 border-top">
-          <h5>{% trans "Add your comment" %}</h5>
-          <form method="post" action="{% url 'blog:post_comment' class_id=turma.id post_id=post.id %}" class="mb-3" aria-label="{% trans 'Comment form' %}">
-            {% csrf_token %}
-            {# Render form fields using Bootstrap structure #}
-            <div class="mb-3">
-                {{ comment_form.conteudo }} {# Assumes widget attrs set placeholder/rows in forms.py #}
-                {% if comment_form.conteudo.errors %}
-                    <div class="invalid-feedback d-block">{{ comment_form.conteudo.errors|striptags }}</div>
+{% block content %}
+<div class="container mt-4">
+    <article aria-labelledby="post-heading">
+        {# --- Post Header --- #}
+        <header class="mb-4 pb-3 border-bottom">
+            {# Display Pending Status #}
+            {% if post.status == 'PENDING' %}
+                <span class="badge bg-warning float-end"><i class="bi bi-hourglass-split me-1"></i> {% trans "Pending Approval" %}</span>
+            {% endif %}
+            <h1 class="h2 mb-3" id="post-heading">{{ post.titulo|default:_('(No Title)') }}</h1>
+            <p class="text-muted small">
+                <i class="bi bi-person me-1"></i> {{ post.autor.get_full_name|default:post.autor.username }}
+                <span class="mx-1">|</span>
+                <i class="bi bi-calendar3 me-1"></i> {{ post.publicado_em|timezone:None|date:"d M Y, H:i" }}
+                {% if post.turma %}
+                    <span class="mx-1">|</span>
+                    <i class="bi bi-people me-1"></i> <a href="{% url 'classes:class_detail' class_id=post.turma.id %}" class="text-muted text-decoration-none">{{ post.turma.name }}</a>
                 {% endif %}
+                {% if post.categoria %}
+                    <span class="mx-1">|</span>
+                    <i class="bi bi-tag me-1"></i> {{ post.get_category_display_full }}
+                {% endif %}
+            </p>
+            
+            {# --- Action Buttons --- #}
+            <div class="post-actions mt-2">
+                {# Approve Button - Show if PENDING and user can approve #}
+                {% if post.status == 'PENDING' and can_approve %}
+                    <form method="post" action="{% url 'blog:post_approve' post_id=post.id %}" class="d-inline me-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm" title="{% trans 'Approve this post for publication' %}">
+                            <i class="bi bi-check-circle"></i> {% trans "Approve" %}
+                        </button>
+                    </form>
+                {% endif %}
+                
+                {# Existing Edit/Remove/Restore Buttons #}
+                {% if can_edit_post %}
+                  <a href="{% url 'blog:post_edit' post_id=post.id %}" class="btn btn-outline-warning btn-sm me-2" title="{% trans 'Edit this post' %}">
+                    <i class="bi bi-pencil-square"></i> {% trans "Edit" %}
+                  </a>
+                {% endif %}
+                {% if can_remove_post %}
+                  <button type="button" class="btn btn-outline-danger btn-sm me-2" 
+                     data-bs-toggle="modal" data-bs-target="#removePostModal-{{ post.id }}" 
+                     title="{% trans 'Remove this post' %}">
+                    <i class="bi bi-trash"></i> {% trans "Remove" %}
+                  </button>
+                {% endif %}
+                {% if can_restore_post %}
+                  <form method="post" action="{% url 'blog:post_restore' post_id=post.id %}" class="d-inline me-2">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-outline-success btn-sm" title="{% trans 'Restore this post' %}">
+                        <i class="bi bi-arrow-counterclockwise"></i> {% trans "Restore Post" %}
+                      </button>
+                  </form>
+                {% endif %}
+                {# Optional: Link to moderation logs if needed #}
+                {# <a href="#" class="btn btn-outline-secondary btn-sm">Moderation Log</a> #}
             </div>
-            <button type="submit" class="btn btn-primary btn-sm" title="{% trans 'Publish comment' %}">{% trans "Post Comment" %}</button>
-          </form>
+        </header>
+
+        {# --- Removed Post Notice --- #}
+        {% if post.removido %}
+            <div class="alert alert-warning shadow-sm mb-3" role="alert">
+              <h4 class="alert-heading">{% trans "Post Removed" %}</h4>
+              <p>{% trans "This post was removed by moderation." %}</p>
+              <hr>
+              {% if post.motivo_remocao %}
+                <p class="mb-1"><strong>{% trans "Reason:" %}</strong> {{ post.motivo_remocao }}</p>
+              {% endif %}
+              {% if post.removido_por %}
+                <p class="mb-0"><small>{% trans "Removed by:" %} {{ post.removido_por.get_full_name|default:post.removido_por.username }} | {{ post.removido_em|timezone:None|date:"SHORT_DATETIME_FORMAT" }}</small></p>
+              {% endif %}
+            </div>
+        {% endif %}
+
+        {# --- Post Content (Image, Attachment, Text) --- #}
+        <div class="post-content mb-5">
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="img-fluid rounded mb-4 shadow-sm" alt="{{ post.titulo|default:_('(Post Image)') }}" style="max-height: 500px;">
+            {% endif %}
+            
+            {% if post.attachment %}
+                <div class="alert alert-secondary d-flex align-items-center mb-4 shadow-sm" role="alert">
+                   <i class="bi bi-paperclip fs-4 me-2"></i>
+                   {% trans "Attachment:" %} 
+                   <a href="{{ post.attachment.url }}" target="_blank" download class="alert-link ms-1">
+                       {{ post.attachment.name }} {# Just display the full name for now #}
+                   </a> 
+                </div>
+            {% endif %}
+            
+            {# Main CKEditor content #}
+            <div>
+                {{ post.conteudo|safe }}
+            </div>
         </div>
-      {% else %}
-        <p class="mt-4 pt-3 border-top"><em><a href="{% url 'users:login_choice' %}?next={{ request.path }}">{% trans "Log in" %}</a> {% trans "to add a comment." %}</em></p>
-      {% endif %}
-    </section>
-
-  {% endif %} {# End else block for non-removed post #}
-
-</article>
+        
+        {# Only show comments and form if post is PUBLISHED and not removed #}
+        {% if post.status == 'PUBLISHED' and not post.removido %}
+            <hr>
+            <!-- Comments Section -->
+            <section id="comments" aria-labelledby="comments-heading" class="mt-5">
+              <h3 id="comments-heading" class="h4 mb-3">{% trans "Comments" %} <span class="badge bg-secondary rounded-pill">{{ comentarios.count }}</span></h3>
+              
+              <!-- List Existing Comments -->
+              <div class="comments-list mb-4">
+                {% for comentario in comentarios %}
+                  <div class="card mb-3 shadow-sm comment-card" id="comment-{{ comentario.id }}">
+                    <div class="card-body p-3">
+                      <div class="d-flex justify-content-between align-items-start mb-1">
+                          <p class="card-text mb-0">{{ comentario.conteudo|linebreaksbr }}</p>
+                          {# Comment Remove Button (for Moderators) #}
+                          {% if can_remove_comments %}
+                            <form method="post" action="{% url 'blog:comment_remove' comment_id=comentario.id %}" 
+                                  class="d-inline" 
+                                  data-confirm-message="{% trans 'Are you sure you want to remove this comment?' %}"
+                                  onsubmit="return confirm(this.getAttribute('data-confirm-message'));">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-1" title="{% trans 'Remove this comment?' %}">
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </form>
+                          {% endif %}
+                      </div>
+                      <footer class="blockquote-footer mb-0 text-end">
+                        <small>
+                          <i class="bi bi-person"></i> {{ comentario.autor.get_full_name|default:comentario.autor.username }} 
+                          <span class="mx-1">|</span>
+                          <i class="bi bi-clock"></i> {{ comentario.publicado_em|timezone:None|date:"SHORT_DATETIME_FORMAT" }}
+                        </small>
+                      </footer>
+                    </div>
+                  </div>
+                {% empty %}
+                  <p class="text-muted">{% trans "No comments yet." %}</p>
+                {% endfor %}
+              </div>
+        
+              <!-- Add Comment Form -->
+              {% if request.user.is_authenticated %}
+                <div class="add-comment-form mt-4 pt-4 border-top">
+                  <h5>{% trans "Add your comment" %}</h5>
+                  <form method="post" action="{% url 'blog:post_comment' post_id=post.id %}" class="mb-3" aria-label="{% trans 'Comment form' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {# Use trans tag to create a variable for the placeholder text #}
+                        {% trans "Write your comment here..." as comment_placeholder %}
+                        {% render_field comment_form.conteudo class+="form-control" rows="4" placeholder=comment_placeholder %}
+                        {% if comment_form.conteudo.errors %}
+                            <div class="invalid-feedback d-block">{{ comment_form.conteudo.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary" title="{% trans 'Publish comment' %}">{% trans "Post Comment" %}</button>
+                  </form>
+                </div>
+              {% else %}
+                <p class="mt-4 pt-4 border-top"><em><a href="{% url 'users:login_choice' %}?next={{ request.path }}">{% trans "Log in" %}</a> {% trans "to add a comment." %}</em></p>
+              {% endif %}
+            </section>
+        {% elif post.status == 'PENDING' %} 
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle me-1"></i> {% trans "Comments can be added after the post is approved." %}
+            </div>
+        {% endif %}
+        
+        {# Back to list link #}
+        <div class="mt-5">
+             <a href="{% url 'blog:post_list_public' %}" class="btn btn-outline-secondary" title="{% trans 'Return to blog list' %}"><i class="bi bi-arrow-left"></i> {% trans "Back to Blog" %}</a>
+        </div>
+        
+    </article>
+</div>
 
 <!-- Modal for Remove Post Confirmation -->
+{# Use pre-calculated context variable #}
 {% if not post.removido and can_remove_post %}
 <div class="modal fade" id="removePostModal-{{ post.id }}" tabindex="-1" aria-labelledby="removePostModalLabel-{{ post.id }}" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="post" action="{% url 'blog:post_remove' class_id=turma.id post_id=post.id %}">
+      <form method="post" action="{% url 'blog:post_remove' post_id=post.id %}">
         {% csrf_token %}
         <div class="modal-header">
           <h5 class="modal-title" id="removePostModalLabel-{{ post.id }}">{% trans "Confirm Removal" %}</h5>
@@ -184,4 +207,4 @@
 </div>
 {% endif %}
 
-{% endblock blog_content %}
+{% endblock %}

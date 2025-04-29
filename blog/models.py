@@ -38,58 +38,80 @@ class Post(models.Model):
     conteudo = RichTextField(
         _('content')
     )
+    # --- New Fields for Attachments ---
+    image = models.ImageField(
+        _("image"), 
+        upload_to='blog_images/%Y/%m/', # Store in media/blog_images/YYYY/MM/
+        null=True, 
+        blank=True,
+        help_text=_("Optional image associated with the post.")
+    )
+    attachment = models.FileField(
+        _("attachment"), 
+        upload_to='blog_attachments/%Y/%m/', # Store in media/blog_attachments/YYYY/MM/
+        null=True, 
+        blank=True,
+        help_text=_("Optional file attachment (e.g., PDF).")
+    )
+    # --- End New Fields ---
+    
     # Timestamp when the post was created.
     publicado_em = models.DateTimeField(
         _('published at'),
-        default=timezone.now # Use default=timezone.now for more flexibility than auto_now_add
+        default=timezone.now
     )
+    
+    # --- Status Field (Replaces Visibility) ---
+    STATUS_CHOICES = [
+        ('PENDING', _('Pending Approval')),
+        ('PUBLISHED', _('Published')),
+        # ('REMOVED', _('Removed')), # Combine with 'removido' field logic for simplicity
+    ]
+    status = models.CharField(
+        _('status'),
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='PENDING',
+        help_text=_('Publication status of the post.')
+    )
+    approved_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='approved_posts',
+        verbose_name=_('approved by'),
+        help_text=_('User who approved the post for publication.')
+    )
+    approved_at = models.DateTimeField(
+        _('approved at'),
+        null=True,
+        blank=True,
+        help_text=_('Timestamp when the post was approved.')
+    )
+    # --- End Status Field ---
 
-    # Choices for the main category of the post.
+    # Choices for the main category of the post - REMOVED 'DIARIO'
     CATEGORIA_CHOICES = [
-        ('DIARIO', _('Class Diary')),       # Standard class diary entry
-        ('AVISO', _('Announcement')),        # Teacher announcement
-        ('PROJETO', _('Project Update')),    # Related to a specific project
-        ('TRABALHO', _('Student Work')),    # Specific student work/output
-        ('OUTRO', _('Other')),             # General category
+        # ('DIARIO', _('Class Diary')), 
+        ('AVISO', _('Announcement')),
+        ('PROJETO', _('Project Update')),
+        ('TRABALHO', _('Student Work')),
+        ('OUTRO', _('Other')),
     ]
-    # Choices specific to 'DIARIO' category (MEM specific reflections).
-    CATEGORIA_DIARIO_CHOICES = [
-        ('GOSTEI', _('Liked')),
-        ('NAO_GOSTEI', _('Disliked')),
-        ('QUEREMOS', _('We Want')),
-        ('FIZEMOS', _('We Did')),
-    ]
+    # REMOVED CATEGORIA_DIARIO_CHOICES
+    # CATEGORIA_DIARIO_CHOICES = [...] 
 
     # Main category of the post.
     categoria = models.CharField(
         _('category'),
         max_length=20, 
         choices=CATEGORIA_CHOICES, 
-        default='OUTRO', # Changed default, DIARIO might require subcategory
+        default='OUTRO', 
         help_text=_('The main category of the post.')
     )
-    # Subcategory, specifically used if categoria is 'DIARIO'.
-    subcategoria_diario = models.CharField(
-        _('diary subcategory'),
-        max_length=20, 
-        choices=CATEGORIA_DIARIO_CHOICES, 
-        blank=True,
-        null=True, # Allow null if not DIARIO
-        help_text=_('Specific subcategory if the main category is Class Diary.')
-    )
-
-    # Visibility settings for the post.
-    VISIBILIDADE_CHOICES = [
-        ('INTERNA', _('Internal (Class Members Only)')),
-        # ('PUBLICA', _('Public (Future Use)')), # Keep internal-only for MVP
-    ]
-    visibilidade = models.CharField(
-        _('visibility'),
-        max_length=10, 
-        choices=VISIBILIDADE_CHOICES, 
-        default='INTERNA',
-        help_text=_('Controls who can view the post.')
-    )
+    # REMOVED subcategoria_diario field
+    # subcategoria_diario = models.CharField(...) 
 
     # Fields for soft deletion / moderation.
     removido = models.BooleanField(
@@ -128,117 +150,111 @@ class Post(models.Model):
         """Returns a string representation of the post."""
         return self.titulo or f"Post #{self.pk} by {self.autor.username}"
 
-    def get_category_display_full(self):
-        """Returns the display name for the category and subcategory if applicable."""
-        display = self.get_categoria_display()
-        if self.categoria == 'DIARIO' and self.subcategoria_diario:
-            display += f" - {self.get_subcategoria_diario_display()}"
-        return display
-
     def is_editable_by(self, user: User) -> bool:
         """
         Checks if a given user has permission to edit this post.
-        Follows MEM principles: Authors edit their own work, teachers moderate.
+        Allows author to edit if PENDING, or Admin anytime.
+        Published posts generally shouldn't be directly edited by author.
         """
         if not user or not user.is_authenticated:
             return False
-        # Admins can edit anything
+        # Admins can edit anything (careful with published posts?)
         if user.is_superuser or (hasattr(user, 'role') and user.role == 'admin'):
+            return True # Maybe add condition !self.removido?
+        # Author can edit their own PENDING posts
+        if self.status == 'PENDING' and not self.removido and self.autor == user:
             return True
-        # Author can edit their own non-removed posts
-        if not self.removido and self.autor == user:
-            return True
-        # Teachers do NOT get general edit permission here; they should use comments or removal.
+        # Teachers do NOT get general edit permission here.
         return False
 
     def is_removable_by(self, user: User) -> bool:
         """Checks if a given user has permission to remove this post."""
         if not user or not user.is_authenticated:
             return False
-        # Admins can remove anything
         if user.is_superuser or (hasattr(user, 'role') and user.role == 'admin'):
             return True
-        # Teachers of the class can remove posts for moderation
         if hasattr(user, 'role') and user.role == 'professor':
-            if self.turma in user.classes_taught.all():
+            # Check if user teaches the class associated with the post
+            if self.turma in getattr(user, 'classes_taught', Class.objects.none()).all():
                 return True
-        # Authors generally shouldn't remove their own posts after publishing?
-        # Or maybe allow author removal? For now, restrict to teacher/admin.
-        # if self.autor == user:
-        #    return True 
+        # Maybe allow author to remove PENDING posts?
+        # if self.status == 'PENDING' and self.autor == user:
+        #     return True
         return False
 
-    def is_visible_to(self, user: User) -> bool:
+    def is_visible_to(self, user) -> bool: # user can be AnonymousUser or User
         """Checks if a given user has permission to view this post."""
-        if self.removido and not (user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')):
-            # Only admins can see removed posts (for potential restoration)
-            # TODO: Maybe allow authors/teachers to see their removed posts?
-            return False
-            
-        if not user or not user.is_authenticated:
-            # If we had public posts, logic would differ here
-            return False
-            
-        # Admins can see everything
-        if user.is_superuser or (hasattr(user, 'role') and user.role == 'admin'):
+        # Rule 1: If published and not removed, visible to everyone.
+        if self.status == 'PUBLISHED' and not self.removido:
             return True
             
-        # Members of the class (students and teachers) can see internal posts
-        if self.visibilidade == 'INTERNA':
-            is_student_in_class = self.turma in user.classes_attended.all()
-            is_teacher_in_class = self.turma in user.classes_taught.all()
-            # Check if guardian is associated with a student in this class
-            is_guardian_for_student_in_class = False
-            if hasattr(user, 'role') and user.role == 'encarregado':
-                # Check if any student this user is guardian for is in the post's class
-                is_guardian_for_student_in_class = self.turma.students.filter(
-                    encarregados_relations__encarregado=user
-                ).exists()
-                
-            return is_student_in_class or is_teacher_in_class or is_guardian_for_student_in_class
-        
-        # Default deny if no condition met (e.g., future visibility types)
+        # Rule 2: If removed, only visible to moderators (teacher/admin).
+        if self.removido:
+            if not user or not user.is_authenticated: return False
+            is_admin = user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')
+            is_teacher_of_class = False
+            if hasattr(user, 'role') and user.role == 'professor':
+                is_teacher_of_class = self.turma in getattr(user, 'classes_taught', Class.objects.none()).all()
+            return is_admin or is_teacher_of_class
+            
+        # Rule 3: If pending, only visible to author and moderators.
+        if self.status == 'PENDING':
+            if not user or not user.is_authenticated: return False
+            is_admin = user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')
+            is_teacher_of_class = False
+            if hasattr(user, 'role') and user.role == 'professor':
+                is_teacher_of_class = self.turma in getattr(user, 'classes_taught', Class.objects.none()).all()
+            return self.autor == user or is_admin or is_teacher_of_class
+            
+        # Default deny if status is unexpected or no rule matched
         return False
-
-    def clean(self):
-        """Model validation rules."""
-        super().clean()
-        # Ensure diary subcategory is only set if category is DIARIO
-        if self.categoria == 'DIARIO' and not self.subcategoria_diario:
-            # Make subcategory required for DIARIO? Or just allow it?
-            # For now, allow DIARIO without subcategory, but clear sub if not DIARIO
-            pass # Let's not make it mandatory for now
-        if self.categoria != 'DIARIO' and self.subcategoria_diario:
-            # Clear subcategory if the main category is not DIARIO
-            self.subcategoria_diario = None 
 
     def save(self, *args, **kwargs):
-        self.clean() # Ensure validation runs on save
+        # self.clean() # Removed call to clean
         super().save(*args, **kwargs)
 
     def remover(self, user: User, motivo: str = None):
         """Marks the post as removed and logs the action. Requires permission check before calling."""
         if self.removido:
-            return # Avoid multiple removals / overwriting original remover
-            
+            return 
         self.removido = True
         self.removido_por = user
         self.removido_em = timezone.now()
         self.motivo_remocao = motivo or ""
-        self.save()
+        # Update status maybe? Or keep status and rely on removido flag?
+        # Let's keep status as is for now, `is_visible_to` handles removed.
+        # self.status = 'REMOVED' # If we add REMOVED status
+        self.save(update_fields=['removido', 'removido_por', 'removido_em', 'motivo_remocao'])
         
-        # Log the moderation action
         ModerationLog.objects.create(
             acao='REMOVER_POST',
             user=user,
             post=self,
             motivo=self.motivo_remocao,
-            # Fixed Syntax: Use triple quotes for multi-line f-string
             conteudo_snapshot=f"""Title: {self.titulo}
 
 {self.conteudo}""" # Store snapshot
         )
         print(f"Post {self.pk} marked as removed by {user.username}")
+
+    def approve(self, user: User):
+        """Marks the post as published. Requires permission check before calling."""
+        if self.status == 'PUBLISHED':
+            return # Already published
+            
+        self.status = 'PUBLISHED'
+        self.approved_by = user
+        self.approved_at = timezone.now()
+        # Also ensure it's not marked as removed if being approved
+        self.removido = False
+        self.removido_por = None
+        self.removido_em = None
+        self.motivo_remocao = ''
+        self.save(update_fields=['status', 'approved_by', 'approved_at', 'removido', 'removido_por', 'removido_em', 'motivo_remocao'])
+        
+        # Log the action? (Optional)
+        # ModerationLog.objects.create(acao='APPROVE_POST', user=user, post=self)
+        print(f"Post {self.pk} approved by {user.username}")
 
 class Comment(models.Model):
     """

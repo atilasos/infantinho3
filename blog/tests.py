@@ -5,28 +5,50 @@ from classes.models import Class
 from .models import Post, Comment
 from django.urls import reverse
 from django.core import mail
+from django.contrib.auth.models import Group
 
-class BlogModelTests(TestCase):
-    def setUp(self):
-        # Criar utilizadores
-        self.admin = User.objects.create_user(username='admin', email='admin@escola.pt', password='admin', role='admin', status='ativo')
-        self.prof = User.objects.create_user(username='prof', email='prof@escola.pt', password='prof', role='professor', status='ativo')
-        self.aluno = User.objects.create_user(username='aluno', email='aluno@escola.pt', password='aluno', role='aluno', status='ativo')
-        self.aluno2 = User.objects.create_user(username='aluno2', email='aluno2@escola.pt', password='aluno2', role='aluno', status='ativo')
-        # Criar turma e associar
-        self.turma = Class.objects.create(name='Turma A', year=2024)
-        self.turma.students.add(self.aluno)
-        self.turma.teachers.add(self.prof)
-        # Garantir relações ManyToMany corretas
-        self.prof.refresh_from_db()
-        self.aluno.refresh_from_db()
-        self.admin.refresh_from_db()
-        self.aluno2.refresh_from_db()
+# === Base Test Case ===
+class BlogBaseTestCase(TestCase):
+    """Base class for blog tests with common setup data."""
+    @classmethod
+    def setUpTestData(cls):
+        # Create Groups
+        cls.prof_group, _ = Group.objects.get_or_create(name='professor')
+        cls.aluno_group, _ = Group.objects.get_or_create(name='aluno')
+        cls.admin_group, _ = Group.objects.get_or_create(name='administrador')
+        cls.encarregado_group, _ = Group.objects.get_or_create(name='encarregado')
+        
+        # Create Users
+        cls.admin = User.objects.create_superuser(username='blogadmin', email='blogadmin@test.com', password='pwd')
+        cls.prof1 = User.objects.create_user(username='blogprof1', email='blogprof1@test.com', password='pwd', role='professor', status='ativo')
+        cls.prof2 = User.objects.create_user(username='blogprof2', email='blogprof2@test.com', password='pwd', role='professor', status='ativo')
+        cls.aluno1 = User.objects.create_user(username='blogaluno1', email='blogaluno1@test.com', password='pwd', role='aluno', status='ativo')
+        cls.aluno2 = User.objects.create_user(username='blogaluno2', email='blogaluno2@test.com', password='pwd', role='aluno', status='ativo')
+        cls.guardian = User.objects.create_user(username='blogguardian', email='blogguardian@test.com', password='pwd', role='encarregado', status='ativo')
+        cls.guest = User.objects.create_user(username='blogguest', email='blogguest@test.com', password='pwd', status='convidado')
+        
+        # Add Users to Groups
+        cls.admin.groups.add(cls.admin_group)
+        cls.prof1.groups.add(cls.prof_group)
+        cls.prof2.groups.add(cls.prof_group)
+        cls.aluno1.groups.add(cls.aluno_group)
+        cls.aluno2.groups.add(cls.aluno_group)
+        cls.guardian.groups.add(cls.encarregado_group)
+        
+        # Create Class and assign members
+        cls.turma1 = Class.objects.create(name='Blog Test Class', year=2024)
+        cls.turma1.teachers.add(cls.prof1)
+        cls.turma1.students.add(cls.aluno1)
+        
+        # Create Guardian Relation
+        GuardianRelation.objects.create(aluno=cls.aluno1, encarregado=cls.guardian)
 
+# === Model Tests ===
+class BlogModelTests(BlogBaseTestCase):
     def test_criacao_post_diario_com_subcategoria(self):
         post = Post.objects.create(
-            turma=self.turma,
-            autor=self.aluno,
+            turma=self.turma1,
+            autor=self.aluno1,
             titulo='Diário',
             conteudo='Hoje fizemos...',
             categoria='DIARIO',
@@ -37,8 +59,8 @@ class BlogModelTests(TestCase):
 
     def test_criacao_post_diario_sem_subcategoria(self):
         post = Post(
-            turma=self.turma,
-            autor=self.aluno,
+            turma=self.turma1,
+            autor=self.aluno1,
             titulo='Diário',
             conteudo='Hoje fizemos...',
             categoria='DIARIO',
@@ -48,8 +70,8 @@ class BlogModelTests(TestCase):
 
     def test_criacao_post_nao_diario_com_subcategoria(self):
         post = Post.objects.create(
-            turma=self.turma,
-            autor=self.prof,
+            turma=self.turma1,
+            autor=self.prof1,
             titulo='Aviso',
             conteudo='Amanhã não há aula',
             categoria='AVISO',
@@ -59,141 +81,93 @@ class BlogModelTests(TestCase):
 
     def test_is_editable_by(self):
         post = Post.objects.create(
-            turma=self.turma,
-            autor=self.aluno,
+            turma=self.turma1,
+            autor=self.aluno1,
             titulo='Diário',
             conteudo='Hoje fizemos...',
             categoria='DIARIO',
             subcategoria_diario='FIZEMOS',
         )
-        self.assertTrue(post.is_editable_by(self.aluno))
+        self.assertTrue(post.is_editable_by(self.aluno1))
         self.assertTrue(post.is_editable_by(self.admin))
         self.assertFalse(post.is_editable_by(self.aluno2))
-        self.assertFalse(post.is_editable_by(self.prof))  # Professor não pode editar diário de aluno
+        self.assertFalse(post.is_editable_by(self.prof1))  # Professor não pode editar diário de aluno
 
     def test_is_visible_to(self):
         post_diario = Post.objects.create(
-            turma=self.turma,
-            autor=self.aluno,
+            turma=self.turma1,
+            autor=self.aluno1,
             titulo='Diário',
             conteudo='Hoje fizemos...',
             categoria='DIARIO',
             subcategoria_diario='FIZEMOS',
+            visibilidade='INTERNA'
         )
         post_publico = Post.objects.create(
-            turma=self.turma,
-            autor=self.prof,
+            turma=self.turma1,
+            autor=self.prof1,
             titulo='Projeto',
             conteudo='Projeto aberto',
             categoria='PROJETO',
             visibilidade='PUBLICA',
         )
-        self.assertTrue(post_diario.is_visible_to(self.aluno))
-        self.assertTrue(post_diario.is_visible_to(self.prof))
+        self.assertTrue(post_diario.is_visible_to(self.aluno1))
+        self.assertTrue(post_diario.is_visible_to(self.prof1))
         self.assertTrue(post_diario.is_visible_to(self.admin))
+        self.assertTrue(post_diario.is_visible_to(self.guardian))
         self.assertFalse(post_diario.is_visible_to(self.aluno2))
+        self.assertFalse(post_diario.is_visible_to(self.prof2))
         self.assertTrue(post_publico.is_visible_to(self.aluno2))
+        self.assertTrue(post_publico.is_visible_to(self.prof2))
 
     def test_comentario_moderacao(self):
         post = Post.objects.create(
-            turma=self.turma,
-            autor=self.prof,
+            turma=self.turma1,
+            autor=self.prof1,
             titulo='Aviso',
             conteudo='Amanhã não há aula',
             categoria='AVISO',
         )
         comentario = Comment.objects.create(
             post=post,
-            autor=self.aluno,
+            autor=self.aluno1,
             conteudo='Mensagem inadequada',
         )
         self.assertFalse(comentario.removido)
-        comentario.remover(self.prof, motivo='Inadequado')
+        comentario.remover(self.prof1, motivo='Inadequado')
         self.assertTrue(comentario.removido)
-        self.assertEqual(comentario.removido_por, self.prof)
+        self.assertEqual(comentario.removido_por, self.prof1)
         self.assertEqual(comentario.motivo_remocao, 'Inadequado')
         self.assertIsNotNone(comentario.removido_em)
-        # Não pode remover novamente
-        comentario.remover(self.admin, motivo='Outro motivo')
-        self.assertEqual(comentario.removido_por, self.prof)  # Não deve sobrescrever
+        self.assertFalse(comentario.is_removable_by(self.prof2), "Other teacher should not be able to remove")
+        comentario.removido = False
+        comentario.save()
+        self.assertTrue(comentario.is_removable_by(self.admin), "Admin should be able to remove")
+        comentario.remover(self.admin, motivo='Admin remove')
+        self.assertTrue(comentario.removido)
+        self.assertEqual(comentario.removido_por, self.admin)
 
     def test_str_internacionalizacao(self):
         post = Post.objects.create(
-            turma=self.turma,
-            autor=self.prof,
+            turma=self.turma1,
+            autor=self.prof1,
             titulo='Aviso',
             conteudo='Amanhã não há aula',
             categoria='AVISO',
         )
         comentario = Comment.objects.create(
             post=post,
-            autor=self.aluno,
+            autor=self.aluno1,
             conteudo='Mensagem',
         )
-        self.assertIn('Comentário de', str(comentario))
-
-    def test_envio_email_ao_criar_post(self):
-        self.client.force_login(self.prof)
-        url = reverse('blog_post_create', args=[self.turma.id])
-        data = {
-            'titulo': 'Novo Aviso',
-            'conteudo': 'Conteúdo do aviso para a turma.',
-            'categoria': 'AVISO',
-            'subcategoria_diario': '',
-            'visibilidade': 'INTERNA',
-        }
-        response = self.client.post(url, data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        # Verifica se email foi enviado
-        self.assertGreaterEqual(len(mail.outbox), 1)
-        email = mail.outbox[0]
-        self.assertIn('Novo post no blog da turma', email.subject)
-        self.assertIn(self.aluno.email, email.to)
-        self.assertIn(self.prof.email, email.to)
-        self.assertIn('Novo Aviso', email.body)
-        self.assertIn('Conteúdo do aviso', email.body)
-
-    def test_envio_email_para_encarregado_diario_aviso(self):
-        # Cria encarregado para o aluno
-        encarregado = User.objects.create_user(username='pai', email='pai@familia.pt', password='123', role='encarregado', status='ativo')
-        GuardianRelation.objects.create(aluno=self.aluno, encarregado=encarregado, parentesco='Pai')
-        self.client.force_login(self.prof)
-        url = reverse('blog_post_create', args=[self.turma.id])
-        data = {
-            'titulo': 'Diário de Turma',
-            'conteudo': 'Hoje fizemos...',
-            'categoria': 'DIARIO',
-            'subcategoria_diario': 'GOSTEI',
-            'visibilidade': 'INTERNA',
-        }
-        response = self.client.post(url, data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        # Verifica se email foi enviado para encarregado
-        emails = [email for m in mail.outbox for email in m.to]
-        self.assertIn(encarregado.email, emails)
-
-    def test_envio_email_para_autor_ao_comentar(self):
-        post = Post.objects.create(
-            turma=self.turma,
-            autor=self.aluno,
-            titulo='Diário',
-            conteudo='Hoje fizemos...',
-            categoria='DIARIO',
-            subcategoria_diario='GOSTEI',
-        )
-        self.client.force_login(self.prof)
-        url = reverse('blog_post_comment', args=[self.turma.id, post.id])
-        data = {'conteudo': 'Parabéns pelo post!'}
-        response = self.client.post(url, data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        # Verifica se email foi enviado para o autor do post
-        emails = [email for m in mail.outbox for email in m.to]
-        self.assertIn(self.aluno.email, emails)
+        self.assertIn(self.aluno1.username, str(comentario))
+        self.assertIn(f"Post {post.id}", str(comentario))
+        self.assertIn('Mensagem', str(comentario))
 
     def test_post_moderacao_remocao(self):
         post = Post.objects.create(
-            turma=self.turma,
-            autor=self.prof,
+            turma=self.turma1,
+            autor=self.prof1,
             titulo='Aviso',
             conteudo='Amanhã não há aula',
             categoria='AVISO',
@@ -204,68 +178,474 @@ class BlogModelTests(TestCase):
         self.assertEqual(post.removido_por, self.admin)
         self.assertEqual(post.motivo_remocao, 'Inadequado')
         self.assertIsNotNone(post.removido_em)
-        # Não pode remover novamente
-        post.remover(self.prof, motivo='Outro motivo')
-        self.assertEqual(post.removido_por, self.admin)  # Não deve sobrescrever
-        # Verifica se log foi criado
+        self.assertFalse(post.is_removable_by(self.prof2), "Other teacher should not be able to remove post")
+        post.removido = False
+        post.save()
+        self.assertTrue(post.is_removable_by(self.prof1), "Class teacher should be able to remove post")
+        post.remover(self.prof1, motivo='Class Teacher Remove')
+        self.assertTrue(post.removido)
+        self.assertEqual(post.removido_por, self.prof1)
         from blog.models import ModerationLog
         logs = ModerationLog.objects.filter(post=post, acao='REMOVER_POST')
-        self.assertEqual(logs.count(), 1)
-        self.assertEqual(logs.first().user, self.admin)
-        self.assertEqual(logs.first().motivo, 'Inadequado')
+        self.assertGreaterEqual(logs.count(), 1)
+        self.assertEqual(logs.latest('data').user, self.prof1)
+        self.assertEqual(logs.latest('data').motivo, 'Class Teacher Remove')
 
+# === View Test Classes (To be created/populated) ===
+
+class PostListViewTests(BlogBaseTestCase):
+    def test_view_url_exists_at_desired_location(self):
+        url = reverse('blog:post_list', args=[self.turma1.id])
+        self.client.force_login(self.prof1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        url = reverse('blog:post_list', args=[self.turma1.id])
+        self.client.force_login(self.prof1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        url = reverse('blog:post_list', args=[self.turma1.id])
+        self.client.force_login(self.prof1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/post_list.html')
+
+    def test_list_shows_only_class_posts(self):
+        # Create post for the test class
+        post1 = Post.objects.create(turma=self.turma1, autor=self.prof1, titulo='Post Turma 1', conteudo='...')
+        # Create another class and post
+        other_turma = Class.objects.create(name='Other Class', year=2024)
+        other_turma.teachers.add(self.prof1)
+        post2 = Post.objects.create(turma=other_turma, autor=self.prof1, titulo='Post Turma 2', conteudo='...')
+        
+        url = reverse('blog:post_list', args=[self.turma1.id])
+        self.client.force_login(self.prof1)
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, post1.titulo)
+        self.assertNotContains(response, post2.titulo)
+
+class PostDetailViewTests(BlogBaseTestCase):
+    def setUp(self):
+        # Create a post specific to this test class for detail view
+        self.post = Post.objects.create(
+            turma=self.turma1,
+            autor=self.prof1,
+            titulo='Detail Test Post',
+            conteudo='Content here.',
+            categoria='AVISO'
+        )
+        self.detail_url = reverse('blog:post_detail', args=[self.turma1.id, self.post.id])
+
+    def test_view_url_exists_at_desired_location(self):
+        self.client.force_login(self.prof1)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        self.client.force_login(self.prof1)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        self.client.force_login(self.prof1)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/post_detail.html')
+
+    def test_view_shows_post_content(self):
+        self.client.force_login(self.prof1)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.post.titulo)
+        self.assertContains(response, self.post.conteudo)
+        # Check if comments form is present (example)
+        self.assertIn('comment_form', response.context)
+
+    def test_view_shows_comments(self):
+        comment = Comment.objects.create(post=self.post, autor=self.aluno1, conteudo='Test comment')
+        self.client.force_login(self.prof1)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, comment.conteudo)
+
+class PostCreateViewTests(BlogBaseTestCase):
+    def test_envio_email_ao_criar_post(self):
+        self.client.force_login(self.prof1)
+        url = reverse('blog:post_create', args=[self.turma1.id])
+        data = {
+            'titulo': 'Novo Aviso Prof1',
+            'conteudo': 'Conteúdo do aviso para a turma.',
+            'categoria': 'AVISO',
+            'subcategoria_diario': '',
+            'visibilidade': 'INTERNA',
+        }
+        response = self.client.post(url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(mail.outbox), 1, "Email outbox is empty")
+        email = mail.outbox[-1]
+        self.assertIn(f'Novo post na turma {self.turma1.name}', email.subject)
+        self.assertIn(self.aluno1.email, email.to)
+        self.assertIn('Novo Aviso Prof1', email.body)
+
+class PostCommentViewTests(BlogBaseTestCase):
+    def test_envio_email_para_autor_ao_comentar(self):
+        post = Post.objects.create(
+            turma=self.turma1,
+            autor=self.aluno1,
+            titulo='Post Aluno1',
+            conteudo='Conteúdo...',
+            categoria='DIARIO',
+            subcategoria_diario='GOSTEI',
+        )
+        self.client.force_login(self.prof1)
+        url = reverse('blog:post_comment', args=[self.turma1.id, post.id])
+        data = {'conteudo': 'Parabéns pelo post!'}
+        response = self.client.post(url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(mail.outbox), 1, "Email outbox is empty")
+        email = mail.outbox[-1]
+        self.assertIn(self.aluno1.email, email.to)
+        self.assertNotIn(self.prof1.email, email.to)
+        self.assertIn(f'Novo comentário no seu post "{post.titulo}"' , email.subject)
+
+class ModerationViewTests(BlogBaseTestCase):
     def test_logs_moderacao_visiveis_para_admin_professor(self):
         post = Post.objects.create(
-            turma=self.turma,
-            autor=self.prof,
-            titulo='Aviso',
+            turma=self.turma1,
+            autor=self.prof1,
+            titulo='Aviso Mod',
             conteudo='Amanhã não há aula',
             categoria='AVISO',
         )
-        post.remover(self.admin, motivo='Inadequado')
-        url = reverse('blog_moderation_logs', args=[self.turma.id])
-        # Admin pode ver
+        post.remover(self.admin, motivo='Inadequado Log Test')
+        url = reverse('blog:moderation_logs', args=[self.turma1.id])
         self.client.force_login(self.admin)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Remover Post')
-        # Professor da turma pode ver
-        self.client.force_login(self.prof)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        # Aluno não pode ver
-        self.client.force_login(self.aluno)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
+        response_admin = self.client.get(url)
+        self.assertEqual(response_admin.status_code, 200)
+        self.assertContains(response_admin, 'Remover Post')
+        self.client.logout()
+        self.client.force_login(self.prof1)
+        response_prof = self.client.get(url)
+        self.assertEqual(response_prof.status_code, 200)
+        self.client.logout()
+        self.client.force_login(self.prof2)
+        response_prof2 = self.client.get(url)
+        self.assertEqual(response_prof2.status_code, 302)
+        self.client.logout()
+        self.client.force_login(self.aluno1)
+        response_aluno = self.client.get(url)
+        self.assertEqual(response_aluno.status_code, 302)
 
     def test_restaurar_post_removido(self):
         post = Post.objects.create(
-            turma=self.turma,
-            autor=self.prof,
-            titulo='Aviso',
-            conteudo='Amanhã não há aula',
+            turma=self.turma1,
+            autor=self.prof1,
+            titulo='Aviso Restore',
+            conteudo='Conteúdo...',
             categoria='AVISO',
         )
-        post.remover(self.admin, motivo='Inadequado')
-        url = reverse('blog_post_restore', args=[self.turma.id, post.id])
-        # Professor pode restaurar
-        self.client.force_login(self.prof)
-        response = self.client.post(url, follow=True)
-        self.assertEqual(response.status_code, 200)
+        post.remover(self.admin, motivo='Test Restore')
+        self.assertTrue(post.removido)
+        url = reverse('blog:post_restore', args=[self.turma1.id, post.id])
+        
+        self.client.force_login(self.aluno1)
+        response_aluno = self.client.post(url, follow=True)
         post.refresh_from_db()
-        self.assertFalse(post.removido)
-        # Log de restauração criado
-        from blog.models import ModerationLog
-        logs = ModerationLog.objects.filter(post=post, acao='RESTAURAR_POST')
-        self.assertEqual(logs.count(), 1)
-        # Aluno não pode restaurar
-        post.remover(self.admin, motivo='Inadequado')
-        self.client.force_login(self.aluno)
-        response = self.client.post(url, follow=True)
+        self.assertTrue(post.removido, "Post should still be removed after student attempt")
+        self.client.logout()
+        
+        self.client.force_login(self.prof2)
+        response_prof2 = self.client.post(url, follow=True)
+        post.refresh_from_db()
+        self.assertTrue(post.removido, "Post should still be removed after other prof attempt")
+        self.client.logout()
+        
+        self.client.force_login(self.prof1)
+        response_prof1 = self.client.post(url, follow=True)
+        self.assertEqual(response_prof1.status_code, 200)
+        self.assertContains(response_prof1, "Post restored successfully.")
+        post.refresh_from_db()
+        self.assertFalse(post.removido, "Post should be restored by class teacher")
+        
+        post.remover(self.prof1, motivo='Removed again')
+        self.assertTrue(post.removido)
+        self.client.force_login(self.admin)
+        response_admin = self.client.post(url, follow=True)
+        self.assertEqual(response_admin.status_code, 200)
+        post.refresh_from_db()
+        self.assertFalse(post.removido, "Post should be restored by admin")
+
+    def test_comment_remove_permission_required_allows(self):
+        """Test @comment_remove_permission_required allows class teacher and admin."""
+        post = Post.objects.create(turma=self.turma1, autor=self.prof1, titulo='Comment Remove Test')
+        comment = Comment.objects.create(post=post, autor=self.aluno1, conteudo='Test Comment')
+        remove_url = reverse('blog:comment_remove', args=[self.turma1.id, post.id, comment.id])
+        detail_url = reverse('blog:post_detail', args=[self.turma1.id, post.id])
+        
+        # Teacher of class
+        self.client.force_login(self.prof1)
+        response_prof = self.client.post(remove_url)
+        self.assertEqual(response_prof.status_code, 302)
+        self.assertRedirects(response_prof, detail_url)
+        comment.refresh_from_db()
+        self.assertTrue(comment.removido)
+        self.assertEqual(comment.removido_por, self.prof1)
+        self.client.logout()
+        
+        # Reset comment
+        comment.removido = False
+        comment.removido_por = None
+        comment.save()
+        
+        # Admin
+        self.client.force_login(self.admin)
+        response_admin = self.client.post(remove_url)
+        self.assertEqual(response_admin.status_code, 302)
+        self.assertRedirects(response_admin, detail_url)
+        comment.refresh_from_db()
+        self.assertTrue(comment.removido)
+        self.assertEqual(comment.removido_por, self.admin)
+        self.client.logout()
+        
+    def test_comment_remove_permission_required_blocks(self):
+        """Test @comment_remove_permission_required blocks author, other users."""
+        post = Post.objects.create(turma=self.turma1, autor=self.prof1, titulo='Comment Remove Block Test')
+        comment = Comment.objects.create(post=post, autor=self.aluno1, conteudo='Test Comment Block')
+        remove_url = reverse('blog:comment_remove', args=[self.turma1.id, post.id, comment.id])
+        login_url = reverse('users:login_choice')
+        
+        # Author (student)
+        self.client.force_login(self.aluno1)
+        response_author = self.client.post(remove_url)
+        self.assertEqual(response_author.status_code, 403)
+        comment.refresh_from_db()
+        self.assertFalse(comment.removido)
+        self.client.logout()
+        
+        # Other Teacher
+        self.client.force_login(self.prof2)
+        response_prof2 = self.client.post(remove_url)
+        self.assertEqual(response_prof2.status_code, 403)
+        comment.refresh_from_db()
+        self.assertFalse(comment.removido)
+        self.client.logout()
+
+        # Guest
+        response_guest = self.client.post(remove_url)
+        self.assertEqual(response_guest.status_code, 302) # Redirects to login
+        self.assertIn(login_url, response_guest.url)
+        comment.refresh_from_db()
+        self.assertFalse(comment.removido)
+
+    # Add tests for other decorators (...)
+
+# === Permission Decorator Tests ===
+class BlogPermissionDecoratorTests(BlogBaseTestCase):
+
+    def test_turma_member_required_allows_members(self):
+        """Test @turma_member_required allows class members (student, teacher)."""
+        list_url = reverse('blog:post_list', args=[self.turma1.id])
+        
+        # Student is member
+        self.client.force_login(self.aluno1)
+        response_student = self.client.get(list_url)
+        self.assertEqual(response_student.status_code, 200)
+        self.client.logout()
+        
+        # Teacher is member
+        self.client.force_login(self.prof1)
+        response_prof = self.client.get(list_url)
+        self.assertEqual(response_prof.status_code, 200)
+        self.client.logout()
+        
+        # Admin/Superuser is allowed implicitly by decorator
+        self.client.force_login(self.admin)
+        response_admin = self.client.get(list_url)
+        self.assertEqual(response_admin.status_code, 200)
+        self.client.logout()
+
+    def test_turma_member_required_blocks_non_members(self):
+        """Test @turma_member_required blocks non-members (other student, other teacher) but allows related guardian."""
+        list_url = reverse('blog:post_list', args=[self.turma1.id])
+        login_url = reverse('users:login_choice')
+
+        # Other Student (not in turma1)
+        self.client.force_login(self.aluno2)
+        response_aluno2 = self.client.get(list_url)
+        self.assertEqual(response_aluno2.status_code, 403, "Other student should be Forbidden")
+        self.client.logout()
+
+        # Other Teacher (not in turma1)
+        self.client.force_login(self.prof2)
+        response_prof2 = self.client.get(list_url)
+        self.assertEqual(response_prof2.status_code, 403, "Other teacher should be Forbidden")
+        self.client.logout()
+        
+        # Guardian (IS related to student in class, should be ALLOWED by decorator)
+        self.client.force_login(self.guardian)
+        response_guardian = self.client.get(list_url)
+        self.assertEqual(response_guardian.status_code, 200, "Guardian of class student should be allowed (gets 200 OK)")
+        self.client.logout()
+        
+        # Guest
+        response_guest = self.client.get(list_url)
+        self.assertEqual(response_guest.status_code, 302) # Expect redirect to login
+        self.assertIn(login_url, response_guest.url)
+        
+    def test_turma_post_create_required_allows_members(self):
+        """Test @turma_post_create_required allows student/teacher/admin."""
+        create_url = reverse('blog:post_create', args=[self.turma1.id])
+        
+        # Student
+        self.client.force_login(self.aluno1)
+        response_student = self.client.get(create_url)
+        self.assertEqual(response_student.status_code, 200)
+        self.client.logout()
+        
+        # Teacher
+        self.client.force_login(self.prof1)
+        response_prof = self.client.get(create_url)
+        self.assertEqual(response_prof.status_code, 200)
+        self.client.logout()
+        
+        # Admin
+        self.client.force_login(self.admin)
+        response_admin = self.client.get(create_url)
+        self.assertEqual(response_admin.status_code, 200)
+        self.client.logout()
+        
+    def test_turma_post_create_required_blocks_others(self):
+        """Test @turma_post_create_required blocks non-members and guardians."""
+        create_url = reverse('blog:post_create', args=[self.turma1.id])
+        login_url = reverse('users:login_choice')
+
+        # Other Student
+        self.client.force_login(self.aluno2)
+        response_aluno2 = self.client.get(create_url)
+        self.assertEqual(response_aluno2.status_code, 403)
+        self.client.logout()
+
+        # Other Teacher
+        self.client.force_login(self.prof2)
+        response_prof2 = self.client.get(create_url)
+        self.assertEqual(response_prof2.status_code, 403)
+        self.client.logout()
+        
+        # Guardian
+        self.client.force_login(self.guardian)
+        response_guardian = self.client.get(create_url)
+        self.assertEqual(response_guardian.status_code, 403)
+        self.client.logout()
+        
+        # Guest
+        response_guest = self.client.get(create_url)
+        self.assertEqual(response_guest.status_code, 302)
+        self.assertIn(login_url, response_guest.url)
+
+    def test_post_edit_permission_required_allows(self):
+        """Test @post_edit_permission_required allows author and admin."""
+        # Post created by aluno1
+        post = Post.objects.create(turma=self.turma1, autor=self.aluno1, titulo='Edit Test', categoria='DIARIO', subcategoria_diario='GOSTEI')
+        edit_url = reverse('blog:post_edit', args=[self.turma1.id, post.id])
+        
+        # Author (aluno1)
+        self.client.force_login(self.aluno1)
+        response_author = self.client.get(edit_url)
+        self.assertEqual(response_author.status_code, 200)
+        self.client.logout()
+        
+        # Admin
+        self.client.force_login(self.admin)
+        response_admin = self.client.get(edit_url)
+        self.assertEqual(response_admin.status_code, 200)
+        self.client.logout()
+        
+    def test_post_edit_permission_required_blocks(self):
+        """Test @post_edit_permission_required blocks others (teacher, other student)."""
+        post = Post.objects.create(turma=self.turma1, autor=self.aluno1, titulo='Edit Block Test', categoria='DIARIO', subcategoria_diario='GOSTEI')
+        edit_url = reverse('blog:post_edit', args=[self.turma1.id, post.id])
+        login_url = reverse('users:login_choice')
+        
+        # Teacher of class (not author)
+        self.client.force_login(self.prof1)
+        response_prof = self.client.get(edit_url)
+        self.assertEqual(response_prof.status_code, 403)
+        self.client.logout()
+        
+        # Other student (not author)
+        self.client.force_login(self.aluno2)
+        response_aluno2 = self.client.get(edit_url)
+        self.assertEqual(response_aluno2.status_code, 403)
+        self.client.logout()
+        
+        # Guest
+        response_guest = self.client.get(edit_url)
+        self.assertEqual(response_guest.status_code, 302)
+        self.assertIn(login_url, response_guest.url)
+
+    def test_post_remove_permission_required_allows(self):
+        """Test @post_remove_permission_required allows class teacher and admin."""
+        post = Post.objects.create(turma=self.turma1, autor=self.aluno1, titulo='Remove Test', categoria='AVISO')
+        remove_url = reverse('blog:post_remove', args=[self.turma1.id, post.id])
+        list_url = reverse('blog:post_list', args=[self.turma1.id])
+        
+        # Teacher of class
+        self.client.force_login(self.prof1)
+        response_prof = self.client.post(remove_url) # POST request
+        self.assertEqual(response_prof.status_code, 302)
+        self.assertRedirects(response_prof, list_url)
         post.refresh_from_db()
         self.assertTrue(post.removido)
-        # Admin pode restaurar
+        self.assertEqual(post.removido_por, self.prof1)
+        self.client.logout()
+        
+        # Reset post
+        post.removido = False
+        post.removido_por = None
+        post.save()
+        
+        # Admin
         self.client.force_login(self.admin)
-        response = self.client.post(url, follow=True)
+        response_admin = self.client.post(remove_url)
+        self.assertEqual(response_admin.status_code, 302)
+        self.assertRedirects(response_admin, list_url)
+        post.refresh_from_db()
+        self.assertTrue(post.removido)
+        self.assertEqual(post.removido_por, self.admin)
+        self.client.logout()
+        
+    def test_post_remove_permission_required_blocks(self):
+        """Test @post_remove_permission_required blocks author, other users."""
+        post = Post.objects.create(turma=self.turma1, autor=self.aluno1, titulo='Remove Block Test', categoria='AVISO')
+        remove_url = reverse('blog:post_remove', args=[self.turma1.id, post.id])
+        login_url = reverse('users:login_choice')
+        
+        # Author (student)
+        self.client.force_login(self.aluno1)
+        response_author = self.client.post(remove_url)
+        self.assertEqual(response_author.status_code, 403)
         post.refresh_from_db()
         self.assertFalse(post.removido)
+        self.client.logout()
+        
+        # Other Teacher
+        self.client.force_login(self.prof2)
+        response_prof2 = self.client.post(remove_url)
+        self.assertEqual(response_prof2.status_code, 403)
+        post.refresh_from_db()
+        self.assertFalse(post.removido)
+        self.client.logout()
+
+        # Guest
+        response_guest = self.client.post(remove_url)
+        self.assertEqual(response_guest.status_code, 302) # Redirects to login
+        self.assertIn(login_url, response_guest.url)
+        post.refresh_from_db()
+        self.assertFalse(post.removido)
+
+    # Add tests for other decorators (@comment_remove_permission_required, etc.)

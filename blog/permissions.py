@@ -3,6 +3,8 @@ from functools import wraps
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
+from django.http import Http404, HttpResponseForbidden
+from django.utils.translation import gettext_lazy as _
 
 # Assuming models are defined
 from .models import Post, Comment 
@@ -23,27 +25,32 @@ def turma_member_required(view_func):
         # Check authentication
         if not user.is_authenticated:
             messages.error(request, _('Authentication is required.'))
-            # Replace 'landing_page' with your actual login/landing page URL name if different
-            return redirect(reverse('landing_page') + f'?next={request.path}') 
+            # Correct the redirect URL for unauthenticated users
+            login_url = reverse('users:login_choice')
+            return redirect(f'{login_url}?next={request.path}') 
 
         # Check permissions
         allowed = False
         if user.is_superuser or (hasattr(user, 'role') and user.role == 'admin'):
             allowed = True
-        elif (turma in getattr(user, 'classes_attended', Class.objects.none()).all()) or \
-             (turma in getattr(user, 'classes_taught', Class.objects.none()).all()):
-             allowed = True
-        # Check if user is a guardian for any student in this class
-        elif hasattr(user, 'role') and user.role == 'encarregado':
-            if turma.students.filter(encarregados_relations__encarregado=user).exists():
+        else:
+            # Optimized checks using exists()
+            is_student = getattr(user, 'classes_attended', Class.objects.none()).filter(pk=turma.pk).exists()
+            is_teacher = getattr(user, 'classes_taught', Class.objects.none()).filter(pk=turma.pk).exists()
+            is_guardian = False
+            if hasattr(user, 'role') and user.role == 'encarregado':
+                is_guardian = turma.students.filter(encarregados_relations__encarregado=user).exists()
+            
+            if is_student or is_teacher or is_guardian:
                 allowed = True
 
         if allowed:
             return view_func(request, class_id, *args, **kwargs)
         else:
-            messages.error(request, _('Access restricted to this class members.'))
-            # Replace 'landing_page' with appropriate redirect target if needed
-            return redirect('landing_page')
+            # Return 403 Forbidden for authenticated users who are not members
+            # messages.error(request, _('Access restricted to this class members.'))
+            # return redirect('landing_page') # Old redirect
+            return HttpResponseForbidden(_('Access restricted to members of this class.'))
     return _wrapped_view
 
 def turma_post_create_required(view_func):
@@ -60,7 +67,9 @@ def turma_post_create_required(view_func):
         # Check authentication
         if not user.is_authenticated:
             messages.error(request, _('Authentication is required.'))
-            return redirect(reverse('landing_page') + f'?next={request.path}')
+            # Redirect to login choice, not landing page
+            login_url = reverse('users:login_choice')
+            return redirect(f'{login_url}?next={request.path}')
 
         # Check permissions
         allowed = False
@@ -75,8 +84,10 @@ def turma_post_create_required(view_func):
         if allowed:
             return view_func(request, class_id, *args, **kwargs)
         else:
-            messages.error(request, _('Only teachers and students of this class can create posts.'))
-            return redirect('blog_post_list', class_id=class_id)
+            # Return 403 Forbidden instead of redirecting
+            # messages.error(request, _('Only teachers and students of this class can create posts.'))
+            # return redirect('blog:post_list', class_id=class_id)
+            return HttpResponseForbidden(_('Only teachers and students of this class can create posts.'))
     return _wrapped_view
 
 def post_edit_permission_required(view_func):
@@ -92,14 +103,18 @@ def post_edit_permission_required(view_func):
 
         if not user.is_authenticated:
             messages.error(request, _('Authentication is required.'))
-            return redirect(reverse('landing_page') + f'?next={request.path}')
+            # Redirect to login choice, not landing page
+            login_url = reverse('users:login_choice')
+            return redirect(f'{login_url}?next={request.path}')
 
         # Use the model's method to check edit permission
         if post.is_editable_by(user):
             return view_func(request, class_id, post_id, *args, **kwargs)
         else:
-            messages.error(request, _('You do not have permission to edit this post.'))
-            return redirect('blog_post_detail', class_id=class_id, post_id=post_id)
+            # Return 403 Forbidden instead of redirecting
+            # messages.error(request, _('You do not have permission to edit this post.'))
+            # return redirect('blog:post_detail', class_id=class_id, post_id=post_id)
+            return HttpResponseForbidden(_('You do not have permission to edit this post.'))
     return _wrapped_view
 
 def post_remove_permission_required(view_func):
@@ -115,14 +130,18 @@ def post_remove_permission_required(view_func):
 
         if not user.is_authenticated:
             messages.error(request, _('Authentication is required.'))
-            return redirect(reverse('landing_page') + f'?next={request.path}')
+            # Redirect to login choice, not landing page
+            login_url = reverse('users:login_choice')
+            return redirect(f'{login_url}?next={request.path}')
 
         # Use the model's method to check removal permission
         if post.is_removable_by(user):
             return view_func(request, class_id, post_id, *args, **kwargs)
         else:
-            messages.error(request, _('You do not have permission to remove this post.'))
-            return redirect('blog_post_detail', class_id=class_id, post_id=post_id)
+            # Return 403 Forbidden instead of redirecting
+            # messages.error(request, _('You do not have permission to remove this post.'))
+            # return redirect('blog:post_detail', class_id=class_id, post_id=post_id)
+            return HttpResponseForbidden(_('You do not have permission to remove this post.'))
     return _wrapped_view
 
 def comment_remove_permission_required(view_func):
@@ -140,12 +159,16 @@ def comment_remove_permission_required(view_func):
 
         if not user.is_authenticated:
             messages.error(request, _('Authentication is required.'))
-            return redirect(reverse('landing_page') + f'?next={request.path}')
+            # Redirect to login choice, not landing page
+            login_url = reverse('users:login_choice')
+            return redirect(f'{login_url}?next={request.path}')
 
         # Use the model's method to check removal permission
         if comment.is_removable_by(user):
             return view_func(request, class_id, post_id, comment_id, *args, **kwargs)
         else:
-            messages.error(request, _('You do not have permission to remove this comment.'))
-            return redirect('blog_post_detail', class_id=class_id, post_id=post_id)
+            # Return 403 Forbidden instead of redirecting
+            # messages.error(request, _('You do not have permission to remove this comment.'))
+            # return redirect('blog:post_detail', class_id=class_id, post_id=post_id)
+            return HttpResponseForbidden(_('You do not have permission to remove this comment.'))
     return _wrapped_view
