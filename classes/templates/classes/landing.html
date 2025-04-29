@@ -1,18 +1,43 @@
-{% extends 'classes/base.html' %}
+{% extends 'base.html' %}
 {% load i18n %}
+
+{% block title %}{% trans "Welcome" %} | {{ block.super }}{% endblock %}
+
 {% block content %}
 <h1>{% trans "Bem-vindo ao Infantinho 3.0" %}</h1>
 <ul>
-  <li><a href="{% url 'class_list' %}">{% trans "Minhas Turmas" %}</a></li>
-  {% if request.user.role == 'admin' %}
-    <li><a href="{% url 'manage_classes' %}">{% trans "Gestão de Turmas (Admin)" %}</a></li>
+  {# Show specific links only if user is authenticated #}
+  {% if user.is_authenticated %}
+    <li><a href="{% url 'classes:class_list' %}">{% trans "Minhas Turmas" %}</a></li>
+    
+    {# Show admin links only if user is admin #}
+    {% if request.user.role == 'admin' %}
+      <li><a href="{% url 'classes:manage_classes' %}">{% trans "Gestão de Turmas (Admin)" %}</a></li>
+    {% endif %}
+    
+    {# Show Django admin link only if user is staff/superuser #}
+    {% if user.is_staff or user.is_superuser %}
+      <li><a href="{% url 'admin:index' %}">{% trans "Django Admin" %}</a></li>
+    {% endif %}
+
+    {# Use the POST form for logout #}
+    <li>
+      <form id="logout-form-landing" method="post" action="{% url 'users:logout' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{% trans "Logout" %}</button>
+      </form>
+    </li>
+
+  {% else %}
+    {# Show login links only if user is NOT authenticated #}
+    <li><a href="{% url 'users:login_choice' %}">{% trans "Login" %}</a></li>
+    {# Remove other direct login links if login_choice is preferred #}
+    {#
+    <li><a href="{% url 'users:login_local' %}">{% trans "Login Local" %}</a></li>
+    <li><a href="{% url 'users:login_microsoft' %}">{% trans "Login Microsoft" %}</a></li>
+    <li><a href="{% url 'users:password_reset' %}">{% trans "Recuperar Palavra-passe" %}</a></li>
+    #}
   {% endif %}
-  <li><a href="/admin/">{% trans "Django Admin" %}</a></li>
-  <li><a href="{% url 'logout_microsoft' %}">{% trans "Logout" %}</a></li>
-  <li><a href="{% url 'login_choice' %}">{% trans "Escolha de Login" %}</a></li>
-  <li><a href="{% url 'login_local' %}">{% trans "Login Local" %}</a></li>
-  <li><a href="{% url 'login_microsoft' %}">{% trans "Login Microsoft" %}</a></li>
-  <li><a href="{% url 'password_reset' %}">{% trans "Recuperar Palavra-passe" %}</a></li>
 </ul>
 <p>{% trans "Esta página inicial será substituída pelo blog futuramente." %}</p>
 {% endblock %} 

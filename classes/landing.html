@@ -1,0 +1,12 @@
+{% if user.is_authenticated %}
+    <p><a href="{% url 'admin:index' %}">Django Admin</a></p>
+    {# Use a form for logout #}
+    <form id="logout-form-landing" method="post" action="{% url 'users:logout' %}" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-link p-0 m-0 align-baseline">Logout</button> {# Style as a link #}
+    </form>
+{% else %}
+    <p><a href="{% url 'users:login_choice' %}">Login</a></p>
+{% endif %}
+
+<p>Esta página inicial será substituída pelo blog futuramente.</p> 

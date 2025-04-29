@@ -1,9 +1,203 @@
-{% extends 'classes/base.html' %}
-{% load i18n %}
+{% extends 'base.html' %}
+{% load i18n humanize %}{# Load humanize for naturaltime #}
+
+{% block title %}{{ turma.name }} | {% trans "Classes" %} | {{ block.super }}{% endblock %}
+
+{% block extra_head %}
+{# Add CSS/JS for charts if you choose a library like Chart.js #}
+{# Example: <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> #}
+<style>
+    .progress-bar {
+        transition: width 0.6s ease;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>{% blocktrans %}Turma: {{ turma.name }} ({{ turma.year }}){% endblocktrans %}</h1>
-<p>{% trans "Esta página da turma está em construção." %}</p>
-{% if request.user.role == 'professor' and request.user in turma.teachers.all %}
-  <a href="{% url 'add_student' turma.id %}" class="btn btn-primary">Adicionar aluno/convidado</a>
-{% endif %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h1 class="mb-0 me-3">{% blocktrans with class_name=turma.name year=turma.year %}Class: {{ class_name }} ({{ year }}){% endblocktrans %}</h1>
+        <div class="btn-group" role="group" aria-label="Class Actions">
+            <a href="{% url 'diary:view_diary_active' class_id=turma.id %}" class="btn btn-info">
+                <i class="bi bi-journal-richtext me-1"></i> {% trans "View Class Diary" %}
+            </a>
+            {% if checklist_app_enabled %}
+                {# Link to checklists app class overview - adjust URL name if different #}
+                <a href="#" class="btn btn-outline-secondary"> {# {% url 'checklists:class_overview' class_id=turma.id %} #}
+                     <i class="bi bi-check2-square me-1"></i> {% trans "Checklists" %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+    {# --- Teachers & Add Student Section --- #}
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3 mb-md-0">
+            <h4>{% trans "Teachers" %}</h4>
+            <ul class="list-unstyled">
+                {% for teacher in turma.teachers.all %}
+                    <li><i class="bi bi-person-fill me-2"></i>{{ teacher.get_full_name|default:teacher.username }}</li>
+                {% empty %}
+                    <li class="text-muted">{% trans "No teachers assigned." %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6 d-flex align-items-start justify-content-md-end">
+            {% if can_add_student %}
+                <a href="{% url 'classes:add_student' turma.id %}" class="btn btn-primary">
+                    <i class="bi bi-person-plus-fill me-1"></i> {% trans "Add Student" %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {# --- Class Overview Section --- #}
+    <div class="mb-4">
+        <h4>{% trans "Class Overview" %}</h4>
+        <div class="card">
+            <div class="card-header">{% trans "General Statistics" %}</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5><i class="bi bi-people-fill me-2"></i>{% trans "Students" %}</h5>
+                        <p class="fs-4">{{ general_stats.student_count }}</p>
+                    </div>
+                    {% if diary_app_enabled %}
+                    <div class="col-md-4">
+                        <h5><i class="bi bi-calendar-event me-2"></i>{% trans "Recent Diary Posts" %}</h5>
+                        <p class="fs-4">{{ general_stats.recent_posts_count }} <span class="fs-6 text-muted">({% trans "last 7 days" %})</span></p>
+                    </div>
+                    {% endif %}
+                    {% if checklist_app_enabled %}
+                    <div class="col-md-4">
+                        <h5><i class="bi bi-list-check me-2"></i>{% trans "Checklist Templates" %}</h5>
+                        <p class="fs-4">{{ general_stats.checklist_template_count }} <span class="fs-6 text-muted">({% trans "applicable" %})</span></p>
+                        {# Placeholder for overall completion chart #}
+                        {# <canvas id="overallCompletionChart" height="100"></canvas> #}
+                        <p class="text-muted small"><em>{% trans "Overall progress chart coming soon." %}</em></p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- Students List & Progress Section --- #}
+    <div class="mb-4">
+        <h4>{% trans "Students" %} ({% trans "Progress Summary" %})</h4>
+         {% if student_progress_list %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">{% trans "Student Name" %}</th>
+                            {% if checklist_app_enabled %}
+                            <th scope="col" class="text-center">{% trans "Checklist Progress" %}</th>
+                            {% endif %}
+                            {% if diary_app_enabled %}
+                            <th scope="col" class="text-center">{% trans "Last Diary Post" %}</th>
+                            {% endif %}
+                            <th scope="col" class="text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for progress_item in student_progress_list %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'classes:student_detail' class_id=turma.id student_id=progress_item.student.id %}">
+                                        {{ progress_item.student.get_full_name|default:progress_item.student.username }}
+                                    </a>
+                                </td>
+                                {% if checklist_app_enabled %}
+                                <td class="text-center">
+                                    {% if progress_item.checklist_progress is not None %}
+                                    <div class="progress" style="height: 20px;" title="{{ progress_item.checklist_progress }}% {% trans 'completed' %}">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_item.checklist_progress }}%;" aria-valuenow="{{ progress_item.checklist_progress }}" aria-valuemin="0" aria-valuemax="100">
+                                             {{ progress_item.checklist_progress }}%
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted small">{% trans "N/A" %}</span>
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                                {% if diary_app_enabled %}
+                                <td class="text-center">
+                                    {% if progress_item.last_post_date %}
+                                        <span title="{{ progress_item.last_post_date|date:'Y-m-d H:i' }}">{{ progress_item.last_post_date|naturaltime }}</span>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                                <td class="text-end">
+                                    {# Link to student detail view #}
+                                    <a href="{% url 'classes:student_detail' class_id=turma.id student_id=progress_item.student.id %}" class="btn btn-sm btn-outline-primary" title="{% trans 'View Details' %}">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    {# Add other actions like direct link to student's checklist if needed #}
+                                    {# <a href="#" class="btn btn-sm btn-outline-secondary ms-1" title="{% trans 'View Checklist' %}"><i class="bi bi-check2-square"></i></a> #}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+         {% else %}
+            <div class="alert alert-info" role="alert">
+                {% trans "No students assigned yet." %}
+            </div>
+         {% endif %}
+    </div>
+
+</div>
+
+{# Optional: Add JS for charts here #}
+{#
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Example Chart.js setup if you add the library
+    // const ctx = document.getElementById('overallCompletionChart')?.getContext('2d');
+    // if (ctx) {
+    //     const myChart = new Chart(ctx, {
+    //         type: 'doughnut', // or 'bar'
+    //         data: {
+    //             labels: ['Completed', 'Pending'],
+    //             datasets: [{
+    //                 label: 'Overall Progress',
+    //                 // Replace with actual data from context if available
+    //                 data: [70, 30], 
+    //                 backgroundColor: [
+    //                     'rgba(25, 135, 84, 0.7)', // Bootstrap success
+    //                     'rgba(220, 220, 220, 0.7)' // Light grey
+    //                 ],
+    //                 borderColor: [
+    //                     'rgba(25, 135, 84, 1)',
+    //                     'rgba(200, 200, 200, 1)'
+    //                 ],
+    //                 borderWidth: 1
+    //             }]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             plugins: {
+    //                 legend: {
+    //                     position: 'top',
+    //                 },
+    //                 tooltip: {
+    //                     callbacks: {
+    //                         label: function(context) {
+    //                             return context.label + ': ' + context.parsed + '%';
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     });
+    // }
+});
+</script>
+#}
 {% endblock %} 

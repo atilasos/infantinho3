@@ -1,13 +1,29 @@
-{% extends 'classes/base.html' %}
+{% extends 'base.html' %}
 {% load i18n %}
 
+{% block title %}{% trans "My Classes" %} | {{ block.super }}{% endblock %}
+
 {% block content %}
-<h1>{% trans "Minhas Turmas" %}</h1>
-<ul>
-  {% for turma in turmas %}
-    <li><a href="{% url 'class_detail' turma.id %}">{{ turma.name }} ({{ turma.year }})</a></li>
-  {% empty %}
-    <li>{% trans "Não tem turmas atribuídas." %}</li>
-  {% endfor %}
-</ul>
+<div class="container mt-4">
+    <h1 class="mb-4">{% trans "My Classes" %}</h1>
+    {% if turmas %}
+        <div class="list-group shadow-sm">
+            {% for turma in turmas %}
+                <a href="{% url 'classes:class_detail' turma.id %}" class="list-group-item list-group-item-action">
+                    {{ turma.name }} ({{ turma.year }})
+                </a>
+            {% empty %}
+                <div class="list-group-item">{% trans "You are not assigned to any classes." %}</div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">{% trans "You are not assigned to any classes." %}</div>
+    {% endif %}
+    
+    {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'professor' %}
+    <div class="mt-4">
+        <a href="{% url 'classes:manage_classes' %}" class="btn btn-primary">{% trans "Manage Classes" %}</a>
+    </div>
+    {% endif %}
+</div>
 {% endblock %} 

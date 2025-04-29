@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load i18n humanize widget_tweaks %}
+
+{% block title %}
+    {{ student.get_full_name|default:student.username }} - {{ turma.name }} | {% trans "Student Details" %} | {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    {# Header: Student Name and Class Context #}
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h1 class="mb-0 me-3">
+            <i class="bi bi-person-badge me-2"></i> {{ student.get_full_name|default:student.username }}
+            <small class="text-muted fs-5">({% blocktrans with class_name=turma.name %}in Class {{ class_name }}{% endblocktrans %})</small>
+        </h1>
+        {# Optional: Add buttons for teacher actions like 'Edit Checklist', 'View PIT' etc. #}
+        <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-outline-secondary">
+             <i class="bi bi-arrow-left me-1"></i> {% trans "Back to Class" %}
+        </a>
+    </div>
+    <hr class="mb-4">
+
+    <div class="row">
+        {# --- Left Column: Checklists & Future Modules --- #}
+        <div class="col-md-8 col-lg-8 mb-4">
+            
+            {# Checklists Section - Now with item details and forms #}
+            {% if checklist_app_enabled %}
+            <h4 class="mb-3"><i class="bi bi-check2-square me-2"></i>{% trans "Checklist Details" %}</h4>
+            <div class="accordion" id="checklistAccordion">
+                {% for checklist_data in student_checklists_data %}
+                    {% with status_record=checklist_data.status_record template=checklist_data.template items_with_marks=checklist_data.items_with_marks accordion_id="checklist-"|add:checklist_data.status_record.id %}
+                    <div class="accordion-item mb-2">
+                        <h2 class="accordion-header" id="heading-{{ accordion_id }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ accordion_id }}" aria-expanded="false" aria-controls="collapse-{{ accordion_id }}">
+                                <div class="d-flex justify-content-between w-100 me-3 align-items-center">
+                                    <strong>{{ template.name }}</strong>
+                                    <div class="progress w-50" style="height: 15px;" title="{{ status_record.percent_complete|floatformat:0 }}% {% trans 'completed' %}">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ status_record.percent_complete|floatformat:0 }}%;" aria-valuenow="{{ status_record.percent_complete|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100">
+                                            <small>{{ status_record.percent_complete|floatformat:0 }}%</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse-{{ accordion_id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ accordion_id }}" data-bs-parent="#checklistAccordion">
+                            <div class="accordion-body p-0">
+                                <ul class="list-group list-group-flush">
+                                    {% for item_mark_pair in items_with_marks %}
+                                        {% with item=item_mark_pair.item mark=item_mark_pair.mark %}
+                                        <li class="list-group-item px-3 py-2">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-6 mb-2 mb-md-0">
+                                                    {% if item.code %}<span class="badge bg-secondary me-1">{{ item.code }}</span>{% endif %}
+                                                    {{ item.text }}
+                                                </div>
+                                                <div class="col-md-6">
+                                                    {% if can_mark_checklist %}
+                                                    {# Teacher/Admin Form for Marking #}
+                                                    <form method="post" action="{% url 'classes:student_detail' class_id=turma.id student_id=student.id %}" class="d-flex align-items-center justify-content-end gap-2">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                                                        <input type="hidden" name="status_id" value="{{ status_record.id }}">
+                                                        
+                                                        <select name="new_mark_status" class="form-select form-select-sm w-auto" aria-label="{% trans 'Update status' %}">
+                                                            {% for value, display in checklist_mark_choices %}
+                                                                <option value="{{ value }}" {% if mark and mark.mark_status == value %}selected{% elif not mark and value == 'NOT_STARTED' %}selected{% endif %}>
+                                                                    {{ display }}
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <button type="submit" class="btn btn-primary btn-sm" title="{% trans 'Save Status' %}">
+                                                            <i class="bi bi-check-lg"></i>
+                                                        </button>
+                                                        {% if mark and mark.teacher_validated %}
+                                                            <i class="bi bi-patch-check-fill text-success ms-1" title="{% trans 'Validated by Teacher' %}"></i>
+                                                        {% elif mark and mark.mark_status == 'COMPLETED' %}
+                                                             <i class="bi bi-check-circle text-info ms-1" title="{% trans 'Marked Completed by Student' %}"></i>
+                                                        {% endif %}
+                                                    </form>
+                                                    {% else %}
+                                                    {# Student/Read-only View #}
+                                                        <div class="text-end">
+                                                            {% if mark %}
+                                                                <span class="badge {% if mark.mark_status == 'COMPLETED' %}bg-success{% elif mark.mark_status == 'VALIDATED' %}bg-primary{% elif mark.mark_status == 'IN_PROGRESS' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                                                    {{ mark.get_mark_status_display }}
+                                                                </span>
+                                                                {% if mark.teacher_validated %}
+                                                                    <i class="bi bi-patch-check-fill text-success ms-1" title="{% trans 'Validated by Teacher' %}"></i>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <span class="badge bg-light text-dark">{% trans "Not Started" %}</span>
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endwith %}
+                                    {% empty %}
+                                         <li class="list-group-item text-muted"><em>{% trans "This checklist template currently has no items." %}</em></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                {% empty %}
+                     <div class="card card-body text-muted">
+                         <em>{% trans "No checklists assigned or started for this student in this class yet." %}</em>
+                     </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Placeholder for PIT #}
+            {% if pit_app_enabled %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4><i class="bi bi-file-earmark-text me-2"></i>{% trans "Individual Plan (PIT)" %}</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted"><em>{% trans "PIT details will appear here when implemented." %}</em></p>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Placeholder for Projects #}
+            {% if projects_app_enabled %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4><i class="bi bi-diagram-3 me-2"></i>{% trans "Projects" %}</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted"><em>{% trans "Project involvement details will appear here when implemented." %}</em></p>
+                    </div>
+                </div>
+             {% endif %}
+
+        </div>
+
+        {# --- Right Column: Diary & Basic Info --- #}
+        <div class="col-md-4 col-lg-4">
+
+             {# Basic Info Card #}
+            <div class="card mb-4">
+                 <div class="card-header">
+                     <h4><i class="bi bi-info-circle me-2"></i>{% trans "Student Info" %}</h4>
+                 </div>
+                 <div class="card-body">
+                     <p><strong>{% trans "Email" %}:</strong> {{ student.email }}</p>
+                     {# Add other relevant info like Guardian name if available later #}
+                 </div>
+            </div>
+
+            {# Diary Section #}
+            {% if diary_app_enabled %}
+            <div class="card mb-4">
+                <div class="card-header">
+                     <h4><i class="bi bi-journal-richtext me-2"></i>{% trans "Recent Diary Posts" %}</h4>
+                 </div>
+                <div class="card-body">
+                    {% if student_diary_posts %}
+                        <ul class="list-group list-group-flush">
+                            {% for post in student_diary_posts %}
+                                <li class="list-group-item">
+                                    {# Assuming a diary detail view exists at 'diary:post_detail' #}
+                                    <a href="{% url 'diary:post_detail' post_id=post.id %}">{{ post.title }}</a>
+                                    <small class="text-muted d-block">{{ post.publish_date|naturaltime }}</small>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted"><em>{% trans "No diary posts found for this student in this class." %}</em></li>
+                            {% endfor %}
+                        </ul>
+                        {# Optional: Link to view all posts by student #}
+                        {# <div class="mt-2"><a href="#" class="small">View all diary posts...</a></div> #}
+                    {% else %}
+                         <p class="text-muted"><em>{% trans "No diary posts found for this student in this class." %}</em></p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %} 
