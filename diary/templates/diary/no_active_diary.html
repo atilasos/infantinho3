@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Class Diary" %} | {{ turma.name }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="mb-1">{% trans "Class Diary" %}</h1>
+            <h2 class="h4 text-muted mb-0">{{ turma.name }}</h2>
+        </div>
+        {# Button for Moderators to Start New #}
+        {% if can_moderate %}
+            <form method="post" action="{% url 'diary:start_new_session' class_id=turma.id %}" class="ms-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-1"></i> {% trans "Start New Diary Period" %}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="alert alert-info" role="alert">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      {% trans "There is currently no active diary period for this class." %}
+      {% if can_moderate %}
+         {% trans "Click the button above to start a new one." %}
+      {% endif %}
+    </div>
+    
+    {# Add Link to view archived sessions later #}
+    {# <a href="{% url 'diary:list_sessions' class_id=turma.id %}">View Archived Diaries</a> #}
+    
+</div>
+{% endblock %} 

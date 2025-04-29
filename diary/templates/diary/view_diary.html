@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load i18n widget_tweaks diary_tags %}
+
+{% block title %}{% blocktrans with class_name=turma.name date=diary_session.start_date|date:"Y-m-d" %}Diary: {{ class_name }} ({{ date }}){% endblocktrans %} | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="mb-1">{% trans "Class Diary" %}</h1>
+            <h2 class="h4 text-muted mb-0">{{ turma.name }}</h2>
+        </div>
+        {# Button for Moderators to Archive & Start New #}
+        {% if can_moderate %}
+            <form method="post" action="{% url 'diary:start_new_session' class_id=turma.id %}" class="ms-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-archive me-1"></i> {% trans "Archive & Start New Period" %}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+    
+    {# Session Info #}
+    <p class="lead">
+        {% blocktrans with start_date=diary_session.start_date|date:"l, d F Y" %}
+        Period starting: <strong>{{ start_date }}</strong>
+        {% endblocktrans %}
+        {% if diary_session.end_date %} 
+            ({% trans "Archived on" %} {{ diary_session.end_date|date:"d M Y" }})
+        {% else %}
+            <span class="badge bg-success ms-2">{% trans "Active" %}</span>
+        {% endif %}
+    </p>
+    {# Add Link to view archived sessions later #}
+    {# <a href="{% url 'diary:list_sessions' class_id=turma.id %}">View Archived Diaries</a> #}
+    
+    {# Display messages #}
+    {% if messages %}
+      <div class="messages mb-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <hr class="my-4">
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3"> 
+        {% for col_key, col_name in column_choices %}
+        <div class="col">
+            <div class="card h-100 shadow-sm diary-column">
+                <div class="card-header text-center fw-bold">{{ col_name }}</div>
+                <div class="card-body diary-column-body" id="column-{{ col_key }}" style="min-height: 200px; overflow-y: auto;">
+                    {% with entries=entries_by_column|get_item:col_key %}
+                        {% if entries %}
+                            {% for entry in entries %}
+                                <div class="diary-entry card small mb-2 shadow-sm">
+                                    <div class="card-body p-2">
+                                        <p class="card-text mb-1">{{ entry.content|linebreaksbr }}</p>
+                                        {# Show full timestamp #}
+                                        <small class="text-muted d-block text-end" title="{% trans 'Entry added at' %}">
+                                            {% if entry.author %}
+                                                <i class="bi bi-person"></i> {{ entry.author.first_name|default:entry.author.username }}
+                                            {% else %}
+                                                <i class="bi bi-person"></i> {% trans "Unknown author" %}
+                                            {% endif %}
+                                             - {{ entry.created_at|date:"d/m/y H:i" }} {# Changed format #}
+                                        </small>
+                                         {# TODO: Add edit/delete buttons here with permissions #}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center small fst-italic">{% trans "No entries yet." %}</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                {# Only allow adding to ACTIVE sessions #}
+                {% if diary_session.status == 'ACTIVE' %}
+                    <div class="card-footer p-2">
+                        {# Add Entry Form (Basic) #}
+                        <form method="post" action="{% url 'diary:add_diary_entry' class_id=turma.id session_id=diary_session.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="column" value="{{ col_key }}">
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="content" class="form-control" placeholder="{% trans 'Add new entry...' %}" required>
+                                <button class="btn btn-outline-primary" type="submit" title="{% trans 'Add Entry' %}"><i class="bi bi-plus-lg"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{# Custom template filter needed for dict lookup #}
+{% comment %}
+Add this to a templatetags file (e.g., diary/templatetags/diary_tags.py):
+
+from django import template
+register = template.Library()
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
+{% endcomment %}
+
+{% endblock %} 
