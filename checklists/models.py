@@ -2,89 +2,127 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.conf import settings
 
-# Assuming User and Class models are imported from their respective apps
-from users.models import User
-from classes.models import Class
+# Import related models
+from classes.models import Class # Assuming year/level info might be here later
+# Need User model for student and marker
+# Use settings.AUTH_USER_MODEL to avoid potential circular imports
+User = settings.AUTH_USER_MODEL 
 
 class ChecklistTemplate(models.Model):
-    """
-    Represents a template for a checklist, defining the subject, grade, and items.
-    Example: "Portuguese - 5th Grade", "Mathematics - 7th Grade".
-    """
-    name = models.CharField(
-        _('template name'), 
-        max_length=150, # Increased length slightly
-        help_text=_('Name of the checklist template, e.g., "Mathematics 7th Grade".')
-    )
-    # Changed from CharField to IntegerField for grade level
-    grade_level = models.IntegerField(
-        _('grade level'), 
-        null=True, blank=True, # Allow templates not specific to one grade
-        help_text=_('The grade level this template applies to (e.g., 5 for 5th grade). Leave blank if multi-grade.')
-    )
-    subject = models.CharField(
-        _('subject'), 
-        max_length=100,
-        help_text=_('The subject area, e.g., "Portuguese", "Mathematics", "Science".')
-    )
-    description = models.TextField(
-        _('description'), 
-        blank=True,
-        help_text=_('Optional description or general guidelines for this checklist.')
-    )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('created at'))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('updated at'))
+    """ Template for a checklist, e.g., 'Português 5º Ano'. """
+    name = models.CharField(_("name"), max_length=150, unique=True)
+    # Add fields like applicable_year, subject if needed for filtering
+    # applicable_year = models.IntegerField(_("applicable year"), null=True, blank=True)
+    description = models.TextField(_("description"), blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = _('Checklist Template')
-        verbose_name_plural = _('Checklist Templates')
-        ordering = ['grade_level', 'subject', 'name']
+        ordering = ['name']
+        verbose_name = _("Checklist Template")
+        verbose_name_plural = _("Checklist Templates")
 
     def __str__(self):
-        grade_str = f" - Grade {self.grade_level}" if self.grade_level else ""
-        return f"{self.subject}{grade_str}: {self.name}"
+        return self.name
 
 class ChecklistItem(models.Model):
-    """
-    A specific item or learning objective within a ChecklistTemplate.
-    Example: "Can multiply fractions", "Understands photosynthesis".
-    """
-    template = models.ForeignKey(
-        ChecklistTemplate, 
-        on_delete=models.CASCADE, 
-        related_name='items',
-        verbose_name=_('template')
-    )
-    description = models.CharField(
-        _('description'), 
-        max_length=255,
-        help_text=_('The description of the learning objective or item.')
-    )
-    criteria = models.TextField(
-        _('criteria'), 
-        blank=True,
-        help_text=_('Optional: Specific criteria or descriptors for achieving this item.')
-    )
-    order = models.IntegerField(
-        _('order'), 
-        default=0,
-        help_text=_('Order in which this item appears in the checklist.')
-    )
-    # Flag indicating if this item was specifically agreed upon in a class council
-    council_agreed = models.BooleanField(
-        _('agreed in council'), 
-        default=False,
-        help_text=_('Was this item specifically agreed upon as a focus in a class council?')
-    )
+    """ An individual item/learning objective within a ChecklistTemplate. """
+    template = models.ForeignKey(ChecklistTemplate, on_delete=models.CASCADE, related_name='items')
+    code = models.CharField(_("code"), max_length=20, blank=True) # e.g., OC1, L5
+    text = models.TextField(_("text"), default="Default text - please update")
+    order = models.PositiveIntegerField(_("order"), default=0) # For ordering within template
 
     class Meta:
-        verbose_name = _('Checklist Item')
-        verbose_name_plural = _('Checklist Items')
-        ordering = ['template', 'order', 'description'] # Order by template, then by defined order
+        ordering = ['template', 'order', 'code']
+        unique_together = ('template', 'code') # Code should be unique within a template
+        verbose_name = _("Checklist Item")
+        verbose_name_plural = _("Checklist Items")
 
     def __str__(self):
-        return f"({self.template.name}) {self.description[:60]}"
+        return f"{self.code}: {self.text[:60]}..." if self.code else f"{self.text[:60]}..."
+
+class ChecklistMark(models.Model):
+    """ Tracks the status of a specific ChecklistItem for a specific student checklist status. """
+    STATUS_CHOICES = [
+        ('NOT_STARTED', _('Not Started')),
+        ('IN_PROGRESS', _('In Progress')),
+        ('COMPLETED', _('Completed')),
+        ('VALIDATED', _('Validated')), # Teacher validated completion
+    ]
+    
+    # Link to the specific student's checklist status record
+    status_record = models.ForeignKey(
+        'ChecklistStatus', # Use string form if ChecklistStatus is defined later
+        on_delete=models.CASCADE, 
+        related_name='marks', 
+        verbose_name=_('checklist status')
+    )
+    
+    item = models.ForeignKey(ChecklistItem, on_delete=models.CASCADE, related_name='marks')
+    
+    # Renamed 'status' to 'mark_status'
+    mark_status = models.CharField(
+        _("status"), 
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default='NOT_STARTED'
+    )
+    
+    marked_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, blank=True, 
+        related_name='marked_checklist_items'
+    )
+    marked_at = models.DateTimeField(_("marked at"), default=timezone.now) # Changed auto_now=True to default=timezone.now
+    teacher_validated = models.BooleanField(_("teacher validated"), default=False) # Added teacher validation flag
+    comment = models.TextField(_("comment"), blank=True) # Added comment field
+
+    class Meta:
+        ordering = ['status_record__student', 'item__order'] # Updated ordering
+        # Updated unique_together to use status_record
+        unique_together = ('status_record', 'item') 
+        verbose_name = _("Checklist Mark")
+        verbose_name_plural = _("Checklist Marks")
+
+    def __str__(self):
+        # Updated __str__ to use status_record and new field name
+        student_username = self.status_record.student.username if self.status_record and self.status_record.student else 'N/A'
+        item_code = self.item.code if self.item else 'N/A'
+        return f"{student_username} - {item_code} - {self.get_mark_status_display()}"
+
+    def save(self, *args, **kwargs):
+        """ Override save to update parent status percentage and handle validation reset. """
+        # Reset validation if student changes status from completed
+        if not self.pk: # If creating
+             self.marked_at = timezone.now() # Set initial timestamp
+        else: # If updating
+            # Check if mark_status changed *from* completed *by the student*
+            try:
+                orig = ChecklistMark.objects.get(pk=self.pk)
+                if orig.mark_status == 'COMPLETED' and self.mark_status != 'COMPLETED' and self.marked_by == self.status_record.student:
+                     self.teacher_validated = False
+                     
+                # Only update marked_at if relevant fields change? Or always update? Let's update if status/comment change.
+                if orig.mark_status != self.mark_status or orig.comment != self.comment:
+                    self.marked_at = timezone.now()
+                    
+            except ChecklistMark.DoesNotExist:
+                pass # Should not happen if pk exists, but handle gracefully
+
+        # Teacher action always sets validation (handled in view POST, but could be redundant here)
+        # if self.marked_by != self.status_record.student and self.mark_status == 'COMPLETED':
+        #    self.teacher_validated = True 
+        
+        # Ensure validation is False if status is not Completed
+        if self.mark_status != 'COMPLETED':
+            self.teacher_validated = False
+            
+        super().save(*args, **kwargs)
+        # Update parent status after saving the mark
+        if self.status_record:
+            self.status_record.update_percent_complete()
 
 class ChecklistStatus(models.Model):
     """
@@ -133,107 +171,16 @@ class ChecklistStatus(models.Model):
         """Recalculates the completion percentage based on marks."""
         total_items = self.template.items.count()
         if total_items == 0:
-            self.percent_complete = 0
+            new_percent = 0
         else:
-            # Consider only validated marks? Or any 'completed' mark?
-            # For now, count any 'completed' mark.
-            completed_items = self.marks.filter(mark_status='completed').count()
-            self.percent_complete = (completed_items / total_items) * 100
-        self.save(update_fields=['percent_complete', 'updated_at'])
-
-class ChecklistMark(models.Model):
-    """
-    Represents the status mark for a specific ChecklistItem by a specific student.
-    Links back to the overall ChecklistStatus for that student/template.
-    """
-    # Renamed choices keys to English, kept Portuguese display text
-    STATUS_CHOICES = [
-        ('not_started', _('Não iniciado')),
-        ('in_progress', _('Em progresso')),
-        ('completed', _('Concluído')),
-    ]
-    
-    # Link to the student's overall status for this checklist
-    status = models.ForeignKey(
-        ChecklistStatus, 
-        on_delete=models.CASCADE, 
-        related_name='marks',
-        verbose_name=_('checklist status')
-    )
-    # Link to the specific item being marked
-    item = models.ForeignKey(
-        ChecklistItem, 
-        on_delete=models.CASCADE, 
-        related_name='marks',
-        verbose_name=_('item')
-    )
-    # The status of this specific item mark
-    mark_status = models.CharField(
-        _('mark status'), 
-        max_length=20, 
-        choices=STATUS_CHOICES, 
-        default='not_started'
-    )
-    # Optional comment from student or teacher about this item
-    comment = models.TextField(
-        _('comment'), 
-        blank=True
-    )
-    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
-    # Who last updated this specific mark
-    marked_by = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, # Allow initial state to have no marker?
-        related_name='marks_made',
-        verbose_name=_('marked by')
-    )
-    marked_at = models.DateTimeField(
-        _('marked at'),
-        default=timezone.now # Timestamp of the last status change
-    )
-    # Flag indicating teacher validation of the 'completed' status
-    teacher_validated = models.BooleanField(
-        _('teacher validated'), 
-        default=False,
-        # Fixed Syntax: Use double quotes for outer string
-        help_text=_("Indicates if a teacher has validated the 'completed' status.")
-    )
-    # Optional: Add fields for who validated and when, if needed
-    # validated_by = models.ForeignKey(User, ..., null=True, blank=True, related_name='marks_validated')
-    # validated_at = models.DateTimeField(..., null=True, blank=True)
-
-    class Meta:
-        verbose_name = _('Checklist Item Mark')
-        verbose_name_plural = _('Checklist Item Marks')
-        # Ensure only one mark per item per student status
-        unique_together = ('status', 'item')
-        ordering = ['status', 'item__order']
-
-    def __str__(self):
-        return f"Mark for {self.item.description[:30]} ({self.status.student.username}) - {self.get_mark_status_display()}"
-
-    def save(self, *args, **kwargs):
-        """Update timestamp on status change and recalculate parent status percentage."""
-        update_parent = False
-        # Check if status changed to update timestamp and parent % 
-        if self.pk is not None:
-            orig = ChecklistMark.objects.get(pk=self.pk)
-            if orig.mark_status != self.mark_status:
-                self.marked_at = timezone.now()
-                update_parent = True # Update parent only if status changed
-        else: # First save
-            self.marked_at = timezone.now()
-            if self.mark_status == 'completed': # Update parent if created as completed
-                 update_parent = True
-            
-        # Reset validation if status is no longer 'completed'
-        if self.mark_status != 'completed':
-            self.teacher_validated = False
-            
-        super().save(*args, **kwargs)
+            # Count items marked as COMPLETED OR VALIDATED as 'done'
+            # Use related_name 'marks' from ChecklistMark.status_record
+            completed_or_validated_count = self.marks.filter(
+                models.Q(mark_status='COMPLETED') | models.Q(mark_status='VALIDATED')
+            ).count()
+            new_percent = (completed_or_validated_count / total_items) * 100
         
-        # Update the parent ChecklistStatus completion percentage after saving mark, if needed
-        if update_parent:
-             self.status.update_percent_complete()
+        # Only save if percentage actually changed to avoid unnecessary updates/signals
+        if self.percent_complete != new_percent:
+            self.percent_complete = new_percent
+            self.save(update_fields=['percent_complete', 'updated_at'])

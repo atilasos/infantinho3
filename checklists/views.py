@@ -11,9 +11,11 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone # Needed for update_or_create
 from collections import OrderedDict
 import itertools
+from django.db.models import Q # Import Q for query
 
 from .models import ChecklistStatus, ChecklistTemplate, ChecklistItem, ChecklistMark
 from classes.models import Class
+from users.decorators import group_required # Import the new decorator
 # TODO: Import permission decorators once created
 
 # Helper function for permission check (to be replaced by decorator)
@@ -29,6 +31,7 @@ def is_prof_or_admin(user, student_class):
     return False
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(group_required('aluno'), name='dispatch')
 class MyChecklistsView(ListView):
     """
     Displays a list of checklist statuses for the logged-in student.
@@ -42,7 +45,7 @@ class MyChecklistsView(ListView):
         """Fetches checklist statuses only for the logged-in user (student)."""
         return ChecklistStatus.objects.filter(
             student=self.request.user
-        ).select_related('template', 'student_class').order_by('student_class__name', 'template__subject')
+        ).select_related('template', 'student_class').order_by('student_class__name', 'template__name')
 
     def get_context_data(self, **kwargs):
         """Adds separate lists for active and completed checklists."""
@@ -53,6 +56,7 @@ class MyChecklistsView(ListView):
         return context
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(group_required('aluno'), name='dispatch')
 class ChecklistDetailView(View):
     """
     Displays the details of one checklist for the logged-in student.
@@ -72,7 +76,7 @@ class ChecklistDetailView(View):
         items = ChecklistItem.objects.filter(template=template).order_by('order')
         
         # Fetch the latest mark for each item for this student's status
-        marks_qs = ChecklistMark.objects.filter(status=status).order_by('item_id', '-marked_at')
+        marks_qs = ChecklistMark.objects.filter(status_record=status).order_by('item_id', '-marked_at')
         
         latest_marks_by_item = {}
         for mark in marks_qs:
@@ -103,20 +107,23 @@ class ChecklistDetailView(View):
         
         item = get_object_or_404(ChecklistItem, id=item_id, template=template)
         
+        if new_mark_status not in dict(ChecklistMark.STATUS_CHOICES):
+            messages.error(request, _('Invalid status provided.'))
+            return redirect(request.path)
+
         # --- Logic to update or create mark (respecting unique constraint) ---
         mark, created = ChecklistMark.objects.update_or_create(
-            status=status,
+            status_record=status,
             item=item,
             defaults={
                 'mark_status': new_mark_status,
                 'comment': comment_text,
                 'marked_by': request.user,
-                'marked_at': timezone.now(), # Explicitly set marked_at on update/create
-                # teacher_validated is reset automatically in model save method if status != completed
+                # 'marked_at' is handled by model save
+                # 'teacher_validated' is handled by model save based on status change
             }
         )
-        # Note: update_or_create handles the unique constraint.
-        # The model's save() method handles resetting teacher_validated if needed and updating parent %.
+        # Model's save() method handles updating parent %, marked_at, and teacher_validated reset
         
         # --- Send Notification to Teachers --- 
         student_class = status.student_class
@@ -141,6 +148,9 @@ View class progress: {turma_url}"""
 
 
 @method_decorator(login_required, name='dispatch')
+# Apply the group_required decorator after login_required
+# Assumes your teacher group is named 'professor'
+@method_decorator(group_required('professor'), name='dispatch')
 class ChecklistTurmaView(View):
     """
     Displays the checklist progress overview for an entire class (teacher/admin view).
@@ -149,58 +159,53 @@ class ChecklistTurmaView(View):
     """
     template_name = 'checklists/checklist_turma.html'
 
-    # TODO: Replace this with a decorator check
-    def dispatch(self, request, *args, **kwargs):
-        class_id = kwargs.get('class_id')
-        turma = get_object_or_404(Class, id=class_id)
-        if not is_prof_or_admin(request.user, turma):
-            messages.error(request, _('Access restricted to teachers of this class or administrators.'))
-            return redirect('class_detail', class_id=class_id) 
-        return super().dispatch(request, *args, **kwargs)
-
     def get(self, request, class_id, template_id):
         """Renders the class overview grid."""
         turma = get_object_or_404(Class, id=class_id)
+        # --- Add specific teacher check --- 
+        if not request.user.is_superuser and request.user not in turma.teachers.all():
+            messages.error(request, _('You do not have permission to view this class checklist.'))
+            return redirect('class_detail', class_id=turma.id) # Redirect to class detail or another appropriate page
+        # ----------------------------------
+            
         template = get_object_or_404(ChecklistTemplate, id=template_id)
         
         students = turma.students.all().order_by('first_name', 'last_name')
         items = ChecklistItem.objects.filter(template=template).order_by('order')
         
+        # Get all ChecklistStatus objects for this class and template
         status_qs = ChecklistStatus.objects.filter(template=template, student_class=turma)
-        status_map = {s.student_id: s for s in status_qs}
+        # status_map = {s.student_id: s for s in status_qs} # No longer needed directly
         
-        # Fetch all relevant marks ordered to easily find the latest per student/item in Python
+        # Fetch all relevant marks ordered to easily find the latest per student/item
+        # Filter by status_record being in the status_qs for this class/template
         all_marks = ChecklistMark.objects.filter(
-            status__in=status_qs
-        ).select_related('marked_by').order_by('status__student_id', 'item_id', '-marked_at')
+            status_record__in=status_qs
+        ).select_related('marked_by', 'status_record__student', 'item').order_by('status_record__student_id', 'item__order', '-marked_at')
 
-        marks_by_student_item = {}
+        # Optimized way to get the latest mark per (student, item) pair
+        latest_marks_by_student_item = {}
+        processed_keys = set()
         for mark in all_marks:
-            key = (mark.status.student_id, mark.item_id)
-            if key not in marks_by_student_item:
-                marks_by_student_item[key] = mark
+            key = (mark.status_record.student_id, mark.item_id)
+            if key not in processed_keys:
+                latest_marks_by_student_item[key] = mark
+                processed_keys.add(key)
 
-        # Calculate individual progress based on the latest marks found
-        progresso_individual = {}
-        for student_user in students:
-            done = 0
-            for item in items:
-                mark = marks_by_student_item.get((student_user.id, item.id))
-                if mark and mark.mark_status == 'completed':
-                    done += 1
-            total = items.count()
-            progresso_individual[student_user.id] = int((done / total) * 100) if total > 0 else 0
-            
+        # Calculate individual progress using the status objects (already updated by signals/saves)
+        progresso_individual = {s.student_id: s.percent_complete for s in status_qs}
+        # Recalculate collective progress based on fetched statuses
         progresso_coletivo = 0
-        if students.exists():
-            progresso_coletivo = int(sum(progresso_individual.values()) / students.count())
+        if status_qs.exists():
+            total_percentage = sum(s.percent_complete for s in status_qs)
+            progresso_coletivo = int(total_percentage / status_qs.count()) if status_qs.count() > 0 else 0
             
         context = {
             'turma': turma,
             'template': template,
             'students': students,
             'items': items,
-            'marks_by_student_item': marks_by_student_item,
+            'marks_by_student_item': latest_marks_by_student_item, # Pass the calculated latest marks
             'progresso_individual': progresso_individual,
             'progresso_coletivo': progresso_coletivo,
             'mark_status_choices': ChecklistMark.STATUS_CHOICES, 
@@ -210,6 +215,13 @@ class ChecklistTurmaView(View):
     def post(self, request, class_id, template_id):
         """Handles teacher validation/rectification of a student's mark."""
         turma = get_object_or_404(Class, id=class_id)
+        # --- Add specific teacher check --- 
+        if not request.user.is_superuser and request.user not in turma.teachers.all():
+            messages.error(request, _('You do not have permission to modify this class checklist.'))
+            # Redirect or return forbidden? Redirect might be better UX.
+            return redirect('class_detail', class_id=turma.id) 
+        # ----------------------------------
+            
         template = get_object_or_404(ChecklistTemplate, id=template_id)
         
         student_id = request.POST.get('student_id') 
@@ -221,31 +233,36 @@ class ChecklistTurmaView(View):
             messages.error(request, _('Insufficient data to validate/rectify.'))
             return redirect(request.path)
             
+        if new_mark_status not in dict(ChecklistMark.STATUS_CHOICES):
+            messages.error(request, _('Invalid status provided.'))
+            return redirect(request.path)
+            
         student_user = get_object_or_404(turma.students, id=student_id)
         item = get_object_or_404(ChecklistItem, id=item_id, template=template)
+        # Get the ChecklistStatus object for this student/template/class
         status = get_object_or_404(ChecklistStatus, template=template, student_class=turma, student=student_user)
         
-        # --- Logic for teacher update (update or create, set validated=True) --- 
+        # --- Logic for teacher update (update or create, set validated=True if completed) --- 
         mark, created = ChecklistMark.objects.update_or_create(
-            status=status,
+            status_record=status,
             item=item,
             defaults={
                 'mark_status': new_mark_status,
                 'comment': comment_text,
                 'marked_by': request.user,    # Teacher is the marker
-                'marked_at': timezone.now(),  # Update timestamp
-                'teacher_validated': True     # Teacher action always validates
+                # Set teacher_validated based on status ONLY if teacher is marking
+                'teacher_validated': (new_mark_status == 'COMPLETED') 
+                # 'marked_at' is handled by model save
             }
         )
-        # Note: update_or_create handles the unique constraint.
-        # The model's save() method handles updating parent %.
+        # Model save() handles updating parent %, marked_at
 
         # --- Send Notification to Student --- 
         if student_user.email:
             subject = f"[Infantinho] Checklist item updated by teacher in {template.name}"
             try:
                 detail_url = request.build_absolute_uri(
-                    reverse('checklists:checklist_detail', args=[template.id])
+                    reverse('checklists:checklist_detail', args=[template.id]) + f'?highlight={item_id}' # Add highlight
                 )
                 message = f"""Your teacher {request.user.get_full_name() or request.user.username} updated the item '{item.description}' to '{mark.get_mark_status_display()}'.
 Comment: {comment_text}
@@ -257,6 +274,8 @@ View your checklist: {detail_url}"""
                  
         messages.success(request, _('Mark validated/rectified for {student_name}.'
                                   ).format(student_name=student_user.get_full_name() or student_user.username))
+        # Redirect back to the same page, maybe with a fragment identifier for the student row?
+        # For now, just redirect back to the path.
         return redirect(request.path)
 
 # Simple static help view

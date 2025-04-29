@@ -1,5 +1,5 @@
 {% extends "checklists/base.html" %} {# Assumes checklists/base.html extends main base.html #}
-{% load i18n tz %}
+{% load i18n tz static %}
 
 {% block checklist_title %}{{ template.name }} - {% trans "Checklist Detail" %}{% endblock %}
 
@@ -64,20 +64,20 @@
             {# Status Icon and Item Description Column #}
             <div class="col-md-8 col-lg-9 d-flex align-items-start gap-3 mb-2 mb-md-0">
               <span class="fs-4 lh-1 pt-1">
-                  {% if mark and mark.mark_status == 'completed' %}
+                  {% if mark and mark.mark_status == 'COMPLETED' %}
                       {% if mark.teacher_validated %}
                           <i class="bi bi-patch-check-fill text-success" title="{% trans 'Validated by Teacher' %}"></i>
                       {% else %}
                           <i class="bi bi-check-circle-fill text-success" title="{% trans 'Completed' %}"></i>
                       {% endif %}
-                  {% elif mark and mark.mark_status == 'in_progress' %}
+                  {% elif mark and mark.mark_status == 'IN_PROGRESS' %}
                       <i class="bi bi-play-circle-fill text-primary" title="{% trans 'In Progress' %}"></i>
                   {% else %}
                       <i class="bi bi-square text-secondary" title="{% trans 'Not Started' %}"></i>
                   {% endif %}
               </span>
               <div class="flex-grow-1">
-                  <strong class="d-block">{{ item.description }}</strong>
+                  <strong class="d-block">{{ item.text }}</strong>
                   {% if item.council_agreed %}
                       <span class="badge bg-warning text-dark small" title="{% trans 'Agreed in Council' %}"><i class="bi bi-star-fill"></i> {% trans "Council Focus" %}</span>
                   {% endif %}
@@ -92,7 +92,7 @@
                   <input type="hidden" name="item_id" value="{{ item.id }}">
                   <div class="input-group input-group-sm mb-1">
                       <label class="input-group-text" for="mark_status-{{ item.id }}"><i class="bi bi-check2-square"></i></label>
-                      <select id="mark_status-{{ item.id }}" name="mark_status" class="form-select" data-initial-status="{{ mark.mark_status|default:'not_started' }}">
+                      <select id="mark_status-{{ item.id }}" name="mark_status" class="form-select" data-initial-status="{{ mark.mark_status|default:'NOT_STARTED' }}">
                           {% for key, label in mark_status_choices %}
                               <option value="{{ key }}" {% if mark and mark.mark_status == key %}selected{% endif %}>{{ label }}</option>
                           {% endfor %}
@@ -128,40 +128,9 @@
   </div>
 {% endif %}
 
-{# Remove Inline CSS - Move to infantinho3.css or similar #}
-{# 
-<style>
-@keyframes highlight-fade {
-  0%   { background-color: #fff3cd; }
-  80%  { background-color: #fff3cd; }
-  100% { background-color: var(--bs-card-bg, white); } 
-}
-li.highlight-item { animation: highlight-fade 2s; }
-</style>
- #}
-
-{# Remove Inline JS - Move to a separate static JS file #}
-{# 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  function checkItemChanged(form) {
-    const statusSelect = form.querySelector('select[name="mark_status"]');
-    const commentInput = form.querySelector('input[name="comment"]');
-    const saveButton = form.querySelector('button.item-save-btn');
-    const initialStatus = statusSelect.getAttribute('data-initial-status') || 'not_started';
-    const initialComment = commentInput.getAttribute('data-initial-comment') || '';
-    const statusChanged = statusSelect.value !== initialStatus;
-    const commentChanged = commentInput.value !== initialComment;
-    saveButton.disabled = !(statusChanged || commentChanged);
-  }
-  document.querySelectorAll('form.item-update-form').forEach(form => {
-    form.querySelector('select[name="mark_status"]').setAttribute('data-initial-status', form.querySelector('select[name="mark_status"]').value);
-    form.querySelector('input[name="comment"]').setAttribute('data-initial-comment', form.querySelector('input[name="comment"]').value);
-    checkItemChanged(form); 
-    form.addEventListener('input', () => checkItemChanged(form)); 
-  });
-});
-</script>
- #}
-
 {% endblock checklist_content %}
+
+{% block extra_js %}
+{# Load the checklist specific JS #}
+<script src="{% static 'js/checklists.js' %}" defer></script>
+{% endblock extra_js %}

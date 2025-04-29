@@ -1,2 +1,44 @@
 /* infantinho3.css - Customizações para o portal da escola Dehoniana */
  
+/* Styles for checklist_turma.html */
+.checklist-turma-table th, .checklist-turma-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.checklist-turma-table th.item-col {
+  max-width: 150px;
+  min-width: 100px;
+}
+.checklist-turma-table td.student-col {
+  width: 200px;
+  max-width: 200px;
+}
+.checklist-turma-table span.item-header-text {
+    display: block;
+    white-space: normal;
+    line-height: 1.2;
+}
+.rectify-form {
+    position: absolute;
+    z-index: 10; /* Ensure form appears above table content */
+    width: 200px; /* Adjust width as needed */
+}
+details > summary {
+    list-style: none; /* Remove default marker */
+}
+details > summary::-webkit-details-marker {
+    display: none; /* Remove default marker for Chrome */
+}
+
+/* Animation for highlighted checklist items */
+@keyframes highlight-fade {
+  0%   { background-color: #fff3cd; } /* Same as .list-group-item-warning */
+  80%  { background-color: #fff3cd; }
+  100% { background-color: var(--bs-list-group-bg, var(--bs-body-bg, white)); } /* Fade to default background */
+}
+
+.list-group-item.highlight-item {
+  animation: highlight-fade 2s ease-out;
+}
+ 
