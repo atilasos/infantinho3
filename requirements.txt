@@ -16,3 +16,5 @@ requests==2.32.3
 sqlparse==0.5.3
 tzdata==2025.2
 urllib3==2.4.0
+django-widget-tweaks>=1.5
+django-impersonate~=1.9

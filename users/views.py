@@ -62,6 +62,19 @@ def callback_microsoft(request):
     if not email:
         return HttpResponse('Erro: email não encontrado no perfil do utilizador.', status=400)
 
+    # === Domain Validation ===
+    user_domain = email.split('@')[-1]
+    allowed_domains = getattr(settings, 'ALLOWED_EMAIL_DOMAINS', [])
+    if not allowed_domains:
+        print("WARNING: ALLOWED_EMAIL_DOMAINS not set in settings. Allowing all domains.")
+    elif user_domain.lower() not in [domain.lower() for domain in allowed_domains]:
+        # Option 1: Deny login entirely
+        return HttpResponse(f'Acesso negado: O domínio "{user_domain}" não é permitido.', status=403)
+        # Option 2: Keep as guest (requires more logic later for role assignment)
+        # print(f"INFO: User from non-allowed domain {user_domain} logging in as guest.")
+        # is_guest = True # Flag to potentially skip role assignment later
+    # === End Domain Validation ===
+
     # 3. Autenticar ou criar utilizador Django
     User = get_user_model()
     user, created = User.objects.get_or_create(email=email, defaults={
@@ -75,6 +88,12 @@ def callback_microsoft(request):
         user.save()
 
     # 4. Iniciar sessão Django
+    # Explicitly specify the backend to avoid ValueError with multiple backends
+    backend_path = 'django.contrib.auth.backends.ModelBackend'
+    # You might need to ensure the user object has a 'backend' attribute set, 
+    # or pass the backend path directly to login.
+    # Setting the attribute is often preferred if the user object persists.
+    user.backend = backend_path 
     login(request, user)
 
     # 5. Guardar tokens na sessão para futuras integrações (Teams, Graph, etc.)

@@ -46,17 +46,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize', # Added for humanize filters (like naturaltime)
     
     # Third-party apps
     'ckeditor',
     # 'ckeditor_uploader', # Not currently used
-    # 'widget_tweaks', # Not currently installed/used
+    'widget_tweaks', # Added for form rendering
+    'impersonate', # Add impersonate app
     
     # Local apps
     'users.apps.UsersConfig', # Use AppConfig for apps
     'classes.apps.ClassesConfig',
     'blog.apps.BlogConfig',
     'checklists.apps.ChecklistsConfig',
+    'diary.apps.DiaryConfig', # Add the new diary app
 ]
 
 MIDDLEWARE = [
@@ -67,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware', # Add impersonate middleware
 ]
 
 ROOT_URLCONF = 'infantinho3.urls'
@@ -176,11 +180,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom User Model
 AUTH_USER_MODEL = 'users.User'
 
+# Define Authentication Backends
+AUTHENTICATION_BACKENDS = [
+    'users.backends.EmailOrUsernameBackend', # Our custom backend
+    'django.contrib.auth.backends.ModelBackend', # Default backend (for admin, etc.)
+]
+
 # Login/Logout URLs
 # Use reverse_lazy because URLs might not be loaded when settings are processed
 LOGIN_URL = reverse_lazy('users:login_choice') # Point to login choice page
-LOGIN_REDIRECT_URL = reverse_lazy('class_list') # Redirect after successful login (e.g., to class list)
-LOGOUT_REDIRECT_URL = reverse_lazy('landing_page') # Redirect after logout
+LOGIN_REDIRECT_URL = '/' # Redirect to landing page after login
+LOGOUT_REDIRECT_URL = reverse_lazy('users:login_choice') # TEMP: Redirect to login choice page
 
 
 # Azure AD Config (using environment variables)
