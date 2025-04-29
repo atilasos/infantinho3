@@ -1,0 +1,173 @@
+{
+  "project": {
+    "name": "Infantinho 3.0",
+    "goal": "Facilitate cooperative learning management based on MEM pedagogical model.",
+    "target_audience": "Colégio Infante Dom Henrique (preschool to 9th grade)",
+    "key_features": [
+      "Digital MEM tools (checklists, PIT, projects, diary, council decisions)",
+      "Class/User Management",
+      "Class Blog/Diary",
+      "AI Agent Integration",
+      "Microsoft SSO"
+    ],
+    "mvp_scope": ["Class Blog/Diary", "Learning Checklists", "Basic User/Class Management", "Microsoft SSO"]
+  },
+  "architecture": {
+    "type": "Modular Web Application",
+    "frontend": {
+      "initial": "Django Templates (Server-Side Rendering)",
+      "future": "React/Vue SPA (potential)"
+    },
+    "backend": {
+      "language": "Python",
+      "framework": "Django"
+    },
+    "database": {
+      "type": "Relational",
+      "production": "PostgreSQL",
+      "development": "SQLite/PostgreSQL"
+    },
+    "authentication": {
+      "method": "Microsoft SSO (OAuth2/OpenID Connect)",
+      "library": "social-auth-app-django / MSAL",
+      "flow": "Azure AD Login -> Verify Domain -> Create/Update Local User (Guest Role initially)"
+    },
+    "admin_interface": "Django Admin (initially)",
+    "ai_integration": {
+      "component": "ai_service.py (modular)",
+      "providers": ["OpenAI GPT", "Google Vertex AI (PaLM)"],
+      "config": "Admin selectable (API keys, model choice)"
+    },
+    "realtime_communication": {
+      "initial": "Standard HTTP / AJAX",
+      "future": "WebSockets (Django Channels) / Message Broker (potential)"
+    },
+    "security": ["Role-based access control (RBAC)", "Input Validation", "RGPD Compliance", "Data Anonymization for AI", "Backups & Audit Logs"],
+    "scalability": ["ORM Optimization", "Caching", "Stateless App Servers"],
+    "internationalization": {
+      "framework": "Django i18n (gettext)",
+      "default_locale": "pt-PT",
+      "code_comments": "English",
+      "user_content_translation": "No"
+    }
+  },
+  "user_management": {
+    "user_model": "Extended Django AbstractUser",
+    "roles": ["Guest", "Student", "Teacher", "Administrator", "Guardian"],
+    "role_implementation": "Django Groups/Permissions",
+    "guest_status": "Default upon SSO registration, limited access until role assigned.",
+    "guardian_relationship": "Separate model `GuardianRelation` (student_user, guardian_user)",
+    "class_model": {
+      "name": "Class",
+      "fields": ["name", "year", "teachers (M2M User)", "students (M2M User)"]
+    },
+    "class_management": {
+      "creation": "Teachers/Admins",
+      "student_addition": ["Invite Code", "Direct Assignment (by Teacher/Admin)"],
+      "guardian_association": "Teacher/Admin"
+    },
+    "role_assignment_flow": "Admin/Teacher promotes Guest to Teacher/Student/Guardian. Student association auto-assigns Student role.",
+    "admin_config": ["Allowed email domains", "IA Settings (provider, keys, model)", "Default Language"]
+  },
+  "modules": {
+    "blog_diary": {
+      "status": "MVP",
+      "purpose": "Class diary, student/teacher posts.",
+      "model": {
+        "name": "Post",
+        "fields": ["class (FK)", "author (FK User)", "title", "content (Rich Text)", "publish_date", "category"]
+      },
+      "editor": "Rich Text (e.g., CKEditor)",
+      "visibility": "Class members (Students, Teachers, Guardians of students in class), Admins.",
+      "features": ["Chronological listing", "Category filtering", "Optional Comments (Internal first)", "Notifications (new post/comment)"],
+      "diary_category": "Special category/tag for official diary entries."
+    },
+    "checklists": {
+      "status": "MVP",
+      "purpose": "Track student learning progress against objectives.",
+      "models": [
+        {"name": "ChecklistTemplate", "fields": ["name", "level", "items (M2M ChecklistItem)", "classes (M2M Class - optional, specifies which classes use this template)"]},
+        {"name": "ChecklistItem", "fields": ["text", "order", "reference_doc (optional)"]},
+        {"name": "ChecklistStatus", "fields": ["student (FK)", "template (FK)", "item_states (JSON/Relation)"]}
+      ],
+      "data_seeding": "Pre-load Aprendizagens Essenciais (AE).",
+      "workflow": ["Student self-marks item", "Teacher validates/comments", "Items can be linked to Council decisions ('contractualized')"],
+      "ui": ["Student view (self-mark)", "Teacher view (overview/validation)", "Collective progress view"],
+      "states": ["Not Started", "In Progress", "Completed/Validated"]
+    },
+    "pit": {
+      "status": "Post-MVP",
+      "purpose": "Individual student work plans (weekly/monthly).",
+      "models": [
+        {"name": "IndividualPlan (PIT)", "fields": ["student", "class", "period", "status", "objectives", "self_evaluation", "teacher_evaluation"]},
+        {"name": "PlanTask", "fields": ["plan (FK PIT)", "description", "subject", "state", "evidence_link", "teacher_feedback"]}
+      ],
+      "features": ["Link tasks to Checklist Items", "Configurable cycle duration (weekly/monthly)", "History view"],
+      "workflow": "Draft -> Submit (Student) -> Approve/Revise (Teacher) -> Execute (Student marks tasks) -> Conclude (Student self-eval) -> Evaluate (Teacher feedback) -> Closed",
+      "ui": ["Student editor", "Teacher dashboard (overview, approval, evaluation)"],
+      "notifications": ["Submission", "Approval", "Evaluation"]
+    },
+    "projects": {
+      "status": "Post-MVP",
+      "purpose": "Cooperative group projects.",
+      "models": [
+        {"name": "Project", "fields": ["class", "title", "description", "members (M2M User)", "state", "start_date", "end_date", "product_description"]},
+        {"name": "ProjectTask", "fields": ["project (FK)", "description", "responsible", "due_date", "state"]},
+        {"name": "ProjectUpdate", "fields": ["project (FK)", "author (FK User)", "text", "date"]}
+      ],
+      "features": ["Task management", "Material repository (links/files)", "Update log/timeline"],
+      "visibility": "Project members & teachers initially; optional sharing.",
+      "workflow": "Propose/Create -> Plan Tasks -> Execute & Log Updates -> Conclude & Submit Product -> Evaluate (Teacher/Self/Peer)"
+    },
+    "council": {
+      "status": "Post-MVP",
+      "purpose": "Record class council decisions and student proposals.",
+      "models": [
+        {"name": "CouncilDecision", "fields": ["class", "date", "description", "category (Rule, Goal, Activity)", "status", "responsible (FK User, optional)"]},
+        {"name": "StudentProposal", "fields": ["class", "author", "text", "date_submitted", "status"]}
+      ],
+      "features": ["Link decisions to Checklists/PITs/Projects", "Track decision status", "Student proposal submission"],
+      "workflow": "Student submits proposal -> Discussed in Council -> Approved proposals become Decisions -> Decisions tracked"
+    },
+    "ai_agents": {
+      "status": "Post-MVP (Basic Proto), Enhancements later",
+      "purpose": "Provide contextual support to students and teachers.",
+      "agents": [
+        {"name": "Student Tutor", "role": "Help with tasks, explain concepts, suggest resources based on student profile/PIT/Checklists."},
+        {"name": "Teacher Coach", "role": "Suggest activities, analyze class progress, assist planning."}
+      ],
+      "architecture": ["Modular `ai_service`", "External APIs (OpenAI/Google)", "Contextual Prompts (dynamic data injection)", "Conversation History"],
+      "future_features": ["Coordinator Agent", "Fine-tuning/RAG with specific documents (AE, Decrees)", "User feedback loop"],
+      "ui": "Integrated Chatbot",
+      "admin_config": ["API Keys", "Model Selection", "Enable/Disable"]
+    }
+  },
+  "testing": {
+    "strategy": ["Unit (pytest/Django)", "Integration (Django Client)", "E2E (Playwright/Selenium)"],
+    "coverage_goal": ">=80%",
+    "tools": ["coverage.py", "flake8/pylint"],
+    "ci_cd": "GitHub Actions",
+    "seed_data": {
+      "script": "populate_demo_data.py (custom Django command)",
+      "content": "Users (Admin, Teachers, Students, Guardians), Classes, Posts, Comments, Checklist statuses, PITs (various states), Projects, Decisions.",
+      "purpose": "Development, Demo, Testing"
+    }
+  },
+  "deployment_plan": {
+    "phases": [
+      "Phase 0: Planning & Setup",
+      "Phase 1: Auth & Basic User/Class Mgmt",
+      "Phase 2: Blog/Diary Module (MVP Part 1)",
+      "Phase 3: Checklist Module (MVP Part 2)",
+      "Phase 4: MVP Feedback & Adjustments",
+      "Phase 5: PIT Module",
+      "Phase 6: Projects Module",
+      "Phase 7: Council Module",
+      "Phase 8: AI Integration (Prototype)",
+      "Phase 9: AI Enhancement",
+      "Phase 10: I18N Completion",
+      "Phase 11: Refinement, Final Tests, Pilot Deploy",
+      "Phase 12: Post-Pilot Review & Full Rollout"
+    ]
+  }
+} 

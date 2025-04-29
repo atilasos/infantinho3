@@ -18,8 +18,8 @@
                     </div>
                     <h1 class="h3 mb-3 fw-normal text-center">{% trans "Login" %}</h1>
                     
-                    {# Display messages #}
-                    {% include "includes/messages.html" ignore missing %} {# Use include with ignore missing #}
+                    {# Display messages - REMOVED redundant include #}
+                    {# {% include "includes/messages.html" ignore missing %} #}
                     
                     {# Local Login Form (for Parents/Admins) #}
                     <form action="{% url 'users:login_local' %}" method="post" class="login-local-form needs-validation" novalidate>

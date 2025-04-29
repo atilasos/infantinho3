@@ -174,3 +174,25 @@ cython_debug/
 .pypirc
 
 # Não ignore .github/workflows
+
+# New patterns
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media/
+/static_root/
+env/
+venv/
+ENV/
+env.bak
+venv.bak
+*.swp
+*.swo
+.DS_Store
+*.orig
+diariodeturma.txt
+*:Zone.Identifier
