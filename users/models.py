@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _ # For potential future i18n in choices
+from django.core.management.base import CommandError
 
 class User(AbstractUser):
     """
@@ -10,6 +11,9 @@ class User(AbstractUser):
     Email field is inherited and should be used for login (especially with SSO).
     Username field is inherited and should ideally be populated with the email.
     """
+    # Ensure email is unique, as it's used for login/SSO identification.
+    email = models.EmailField(_('email address'), unique=True)
+    
     ROLE_CHOICES = [
         ('aluno', _('Aluno')),            # Student
         ('professor', _('Professor')),      # Teacher
@@ -83,11 +87,14 @@ class User(AbstractUser):
         except Group.DoesNotExist:
             # Handle case where group doesn't exist (log warning, maybe create it?)
             # For now, we assume groups are pre-created by migrations or admin.
-            print(f"Warning: Group '{role_name}' not found for user {self.username}")
+            # print(f"Warning: Group '{role_name}' not found for user {self.username}")
             # Consider raising an error or logging more formally
-            pass 
+            # pass 
+            # Reraise the exception to ensure it's not swallowed silently
+            raise CommandError(f"Group '{role_name}' does not exist. Please create it.") from None
 
-        self.save()
+        # Explicitly save only the fields changed by this method
+        self.save(update_fields=['role', 'status'])
 
     def __str__(self):
         return self.get_full_name() or self.username
