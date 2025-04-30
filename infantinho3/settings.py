@@ -65,6 +65,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -145,7 +146,14 @@ TIME_ZONE = os.environ.get('TIME_ZONE', 'Europe/Lisbon')
 
 USE_I18N = True
 
+USE_L10N = True # Added for locale formatting
+
 USE_TZ = True
+
+# Define the path for translation files
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 
 
 # Static files (CSS, JavaScript, Images)
@@ -169,7 +177,7 @@ CKEDITOR_CONFIGS = {
         'width': '100%',
     },
 }
-# CKEDITOR_UPLOAD_PATH = "uploads/" # Only needed for ckeditor_uploader
+CKEDITOR_UPLOAD_PATH = "uploads/" # Only needed for ckeditor_uploader
 
 
 # Default primary key field type
@@ -229,27 +237,26 @@ OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
 
-# Logging (Basic console logging for dev)
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+# --- Logging para produção ---
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'WARNING',
+                'class': 'logging.FileHandler',
+                'filename': os.environ.get('DJANGO_LOG_FILE', BASE_DIR / 'django.log'),
+            },
         },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': False,
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'WARNING',
+                'propagate': True,
+            },
         },
-    },
-}
+    }
 
 # --- Import environment-specific settings if they exist --- 
 # (Allows overriding settings in prod.py or local.py without version control)
