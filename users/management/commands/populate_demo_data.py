@@ -189,21 +189,23 @@ class Command(BaseCommand):
             
             if image_name:
                 image_path = os.path.join(SAMPLE_IMAGE_DIR, image_name)
-                if os.path.exists(image_path):
+                try:
                     with open(image_path, 'rb') as f:
+                        # Let post.image.save handle directory creation and saving
                         post.image.save(image_name, File(f), save=True)
-                        self.stdout.write(f'    Attached image {image_name} to post "{post.titulo}"')
-                else:
-                    self.stdout.write(self.style.WARNING(f'    Sample image not found: {image_path}'))
+                        self.stdout.write(f'    Attempted to attach image {image_name} to post "{post.titulo}"')
+                except FileNotFoundError:
+                    self.stdout.write(self.style.WARNING(f'    Source sample image not found: {image_path}'))
             
             if pdf_name:
                 pdf_path = os.path.join(SAMPLE_IMAGE_DIR, pdf_name) # Assuming PDF is in same dir
-                if os.path.exists(pdf_path):
+                try:
                     with open(pdf_path, 'rb') as f:
+                        # Let post.attachment.save handle directory creation and saving
                         post.attachment.save(pdf_name, File(f), save=True)
-                        self.stdout.write(f'    Attached PDF {pdf_name} to post "{post.titulo}"')
-                else:
-                     self.stdout.write(self.style.WARNING(f'    Sample PDF not found: {pdf_path}'))
+                        self.stdout.write(f'    Attempted to attach PDF {pdf_name} to post "{post.titulo}"')
+                except FileNotFoundError:
+                     self.stdout.write(self.style.WARNING(f'    Source sample PDF not found: {pdf_path}'))
                          
             self.stdout.write(f'  Post created: "{post.titulo}" (Status: {post.status}) in class {post.turma.name}')
 
