@@ -3,6 +3,9 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _ # For potential future i18n in choices
 from django.core.management.base import CommandError
+from django.conf import settings # Added for settings.AUTH_USER_MODEL
+# Import Class from the classes app -- REMOVED TO FIX CIRCULAR IMPORT
+# from classes.models import Class
 
 class User(AbstractUser):
     """
@@ -141,3 +144,73 @@ class GuardianRelation(models.Model):
         encarregado_name = self.encarregado.get_full_name() or self.encarregado.username
         relation = f" ({self.parentesco})" if self.parentesco else ""
         return f"{encarregado_name} -> {aluno_name}{relation}"
+
+class PreApprovedStudent(models.Model):
+    """
+    Represents a student email pre-approved for automatic class assignment upon first SSO login.
+    """
+    STATUS_CHOICES = [
+        ('Pending', 'Pendente'),
+        ('Claimed', 'Reivindicado'),
+    ]
+
+    email = models.EmailField(
+        max_length=254,
+        unique=True,
+        verbose_name="Email do Aluno",
+        help_text="O endereço de email Microsoft do aluno a ser pré-aprovado."
+    )
+    class_instance = models.ForeignKey(
+        'classes.Class', # Use string reference
+        on_delete=models.CASCADE,
+        related_name='preapproved_students',
+        verbose_name="Turma",
+        help_text="A turma à qual o aluno será associado."
+    )
+    added_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL, # Mantém o registo se o utilizador que adicionou for apagado
+        null=True,
+        blank=True,
+        related_name='added_preapproved_students',
+        verbose_name="Adicionado Por",
+        help_text="Utilizador (Admin/Professor) que adicionou este email."
+    )
+    date_added = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Data de Adição"
+    )
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='Pending',
+        verbose_name="Estado",
+        help_text="Estado da pré-aprovação (Pendente ou Reivindicado após login do aluno)."
+    )
+    claimed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL, # Mantém o registo se o aluno for apagado
+        null=True,
+        blank=True,
+        related_name='claimed_preapprovals',
+        verbose_name="Reivindicado Por",
+        help_text="O utilizador Aluno que corresponde a este email após o login."
+    )
+    date_claimed = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Data de Reivindicação"
+    )
+
+    class Meta:
+        verbose_name = "Aluno Pré-Aprovado"
+        verbose_name_plural = "Alunos Pré-Aprovados"
+        ordering = ['class_instance', 'email']
+
+    def __str__(self):
+        # Need to handle potential error if class_instance isn't loaded yet in some contexts
+        try:
+            class_name = self.class_instance.name
+        except AttributeError:
+            class_name = "[Turma não carregada]"
+        return f"{self.email} - Turma: {class_name} ({self.get_status_display()})"

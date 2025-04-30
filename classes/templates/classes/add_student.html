@@ -17,5 +17,5 @@
 {% else %}
   <p>{% trans "Não há convidados disponíveis para adicionar." %}</p>
 {% endif %}
-<a href="{% url 'class_detail' turma.id %}">{% trans "Voltar à turma" %}</a>
+<a href="{% url 'classes:class_detail' turma.id %}">{% trans "Voltar à turma" %}</a>
 {% endblock %} 

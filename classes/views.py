@@ -10,6 +10,19 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Avg, Count, Q, Prefetch, Max, F
 from django.db import models
+from django.db import IntegrityError # Para tratar emails duplicados
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse # Para redirecionamento
+
+# Importar o novo formulário e o modelo PreApprovedStudent
+from .forms import PreapproveStudentsForm
+from users.models import PreApprovedStudent # Modelo está na app users
+from .models import Class # Modelo da turma local
+
+import logging # Para logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -177,13 +190,14 @@ def class_detail(request, class_id):
     return render(request, 'classes/class_detail.html', context)
 
 @login_required
-@group_required('professor')
+# @group_required('professor') # REMOVIDO - Verificação interna é suficiente
 def add_student(request, class_id):
     turma = get_object_or_404(Class, id=class_id)
     # Check if request.user is one of the teachers of this specific class OR is an admin
     is_admin = request.user.is_superuser or (hasattr(request.user, 'role') and request.user.role == 'admin')
     is_teacher_of_class = turma.teachers.filter(id=request.user.id).exists()
 
+    # Esta verificação interna é suficiente e correta para ambos os papéis
     if not (is_teacher_of_class or is_admin):
         messages.error(request, _('Only teachers of this class or administrators can add students.'))
         return redirect('classes:class_detail', class_id=class_id)
@@ -210,8 +224,18 @@ def add_student(request, class_id):
             user_to_add.role = 'aluno'
             user_to_add.status = 'ativo'
             user_to_add.save()
+        except CommandError as e: # Capturar erro se o grupo 'aluno' não existir
+             logger.error(f"Erro ao promover utilizador {user_to_add.username} para aluno na turma {turma.id}: {e}", exc_info=True)
+             messages.error(request, _("Erro ao atribuir o papel de aluno. Verifique se o grupo 'aluno' existe no sistema."))
+             # Não adicionar à turma se a promoção falhou
+             return redirect('classes:add_student', class_id=class_id)
+        except Exception as e: # Capturar outros erros inesperados na promoção
+             logger.error(f"Erro inesperado ao promover utilizador {user_to_add.username} para aluno na turma {turma.id}: {e}", exc_info=True)
+             messages.error(request, _("Ocorreu um erro inesperado ao promover o utilizador."))
+             # Não adicionar à turma se a promoção falhou
+             return redirect('classes:add_student', class_id=class_id)
 
-        # Add student to the class
+        # Add student to the class only if promotion was successful
         turma.students.add(user_to_add)
         messages.success(request, _('{user_name} promoted to student and added to the class.').format(user_name=user_to_add.get_full_name() or user_to_add.username))
         return redirect('classes:class_detail', class_id=class_id) # Redirect back to class detail
@@ -403,3 +427,91 @@ def student_detail(request, class_id, student_id):
     }
 
     return render(request, 'classes/student_detail.html', context)
+
+# Helper para verificar permissão (professor da turma ou admin)
+def user_is_teacher_or_admin_for_class(user, class_obj):
+    if not user.is_authenticated:
+        return False
+    is_admin = user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')
+    is_teacher = class_obj.teachers.filter(id=user.id).exists()
+    return is_admin or is_teacher
+
+@login_required
+def preapprove_students(request, class_id):
+    """
+    View para professores/admins adicionarem emails de alunos pré-aprovados para uma turma.
+    Permite colar lista ou fazer upload de ficheiro.
+    """
+    turma = get_object_or_404(Class, id=class_id)
+    user = request.user
+
+    # Verificar Permissões
+    if not user_is_teacher_or_admin_for_class(user, turma):
+        messages.error(request, "Não tem permissão para gerir alunos pré-aprovados para esta turma.")
+        # Redirecionar para a página da turma ou lista de turmas
+        return redirect('classes:class_detail', class_id=turma.id) 
+
+    added_count = 0
+    skipped_count = 0
+    failed_emails = [] # Emails que não foram adicionados por erro inesperado
+    existing_emails = [] # Emails que já estavam na BD (mesmo que Claimed)
+
+    if request.method == 'POST':
+        form = PreapproveStudentsForm(request.POST, request.FILES)
+        if form.is_valid():
+            valid_emails = form.cleaned_data['valid_emails']
+            
+            for email in valid_emails:
+                # Verificar se já existe um registo para este email
+                if PreApprovedStudent.objects.filter(email__iexact=email).exists():
+                     existing_emails.append(email)
+                     skipped_count += 1
+                     continue # Passa para o próximo email
+
+                # Tentar criar o novo registo
+                try:
+                    PreApprovedStudent.objects.create(
+                        email=email, # Já está em minúsculas do formulário
+                        class_instance=turma,
+                        added_by=user,
+                        status='Pending' # Default, mas explícito aqui
+                    )
+                    added_count += 1
+                except IntegrityError: 
+                    # Deveria ser apanhado pelo .exists() acima, mas segurança extra
+                    existing_emails.append(email)
+                    skipped_count += 1
+                    logger.warning(f"IntegrityError ao tentar adicionar {email} para a turma {turma.id}, mas a verificação de existência falhou?")
+                except Exception as e:
+                    # Outro erro inesperado durante a criação
+                    failed_emails.append(email)
+                    skipped_count += 1
+                    logger.error(f"Erro inesperado ao criar PreApprovedStudent para {email} na turma {turma.id}: {e}", exc_info=True)
+
+            # Mensagens de feedback
+            if added_count > 0:
+                messages.success(request, f"{added_count} email(s) de aluno(s) pré-aprovado(s) adicionado(s) com sucesso.")
+            if existing_emails:
+                 messages.warning(request, f"{len(existing_emails)} email(s) não foram adicionados porque já existem no sistema: {', '.join(existing_emails)}")
+            if failed_emails:
+                 messages.error(request, f"Ocorreu um erro ao tentar adicionar os seguintes emails: {', '.join(failed_emails)}. Contacte o administrador.")
+            
+            # Limpar o formulário após sucesso parcial ou total
+            form = PreapproveStudentsForm() 
+            # Ou redirecionar para a mesma página com GET para evitar re-POST
+            # return redirect('classes:preapprove_students', class_id=turma.id)
+            
+        # Se o formulário não for válido, os erros serão mostrados automaticamente pelo template
+    
+    else: # Método GET
+        form = PreapproveStudentsForm()
+
+    # Obter a lista de alunos já pré-aprovados (pendentes e reivindicados) para esta turma
+    preapproved_list = PreApprovedStudent.objects.filter(class_instance=turma).select_related('added_by', 'claimed_by').order_by('-date_added')
+
+    context = {
+        'turma': turma,
+        'form': form,
+        'preapproved_list': preapproved_list,
+    }
+    return render(request, 'classes/preapprove_students_form.html', context)

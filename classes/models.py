@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from users.models import User # Assuming User model is in users app
+# Assuming User model is in users app -- REMOVED TO FIX CIRCULAR IMPORT
+# from users.models import User 
+from django.conf import settings # Import settings
 
 class Class(models.Model):
     """
@@ -18,14 +20,14 @@ class Class(models.Model):
         # Consider adding validation or choices if year represents grade level
     )
     students = models.ManyToManyField(
-        User,
+        settings.AUTH_USER_MODEL, # Use settings.AUTH_USER_MODEL
         related_name='classes_attended',
         limit_choices_to={'role': 'aluno'}, # Ensure only users with 'aluno' role can be added
         verbose_name=_('students'),
         blank=True # Allow classes to be created before students are assigned
     )
     teachers = models.ManyToManyField(
-        User,
+        settings.AUTH_USER_MODEL, # Use settings.AUTH_USER_MODEL
         related_name='classes_taught',
         limit_choices_to={'role': 'professor'}, # Ensure only users with 'professor' role can be added
         verbose_name=_('teachers')
@@ -33,7 +35,7 @@ class Class(models.Model):
     )
     # Optional: Add a field for class coordinator (main teacher)
     # coordinator = models.ForeignKey(
-    #     User, 
+    #     settings.AUTH_USER_MODEL, 
     #     on_delete=models.SET_NULL, 
     #     related_name='coordinated_classes', 
     #     null=True, 
