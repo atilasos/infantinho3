@@ -23,7 +23,7 @@
                 {% endif %}
                 {% if post.categoria %}
                     <span class="mx-1">|</span>
-                    <i class="bi bi-tag me-1"></i> {{ post.get_category_display_full }}
+                    <i class="bi bi-tag me-1"></i> {{ post.get_categoria_display }}
                 {% endif %}
             </p>
             
@@ -191,7 +191,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
         </div>
         <div class="modal-body">
-          <p>{% blocktrans with title=post.titulo|default:post.get_category_display_full %}Are you sure you want to remove the post "{{ title }}"?{% endblocktrans %}</p>
+          <p>{% blocktrans with title=post.titulo|default:post.get_categoria_display %}Are you sure you want to remove the post "{{ title }}"?{% endblocktrans %}</p>
           <div class="mb-3">
             <label for="motivo-{{ post.id }}" class="form-label">{% trans "Reason (optional):" %}</label>
             <input type="text" class="form-control form-control-sm" name="motivo" id="motivo-{{ post.id }}">
