@@ -1,0 +1,2227 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-30 01:04+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: blog/forms.py:16 blog/forms.py:30 classes/models.py:46
+msgid "Class"
+msgstr "Turma"
+
+#: blog/forms.py:17 blog/forms.py:39
+msgid "Select the class this post relates to."
+msgstr "Selecione a turma a que esta publicação se refere."
+
+#: blog/forms.py:31
+msgid "Title"
+msgstr "Título"
+
+#: blog/forms.py:32
+msgid "Content"
+msgstr "Conteúdo"
+
+#: blog/forms.py:33
+msgid "Category"
+msgstr "Categoria"
+
+#: blog/forms.py:35
+msgid "Image"
+msgstr "Imagem"
+
+#: blog/forms.py:36
+msgid "Attachment (PDF, etc.)"
+msgstr "Anexo (PDF, etc.)"
+
+#: blog/forms.py:40
+msgid "(Optional)"
+msgstr "(Opcional)"
+
+#: blog/forms.py:75
+msgid "Write a comment..."
+msgstr "Escreva um comentário..."
+
+#: blog/forms.py:79
+msgid "Your Comment"
+msgstr "O seu Comentário"
+
+#: blog/models.py:21 checklists/models.py:151 diary/models.py:16
+msgid "class"
+msgstr "turma"
+
+#: blog/models.py:28 blog/models.py:275
+msgid "author"
+msgstr "autor"
+
+#: blog/models.py:32
+msgid "title"
+msgstr "título"
+
+#: blog/models.py:35
+msgid "Optional title for the post."
+msgstr "Título opcional para a publicação."
+
+#: blog/models.py:39 blog/models.py:279 diary/models.py:46
+msgid "content"
+msgstr "conteúdo"
+
+#: blog/models.py:43
+msgid "image"
+msgstr "imagem"
+
+#: blog/models.py:47
+msgid "Optional image associated with the post."
+msgstr "Imagem opcional associada à publicação."
+
+#: blog/models.py:50
+msgid "attachment"
+msgstr "anexo"
+
+#: blog/models.py:54
+msgid "Optional file attachment (e.g., PDF)."
+msgstr "Anexo de ficheiro opcional (ex: PDF)."
+
+#: blog/models.py:60 blog/models.py:283
+msgid "published at"
+msgstr "publicado em"
+
+#: blog/models.py:66 blog/templates/blog/post_detail.html:13
+msgid "Pending Approval"
+msgstr "Pendente de Aprovação"
+
+#: blog/models.py:67
+msgid "Published"
+msgstr "Publicado"
+
+#: blog/models.py:71 checklists/models.py:66 diary/models.py:20
+#: users/models.py:48
+msgid "status"
+msgstr "estado"
+
+#: blog/models.py:75
+msgid "Publication status of the post."
+msgstr "Estado de publicação do post."
+
+#: blog/models.py:83
+msgid "approved by"
+msgstr "aprovado por"
+
+#: blog/models.py:84
+msgid "User who approved the post for publication."
+msgstr "Utilizador que aprovou a publicação."
+
+#: blog/models.py:87
+msgid "approved at"
+msgstr "aprovado em"
+
+#: blog/models.py:90
+msgid "Timestamp when the post was approved."
+msgstr "Data e hora em que a publicação foi aprovada."
+
+#: blog/models.py:97
+msgid "Announcement"
+msgstr "Anúncio"
+
+#: blog/models.py:98
+msgid "Project Update"
+msgstr "Atualização de Projeto"
+
+#: blog/models.py:99
+msgid "Student Work"
+msgstr "Trabalho de Aluno"
+
+#: blog/models.py:100
+msgid "Other"
+msgstr "Outro"
+
+#: blog/models.py:107
+msgid "category"
+msgstr "categoria"
+
+#: blog/models.py:111
+msgid "The main category of the post."
+msgstr "A categoria principal da publicação."
+
+#: blog/models.py:118 blog/models.py:289
+msgid "removed"
+msgstr "removido"
+
+#: blog/models.py:120
+msgid "Indicates if the post has been removed by moderation."
+msgstr "Indica se a publicação foi removida pela moderação."
+
+#: blog/models.py:128 blog/models.py:299
+msgid "removed by"
+msgstr "removido por"
+
+#: blog/models.py:129
+msgid "User who removed the post."
+msgstr "Utilizador que removeu a publicação."
+
+#: blog/models.py:132 blog/models.py:303
+msgid "removed at"
+msgstr "removido em"
+
+#: blog/models.py:135
+msgid "Timestamp when the post was removed."
+msgstr "Data e hora em que a publicação foi removida."
+
+#: blog/models.py:138 blog/models.py:309
+msgid "reason for removal"
+msgstr "motivo da remoção"
+
+#: blog/models.py:141
+msgid "Reason provided for removing the post."
+msgstr "Motivo indicado para remover a publicação."
+
+#: blog/models.py:146 blog/templates/blog/moderation_logs.html:42
+#: blog/templates/blog/post_form_global.html:6
+msgid "Post"
+msgstr "Publicação"
+
+#: blog/models.py:147
+msgid "Posts"
+msgstr "Publicações"
+
+#: blog/models.py:268 blog/models.py:406
+msgid "post"
+msgstr "publicação"
+
+#: blog/models.py:291
+msgid "Indicates if the comment has been removed by moderation."
+msgstr "Indica se o comentário foi removido pela moderação."
+
+#: blog/models.py:300
+msgid "User who removed the comment."
+msgstr "Utilizador que removeu o comentário."
+
+#: blog/models.py:306
+msgid "Timestamp when the comment was removed."
+msgstr "Data e hora em que o comentário foi removido."
+
+#: blog/models.py:312
+msgid "Reason provided for removing the comment."
+msgstr "Motivo indicado para remover o comentário."
+
+#: blog/models.py:317 blog/templates/blog/moderation_logs.html:46
+#: blog/templates/blog/moderation_logs.html:48
+#: checklists/templates/checklists/checklist_detail.html:106
+msgid "Comment"
+msgstr "Comentário"
+
+#: blog/models.py:318 blog/templates/blog/post_detail.html:110
+msgid "Comments"
+msgstr "Comentários"
+
+#: blog/models.py:323
+msgid "Comment removed by moderation"
+msgstr "Comentário removido pela moderação"
+
+#: blog/models.py:326
+#, python-brace-format
+msgid ""
+"Comment by {self.autor.username} on Post {self.post_id}: "
+"'{truncated_content}'"
+msgstr ""
+"Comentário de {self.autor.username} na Publicação {self.post_id}: "
+"'{truncated_content}'"
+
+#: blog/models.py:378 blog/templates/blog/post_confirm_remove.html:8
+msgid "Remove Post"
+msgstr "Remover Publicação"
+
+#: blog/models.py:380 blog/templates/blog/post_detail.html:59
+msgid "Restore Post"
+msgstr "Restaurar Publicação"
+
+#: blog/models.py:381 blog/templates/blog/comment_confirm_remove.html:9
+msgid "Remove Comment"
+msgstr "Remover Comentário"
+
+#: blog/models.py:386
+msgid "action"
+msgstr "ação"
+
+#: blog/models.py:389
+msgid "The type of moderation action performed."
+msgstr "O tipo de ação de moderação realizada."
+
+#: blog/models.py:397
+msgid "moderator"
+msgstr "moderador"
+
+#: blog/models.py:398
+msgid "The user who performed the moderation action."
+msgstr "O utilizador que realizou a ação de moderação."
+
+#: blog/models.py:414 checklists/models.py:80
+msgid "comment"
+msgstr "comentário"
+
+#: blog/models.py:418
+msgid "timestamp"
+msgstr "data/hora"
+
+#: blog/models.py:423
+msgid "reason"
+msgstr "motivo"
+
+#: blog/models.py:426
+msgid "Optional reason provided by the moderator."
+msgstr "Motivo opcional fornecido pelo moderador."
+
+#: blog/models.py:430
+msgid "content snapshot"
+msgstr "snapshot do conteúdo"
+
+#: blog/models.py:432
+msgid "A snapshot of the content at the time of the action."
+msgstr "Um snapshot do conteúdo no momento da ação."
+
+#: blog/models.py:437
+msgid "Moderation Log Entry"
+msgstr "Entrada do Registo de Moderação"
+
+#: blog/models.py:438
+msgid "Moderation Log Entries"
+msgstr "Entradas do Registo de Moderação"
+
+#: blog/models.py:447
+msgid "System"
+msgstr "Sistema"
+
+#: blog/permissions.py:27 blog/permissions.py:69 blog/permissions.py:105
+#: blog/permissions.py:132 blog/permissions.py:161
+msgid "Authentication is required."
+msgstr "Autenticação necessária."
+
+#: blog/permissions.py:53
+msgid "Access restricted to members of this class."
+msgstr "Acesso restrito a membros desta turma."
+
+#: blog/permissions.py:90
+msgid "Only teachers and students of this class can create posts."
+msgstr "Apenas professores e alunos desta turma podem criar publicações."
+
+#: blog/permissions.py:117 blog/views.py:195
+msgid "You do not have permission to edit this post."
+msgstr "Não tem permissão para editar esta publicação."
+
+#: blog/permissions.py:144 blog/views.py:240
+msgid "You do not have permission to remove this post."
+msgstr "Não tem permissão para remover esta publicação."
+
+#: blog/permissions.py:173 blog/views.py:304
+msgid "You do not have permission to remove this comment."
+msgstr "Não tem permissão para remover este comentário."
+
+#: blog/templates/blog/base.html:4 blog/templates/blog/post_list.html:5
+#: blog/templates/blog/post_list.html:13
+msgid "Blog/Diary"
+msgstr "Blog/Diário"
+
+#: blog/templates/blog/blog_help.html:4 blog/templates/blog/blog_help.html:10
+msgid "Blog/Diary Help"
+msgstr "Ajuda Blog/Diário"
+
+#: blog/templates/blog/blog_help.html:7
+msgid "Help page for the Class Blog/Diary"
+msgstr "Página de ajuda para o Blog/Diário da Turma"
+
+#: blog/templates/blog/blog_help.html:11 blog/templates/blog/blog_help.html:67
+#: blog/templates/blog/moderation_logs.html:67
+msgid "Return to Blog"
+msgstr "Voltar ao Blog"
+
+#: blog/templates/blog/blog_help.html:11 blog/templates/blog/blog_help.html:67
+#: blog/templates/blog/moderation_logs.html:67
+#: blog/templates/blog/post_detail.html:175
+msgid "Back to Blog"
+msgstr "Voltar ao Blog"
+
+#: blog/templates/blog/blog_help.html:15
+msgid "Help sections summary"
+msgstr "Resumo das secções de ajuda"
+
+#: blog/templates/blog/blog_help.html:17
+msgid "What is it?"
+msgstr "O que é?"
+
+#: blog/templates/blog/blog_help.html:18 blog/templates/blog/blog_help.html:32
+msgid "How to Use"
+msgstr "Como Usar"
+
+#: blog/templates/blog/blog_help.html:19
+msgid "Roles & Permissions"
+msgstr "Papéis e Permissões"
+
+#: blog/templates/blog/blog_help.html:20
+msgid "Moderation"
+msgstr "Moderação"
+
+#: blog/templates/blog/blog_help.html:27
+msgid "What is the Blog/Diary?"
+msgstr "O que é o Blog/Diário?"
+
+#: blog/templates/blog/blog_help.html:28
+msgid ""
+"The Class Blog/Diary is a digital space where students and teachers can "
+"record activities, reflections, projects, and announcements, promoting "
+"sharing and the collective memory of the class. Each class has its own blog, "
+"accessible only to its members (students, teachers) and associated guardians."
+msgstr ""
+"O Blog/Diário da Turma é um espaço digital onde alunos e professores podem "
+"registar atividades, reflexões, projetos e anúncios, promovendo a "
+"partilha e a memória coletiva da turma. Cada turma tem o seu próprio blog, "
+"acessível apenas aos seus membros (alunos, professores) e encarregados de educação associados."
+
+#: blog/templates/blog/blog_help.html:34
+msgid "Create a post:"
+msgstr "Criar uma publicação:"
+
+#: blog/templates/blog/blog_help.html:34
+msgid ""
+"Click 'New Post', fill out the form, and publish. Both teachers and students "
+"can create posts."
+msgstr ""
+"Clique em 'Nova Publicação', preencha o formulário e publique. Tanto professores como alunos "
+"podem criar publicações."
+
+#: blog/templates/blog/blog_help.html:35
+msgid "Edit a post:"
+msgstr "Editar uma publicação:"
+
+#: blog/templates/blog/blog_help.html:35
+msgid ""
+"You can edit your own posts using the 'Edit' button on the post page (if you "
+"are the author)."
+msgstr ""
+"Pode editar as suas próprias publicações usando o botão 'Editar' na página da publicação (se "
+"for o autor)."
+
+#: blog/templates/blog/blog_help.html:36
+msgid "Remove a post:"
+msgstr "Remover uma publicação:"
+
+#: blog/templates/blog/blog_help.html:36
+msgid ""
+"Teachers and administrators can remove any post in the class using the "
+"'Remove' button (a reason can be provided). Removed posts are hidden but can "
+"be restored."
+msgstr ""
+"Professores e administradores podem remover qualquer publicação na turma usando o "
+"botão 'Remover' (um motivo pode ser fornecido). As publicações removidas ficam ocultas mas podem "
+"ser restauradas."
+
+#: blog/templates/blog/blog_help.html:37
+msgid "Restore a post:"
+msgstr "Restaurar uma publicação:"
+
+#: blog/templates/blog/blog_help.html:37
+msgid ""
+"If a post was removed, teachers/admins will see a 'Restore Post' button on "
+"its page."
+msgstr ""
+"Se uma publicação foi removida, professores/administradores verão um botão 'Restaurar Publicação' na "
+"sua página."
+
+#: blog/templates/blog/blog_help.html:38
+#: checklists/templates/checklists/checklist_turma.html:120
+msgid "Comment:"
+msgstr "Comentar:"
+
+#: blog/templates/blog/blog_help.html:38
+msgid ""
+"Use comments to provide feedback, ask questions, or share ideas. Teachers "
+"and admins can remove inappropriate comments."
+msgstr ""
+"Use os comentários para dar feedback, fazer perguntas ou partilhar ideias. Professores "
+"e administradores podem remover comentários inapropriados."
+
+#: blog/templates/blog/blog_help.html:39
+msgid "Filter posts:"
+msgstr "Filtrar publicações:"
+
+#: blog/templates/blog/blog_help.html:39
+msgid ""
+"Use the category and date filters at the top of the blog list to find "
+"specific posts."
+msgstr ""
+"Use os filtros de categoria e data no topo da lista do blog para encontrar "
+"publicações específicas."
+
+#: blog/templates/blog/blog_help.html:44
+msgid "Roles and Permissions"
+msgstr "Papéis e Permissões"
+
+#: blog/templates/blog/blog_help.html:46
+msgid "Students:"
+msgstr "Alunos:"
+
+#: blog/templates/blog/blog_help.html:46
+msgid "Can create posts, edit their own posts, and comment on posts."
+msgstr "Podem criar publicações, editar as suas próprias publicações e comentar em publicações."
+
+#: blog/templates/blog/blog_help.html:47
+msgid "Teachers:"
+msgstr "Professores:"
+
+#: blog/templates/blog/blog_help.html:47
+msgid ""
+"Can create posts, edit their own posts, remove any post or comment in their "
+"class, restore posts, and view moderation logs."
+msgstr ""
+"Podem criar publicações, editar as suas próprias publicações, remover qualquer publicação ou comentário na sua "
+"turma, restaurar publicações e ver os registos de moderação."
+
+#: blog/templates/blog/blog_help.html:48
+msgid "Guardians:"
+msgstr "Encarregados de Educação:"
+
+#: blog/templates/blog/blog_help.html:48
+msgid "Can read posts in their child's class blog and add comments."
+msgstr "Podem ler publicações no blog da turma do seu educando e adicionar comentários."
+
+#: blog/templates/blog/blog_help.html:49
+msgid "Administrators:"
+msgstr "Administradores:"
+
+#: blog/templates/blog/blog_help.html:49
+msgid ""
+"Have full access to all blogs, including editing, removal, restoration, and "
+"logs."
+msgstr ""
+"Têm acesso total a todos os blogs, incluindo edição, remoção, restauro e "
+"registos."
+
+#: blog/templates/blog/blog_help.html:54
+msgid "Moderation and Safety"
+msgstr "Moderação e Segurança"
+
+#: blog/templates/blog/blog_help.html:56
+msgid "All removal and restoration actions are logged to ensure transparency."
+msgstr "Todas as ações de remoção e restauro são registadas para garantir transparência."
+
+#: blog/templates/blog/blog_help.html:57
+msgid ""
+"Teachers and admins can view the moderation history via the 'View Moderation "
+"'Log' link (visible on removed posts or potentially elsewhere)."
+msgstr ""
+"Professores e administradores podem ver o histórico de moderação através do link 'Ver Registo de Moderação' "
+"(visível em publicações removidas ou potencialmente noutro local)."
+
+#: blog/templates/blog/blog_help.html:58
+msgid "Reasons for removal can (and should) be provided for future reference."
+msgstr "Motivos para remoção podem (e devem) ser fornecidos para referência futura."
+
+#: blog/templates/blog/blog_help.html:59
+msgid ""
+"Removed posts/comments are initially hidden from regular view but can be "
+"restored by moderators."
+msgstr ""
+"Publicações/comentários removidos ficam inicialmente ocultos da vista normal mas podem ser "
+"restaurados pelos moderadores."
+
+#: blog/templates/blog/comment_confirm_remove.html:4
+msgid "Confirm Comment Removal"
+msgstr "Confirmar Remoção de Comentário"
+
+#: blog/templates/blog/comment_confirm_remove.html:7
+msgid "Confirm comment removal"
+msgstr "Confirmar remoção de comentário"
+
+#: blog/templates/blog/comment_confirm_remove.html:10
+msgid ""
+"Are you sure you want to remove this comment? This action might be logged."
+msgstr ""
+"Tem a certeza que quer remover este comentário? Esta ação pode ser registada."
+
+#: blog/templates/blog/comment_confirm_remove.html:19
+msgid "Publication date"
+msgstr "Data de publicação"
+
+#: blog/templates/blog/comment_confirm_remove.html:26
+msgid "Comment removal form"
+msgstr "Formulário de remoção de comentário"
+
+#: blog/templates/blog/comment_confirm_remove.html:29
+#: blog/templates/blog/post_confirm_remove.html:15
+#: blog/templates/blog/post_detail.html:196
+msgid "Reason (optional):"
+msgstr "Motivo (opcional):"
+
+#: blog/templates/blog/comment_confirm_remove.html:31
+#: blog/templates/blog/post_confirm_remove.html:17
+msgid "Reason for removal"
+msgstr "Motivo da remoção"
+
+#: blog/templates/blog/comment_confirm_remove.html:32
+#: blog/templates/blog/post_confirm_remove.html:18
+msgid "Optional: provide a reason for the moderation log."
+msgstr "Opcional: forneça um motivo para o registo de moderação."
+
+#: blog/templates/blog/comment_confirm_remove.html:34
+msgid "Confirm removal of this comment"
+msgstr "Confirmar remoção deste comentário"
+
+#: blog/templates/blog/comment_confirm_remove.html:34
+#: blog/templates/blog/post_confirm_remove.html:20
+#: blog/templates/blog/post_detail.html:190
+#: blog/templates/blog/post_detail.html:202
+msgid "Confirm Removal"
+msgstr "Confirmar Remoção"
+
+#: blog/templates/blog/comment_confirm_remove.html:36
+#: blog/templates/blog/post_confirm_remove.html:22
+msgid "Cancel and return to post"
+msgstr "Cancelar e voltar à publicação"
+
+#: blog/templates/blog/comment_confirm_remove.html:36
+#: blog/templates/blog/post_confirm_remove.html:22
+#: blog/templates/blog/post_detail.html:201
+#: blog/templates/blog/post_form.html:79 blog/templates/blog/post_form.html:81
+#: blog/templates/blog/post_form_global.html:77
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: blog/templates/blog/moderation_logs.html:4
+msgid "Moderation Log"
+msgstr "Registo de Moderação"
+
+#: blog/templates/blog/moderation_logs.html:7
+msgid "Moderation log for class blog/diary"
+msgstr "Registo de moderação para o blog/diário da turma"
+
+#: blog/templates/blog/moderation_logs.html:9
+msgid "Class Moderation Log"
+msgstr "Registo de Moderação da Turma"
+
+#: blog/templates/blog/moderation_logs.html:13
+msgid "What is this log?"
+msgstr "O que é este registo?"
+
+#: blog/templates/blog/moderation_logs.html:14
+msgid ""
+"This log records all moderation actions (removals, restorations) performed "
+"on posts and comments within this class blog. Only administrators and "
+"assigned teachers can view this log."
+msgstr ""
+"Este registo grava todas as ações de moderação (remoções, restauros) realizadas "
+"em publicações e comentários dentro deste blog da turma. Apenas administradores e "
+"professores associados podem ver este registo."
+
+#: blog/templates/blog/moderation_logs.html:16
+msgid ""
+"Each entry shows who performed the action, when, the reason provided (if "
+"any), and a snapshot of the content affected."
+msgstr ""
+"Cada entrada mostra quem realizou a ação, quando, o motivo fornecido (se "
+"existir) e um snapshot do conteúdo afetado."
+
+#: blog/templates/blog/moderation_logs.html:21
+msgid "Moderation log table"
+msgstr "Tabela de registo de moderação"
+
+#: blog/templates/blog/moderation_logs.html:24
+msgid "Date/Time"
+msgstr "Data/Hora"
+
+#: blog/templates/blog/moderation_logs.html:25
+msgid "Action"
+msgstr "Ação"
+
+#: blog/templates/blog/moderation_logs.html:26
+msgid "Moderator"
+msgstr "Moderador"
+
+#: blog/templates/blog/moderation_logs.html:27
+msgid "Target"
+msgstr "Alvo"
+
+#: blog/templates/blog/moderation_logs.html:28
+msgid "Reason"
+msgstr "Motivo"
+
+#: blog/templates/blog/moderation_logs.html:29
+msgid "Content Snapshot"
+msgstr "Snapshot do Conteúdo"
+
+#: blog/templates/blog/moderation_logs.html:42
+msgid "View details of post"
+msgstr "Ver detalhes da publicação"
+
+#: blog/templates/blog/moderation_logs.html:46
+msgid "View comment on post"
+msgstr "Ver comentário na publicação"
+
+#: blog/templates/blog/moderation_logs.html:48
+msgid "(Post Unknown)"
+msgstr "(Publicação Desconhecida)"
+
+#: blog/templates/blog/moderation_logs.html:51
+#: classes/templates/classes/class_detail.html:122
+msgid "N/A"
+msgstr "N/D"
+
+#: blog/templates/blog/moderation_logs.html:59
+msgid "No moderation actions recorded yet."
+msgstr "Nenhuma ação de moderação registada ainda."
+
+#: blog/templates/blog/post_confirm_remove.html:4
+msgid "Confirm Post Removal"
+msgstr "Confirmar Remoção da Publicação"
+
+#: blog/templates/blog/post_confirm_remove.html:7
+msgid "Confirm post removal"
+msgstr "Confirmar remoção da publicação"
+
+#: blog/templates/blog/post_confirm_remove.html:9
+msgid "Are you sure you want to remove this post? This action might be logged."
+msgstr ""
+"Tem a certeza que quer remover esta publicação? Esta ação pode ser registada."
+
+#: blog/templates/blog/post_confirm_remove.html:12
+msgid "Post removal form"
+msgstr "Formulário de remoção de publicação"
+
+#: blog/templates/blog/post_confirm_remove.html:20
+msgid "Confirm removal of this post"
+msgstr "Confirmar remoção desta publicação"
+
+#: blog/templates/blog/post_detail.html:4
+#: blog/templates/blog/post_detail.html:15
+#: blog/templates/blog/post_list_public.html:24
+#: blog/templates/blog/post_pending_list.html:15
+msgid "(No Title)"
+msgstr "(Sem Título)"
+
+#: blog/templates/blog/post_detail.html:4
+#: blog/templates/blog/post_list_public.html:4
+msgid "Blog"
+msgstr "Blog"
+
+#: blog/templates/blog/post_detail.html:36
+msgid "Approve this post for publication"
+msgstr "Aprovar esta publicação"
+
+#: blog/templates/blog/post_detail.html:37
+msgid "Approve"
+msgstr "Aprovar"
+
+#: blog/templates/blog/post_detail.html:44
+msgid "Edit this post"
+msgstr "Editar esta publicação"
+
+#: blog/templates/blog/post_detail.html:45
+msgid "Edit"
+msgstr "Editar"
+
+#: blog/templates/blog/post_detail.html:51
+msgid "Remove this post"
+msgstr "Remover esta publicação"
+
+#: blog/templates/blog/post_detail.html:52
+msgid "Remove"
+msgstr "Remover"
+
+#: blog/templates/blog/post_detail.html:58
+msgid "Restore this post"
+msgstr "Restaurar esta publicação"
+
+#: blog/templates/blog/post_detail.html:71
+msgid "Post Removed"
+msgstr "Publicação Removida"
+
+#: blog/templates/blog/post_detail.html:72
+msgid "This post was removed by moderation."
+msgstr "Esta publicação foi removida pela moderação."
+
+#: blog/templates/blog/post_detail.html:75
+msgid "Reason:"
+msgstr "Motivo:"
+
+#: blog/templates/blog/post_detail.html:78
+msgid "Removed by:"
+msgstr "Removido por:"
+
+#: blog/templates/blog/post_detail.html:86
+#: blog/templates/blog/post_list_public.html:18
+msgid "(Post Image)"
+msgstr "(Imagem da Publicação)"
+
+#: blog/templates/blog/post_detail.html:92
+msgid "Attachment:"
+msgstr "Anexo:"
+
+#: blog/templates/blog/post_detail.html:123
+msgid "Are you sure you want to remove this comment?"
+msgstr "Tem a certeza que quer remover este comentário?"
+
+#: blog/templates/blog/post_detail.html:126
+msgid "Remove this comment?"
+msgstr "Remover este comentário?"
+
+#: blog/templates/blog/post_detail.html:142
+msgid "No comments yet."
+msgstr "Ainda não há comentários."
+
+#: blog/templates/blog/post_detail.html:149
+msgid "Add your comment"
+msgstr "Adicione o seu comentário"
+
+#: blog/templates/blog/post_detail.html:150
+msgid "Comment form"
+msgstr "Formulário de comentário"
+
+#: blog/templates/blog/post_detail.html:154
+msgid "Write your comment here..."
+msgstr "Escreva o seu comentário aqui..."
+
+#: blog/templates/blog/post_detail.html:160
+msgid "Publish comment"
+msgstr "Publicar comentário"
+
+#: blog/templates/blog/post_detail.html:160
+msgid "Post Comment"
+msgstr "Publicar Comentário"
+
+#: blog/templates/blog/post_detail.html:164
+msgid "Log in"
+msgstr "Iniciar sessão"
+
+#: blog/templates/blog/post_detail.html:164
+msgid "to add a comment."
+msgstr "para adicionar um comentário."
+
+#: blog/templates/blog/post_detail.html:169
+msgid "Comments can be added after the post is approved."
+msgstr "Os comentários podem ser adicionados depois da publicação ser aprovada."
+
+#: blog/templates/blog/post_detail.html:175
+msgid "Return to blog list"
+msgstr "Voltar à lista do blog"
+
+#: blog/templates/blog/post_detail.html:191
+#: checklists/templates/checklists/checklist_detail.html:14
+#: checklists/templates/checklists/checklist_turma.html:31
+#: templates/base.html:195
+msgid "Close"
+msgstr "Fechar"
+
+#: blog/templates/blog/post_detail.html:194
+#, python-format
+msgid "Are you sure you want to remove the post \"%(title)s\"?"
+msgstr "Tem a certeza que quer remover a publicação \"%(title)s\"?"
+
+#: blog/templates/blog/post_form.html:4 blog/templates/blog/post_form.html:9
+#: blog/templates/blog/post_form_global.html:17
+msgid "Edit Post"
+msgstr "Editar Publicação"
+
+#: blog/templates/blog/post_form.html:4 blog/templates/blog/post_form.html:9
+msgid "New Post"
+msgstr "Nova Publicação"
+
+#: blog/templates/blog/post_form.html:7
+msgid "Edit post form"
+msgstr "Formulário de edição de publicação"
+
+#: blog/templates/blog/post_form.html:7
+msgid "New post form"
+msgstr "Formulário de nova publicação"
+
+#: blog/templates/blog/post_form.html:12
+msgid "Post submission form"
+msgstr "Formulário de submissão de publicação"
+
+#: blog/templates/blog/post_form.html:39
+msgid "Select only if category is Class Diary."
+msgstr "Selecione apenas se a categoria for Diário de Turma."
+
+#: blog/templates/blog/post_form.html:40
+msgid "Help on subcategory"
+msgstr "Ajuda sobre subcategoria"
+
+#: blog/templates/blog/post_form.html:45
+msgid "Only applicable for 'Class Diary' category."
+msgstr "Aplicável apenas para a categoria 'Diário de Turma'."
+
+#: blog/templates/blog/post_form.html:60
+msgid "Currently only Internal visibility is supported."
+msgstr "Atualmente apenas a visibilidade Interna é suportada."
+
+#: blog/templates/blog/post_form.html:61
+msgid "Help on visibility"
+msgstr "Ajuda sobre visibilidade"
+
+#: blog/templates/blog/post_form.html:74 blog/templates/blog/post_form.html:75
+#: blog/templates/blog/post_form_global.html:75
+msgid "Save Changes"
+msgstr "Guardar Alterações"
+
+#: blog/templates/blog/post_form.html:74
+msgid "Publish Post"
+msgstr "Publicar"
+
+#: blog/templates/blog/post_form.html:75
+msgid "Publish"
+msgstr "Publicar"
+
+#: blog/templates/blog/post_form.html:79
+msgid "Cancel editing and return to post"
+msgstr "Cancelar edição e voltar à publicação"
+
+#: blog/templates/blog/post_form.html:81
+msgid "Cancel and return to list"
+msgstr "Cancelar e voltar à lista"
+
+#: blog/templates/blog/post_form_global.html:6
+#, python-format
+msgid "Edit Post: %(title)s"
+msgstr "Editar Publicação: %(title)s"
+
+#: blog/templates/blog/post_form_global.html:8
+#: blog/templates/blog/post_form_global.html:17
+#: blog/templates/blog/post_list.html:20
+msgid "Create New Post"
+msgstr "Criar Nova Publicação"
+
+#: blog/templates/blog/post_form_global.html:75
+msgid "Submit Post"
+msgstr "Submeter Publicação"
+
+#: blog/templates/blog/post_list.html:25
+msgid "Help for Blog/Diary"
+msgstr "Ajuda para Blog/Diário"
+
+#: blog/templates/blog/post_list.html:26 templates/base.html:177
+msgid "Help"
+msgstr "Ajuda"
+
+#: blog/templates/blog/post_list.html:32
+msgid "Blog Filters"
+msgstr "Filtros do Blog"
+
+#: blog/templates/blog/post_list.html:35
+msgid "Category:"
+msgstr "Categoria:"
+
+#: blog/templates/blog/post_list.html:36
+msgid "Filter by category"
+msgstr "Filtrar por categoria"
+
+#: blog/templates/blog/post_list.html:37
+msgid "All"
+msgstr "Todas"
+
+#: blog/templates/blog/post_list.html:45
+msgid "Date:"
+msgstr "Data:"
+
+#: blog/templates/blog/post_list.html:47
+msgid "Filter by date"
+msgstr "Filtrar por data"
+
+#: blog/templates/blog/post_list.html:50
+msgid "Apply Filters"
+msgstr "Aplicar Filtros"
+
+#: blog/templates/blog/post_list.html:50
+msgid "Filter"
+msgstr "Filtrar"
+
+#: blog/templates/blog/post_list.html:53
+msgid "Clear"
+msgstr "Limpar"
+
+#: blog/templates/blog/post_list.html:70
+#, python-format
+msgid "View details of post: %(title)s"
+msgstr "Ver detalhes da publicação: %(title)s"
+
+#: blog/templates/blog/post_list.html:79
+#, python-format
+msgid ""
+"\n"
+"                  by %(author)s | %(category)s\n"
+"                "
+msgstr ""
+"\n"
+"                  por %(author)s | %(category)s\n"
+"                "
+
+#: blog/templates/blog/post_list.html:94
+msgid "No posts found matching your filters."
+msgstr "Nenhuma publicação encontrada com os seus filtros."
+
+#: blog/templates/blog/post_list.html:99
+msgid "No posts have been created in this blog yet."
+msgstr "Nenhuma publicação foi criada neste blog ainda."
+
+#: blog/templates/blog/post_list.html:105
+msgid "Post navigation"
+msgstr "Navegação de publicações"
+
+#: blog/templates/blog/post_list.html:109
+#: blog/templates/blog/post_list_public.html:68
+msgid "First"
+msgstr "Primeira"
+
+#: blog/templates/blog/post_list.html:113
+#: blog/templates/blog/post_list_public.html:73
+msgid "Previous"
+msgstr "Anterior"
+
+#: blog/templates/blog/post_list.html:129
+#: blog/templates/blog/post_list_public.html:97
+msgid "Next"
+msgstr "Próxima"
+
+#: blog/templates/blog/post_list.html:133
+#: blog/templates/blog/post_list_public.html:102
+msgid "Last"
+msgstr "Última"
+
+#: blog/templates/blog/post_list_public.html:48
+msgid "Download Attachment"
+msgstr "Descarregar Anexo"
+
+#: blog/templates/blog/post_list_public.html:89
+#, python-format
+msgid ""
+"\n"
+"                            Page %(current_page)s of %(total_pages)s\n"
+"                            "
+msgstr ""
+"\n"
+"                            Página %(current_page)s de %(total_pages)s\n"
+"                            "
+
+#: blog/templates/blog/post_list_public.html:120
+msgid "No blog posts have been published yet."
+msgstr "Nenhuma publicação foi publicada ainda."
+
+#: blog/templates/blog/post_pending_list.html:4
+msgid "Pending Blog Posts"
+msgstr "Publicações Pendentes"
+
+#: blog/templates/blog/post_pending_list.html:8
+msgid "Posts Pending Approval"
+msgstr "Publicações Pendentes de Aprovação"
+
+#: blog/templates/blog/post_pending_list.html:34
+msgid "Pending"
+msgstr "Pendente"
+
+#: blog/templates/blog/post_pending_list.html:40
+msgid "There are no posts pending approval at this time."
+msgstr "Não há publicações pendentes de aprovação neste momento."
+
+#: blog/views.py:52
+msgid "Invalid date format for filtering."
+msgstr "Formato de data inválido para filtragem."
+
+#: blog/views.py:93
+msgid "You do not have permission to view this post."
+msgstr "Não tem permissão para ver esta publicação."
+
+#: blog/views.py:164 blog/views.py:616
+msgid "Post published successfully."
+msgstr "Publicação publicada com sucesso."
+
+#: blog/views.py:167 blog/views.py:619
+msgid "Post submitted for approval."
+msgstr "Publicação submetida para aprovação."
+
+#: blog/views.py:174 blog/views.py:212 blog/views.py:624 classes/views.py:248
+msgid "Please correct the errors below."
+msgstr "Por favor corrija os erros abaixo."
+
+#: blog/views.py:200
+msgid "Cannot edit a removed post. Please restore it first."
+msgstr "Não é possível editar uma publicação removida. Por favor, restaure-a primeiro."
+
+#: blog/views.py:207
+msgid "Post updated successfully."
+msgstr "Publicação atualizada com sucesso."
+
+#: blog/views.py:246
+msgid "Post removed successfully."
+msgstr "Publicação removida com sucesso."
+
+#: blog/views.py:262
+msgid "You cannot comment on this post."
+msgstr "Não pode comentar nesta publicação."
+
+#: blog/views.py:271
+msgid "Comment added successfully."
+msgstr "Comentário adicionado com sucesso."
+
+#: blog/views.py:278
+msgid "Could not add comment. Please check your input."
+msgstr "Não foi possível adicionar o comentário. Por favor, verifique os dados inseridos."
+
+#: blog/views.py:309
+msgid "Comment removed successfully."
+msgstr "Comentário removido com sucesso."
+
+#: blog/views.py:327
+msgid "Access restricted to class moderators."
+msgstr "Acesso restrito a moderadores da turma."
+
+#: blog/views.py:358
+msgid "You do not have permission to restore this post."
+msgstr "Não tem permissão para restaurar esta publicação."
+
+#: blog/views.py:362
+msgid "This post is already active."
+msgstr "Esta publicação já está ativa."
+
+#: blog/views.py:392
+msgid "Restored by moderation"
+msgstr "Restaurado pela moderação"
+
+#: blog/views.py:395
+msgid "Post restored successfully."
+msgstr "Publicação restaurada com sucesso."
+
+#: blog/views.py:545
+msgid "You do not have permission to approve this post."
+msgstr "Não tem permissão para aprovar esta publicação."
+
+#: blog/views.py:551
+msgid "Post approved and published."
+msgstr "Publicação aprovada e publicada."
+
+#: blog/views.py:554
+msgid "This post is not pending approval."
+msgstr "Esta publicação não está pendente de aprovação."
+
+#: blog/views.py:568
+msgid "Access restricted to teachers and administrators."
+msgstr "Acesso restrito a professores e administradores."
+
+#: checklists/models.py:15
+msgid "name"
+msgstr "nome"
+
+#: checklists/models.py:18
+msgid "description"
+msgstr "descrição"
+
+#: checklists/models.py:23
+msgid "Checklist Template"
+msgstr "Modelo de Checklist"
+
+#: checklists/models.py:24 classes/templates/classes/class_detail.html:75
+msgid "Checklist Templates"
+msgstr "Modelos de Checklist"
+
+#: checklists/models.py:32
+msgid "code"
+msgstr "código"
+
+#: checklists/models.py:33
+msgid "text"
+msgstr "texto"
+
+#: checklists/models.py:34
+msgid "order"
+msgstr "ordem"
+
+#: checklists/models.py:39
+msgid "Checklist Item"
+msgstr "Item de Checklist"
+
+#: checklists/models.py:40
+msgid "Checklist Items"
+msgstr "Itens de Checklist"
+
+#: checklists/models.py:48
+#: checklists/templates/checklists/checklist_detail.html:47
+#: checklists/templates/checklists/checklist_detail.html:76
+#: checklists/templates/checklists/checklist_turma.html:84
+#: checklists/templates/checklists/checklist_turma.html:139
+#: classes/templates/classes/student_detail.html:93
+msgid "Not Started"
+msgstr "Não Iniciado"
+
+#: checklists/models.py:49
+#: checklists/templates/checklists/checklist_detail.html:48
+#: checklists/templates/checklists/checklist_detail.html:74
+#: checklists/templates/checklists/checklist_turma.html:82
+#: checklists/templates/checklists/checklist_turma.html:140
+msgid "In Progress"
+msgstr "Em Progresso"
+
+#: checklists/models.py:50
+#: checklists/templates/checklists/checklist_detail.html:49
+#: checklists/templates/checklists/checklist_detail.html:71
+#: checklists/templates/checklists/checklist_turma.html:79
+#: checklists/templates/checklists/checklist_turma.html:141
+#: checklists/templates/checklists/my_checklists.html:43
+msgid "Completed"
+msgstr "Concluído"
+
+#: checklists/models.py:51
+#: checklists/templates/checklists/checklist_detail.html:50
+#: checklists/templates/checklists/checklist_turma.html:142
+msgid "Validated"
+msgstr "Validado"
+
+#: checklists/models.py:59
+msgid "checklist status"
+msgstr "estado da checklist"
+
+#: checklists/models.py:78
+msgid "marked at"
+msgstr "marcado em"
+
+#: checklists/models.py:79
+msgid "teacher validated"
+msgstr "validado pelo professor"
+
+#: checklists/models.py:86
+msgid "Checklist Mark"
+msgstr "Marcação de Checklist"
+
+#: checklists/models.py:87
+msgid "Checklist Marks"
+msgstr "Marcações de Checklist"
+
+#: checklists/models.py:137
+msgid "template"
+msgstr "modelo"
+
+#: checklists/models.py:144 users/models.py:113
+msgid "student"
+msgstr "aluno"
+
+#: checklists/models.py:154
+msgid "percentage complete"
+msgstr "percentagem completa"
+
+#: checklists/models.py:156
+msgid "Automatically calculated percentage of completed items."
+msgstr "Percentagem calculada automaticamente de itens concluídos."
+
+#: checklists/models.py:158
+msgid "last updated"
+msgstr "última atualização"
+
+#: checklists/models.py:161
+msgid "Student Checklist Status"
+msgstr "Estado da Checklist do Aluno"
+
+#: checklists/models.py:162
+msgid "Student Checklist Statuses"
+msgstr "Estados das Checklists dos Alunos"
+
+#: checklists/templates/checklists/base.html:4
+#: classes/templates/classes/class_detail.html:27
+msgid "Checklists"
+msgstr "Checklists"
+
+#: checklists/templates/checklists/checklist_detail.html:4
+msgid "Checklist Detail"
+msgstr "Detalhe da Checklist"
+
+#: checklists/templates/checklists/checklist_detail.html:23
+#: checklists/templates/checklists/my_checklists.html:4
+#: checklists/templates/checklists/my_checklists.html:10
+#: templates/base.html:134
+msgid "My Checklists"
+msgstr "Minhas Checklists"
+
+#: checklists/templates/checklists/checklist_detail.html:24
+#: checklists/templates/checklists/checklist_detail.html:30
+#: checklists/templates/checklists/my_checklists.html:27
+#: checklists/templates/checklists/my_checklists.html:53
+msgid "Grade"
+msgstr "Ano"
+
+#: checklists/templates/checklists/checklist_detail.html:37
+msgid "Checklist progress"
+msgstr "Progresso da checklist"
+
+#: checklists/templates/checklists/checklist_detail.html:51
+#: checklists/templates/checklists/checklist_detail.html:82
+#: checklists/templates/checklists/checklist_turma.html:143
+msgid "Council Focus"
+msgstr "Foco do Conselho"
+
+#: checklists/templates/checklists/checklist_detail.html:69
+#: checklists/templates/checklists/checklist_turma.html:77
+#: classes/templates/classes/student_detail.html:77
+#: classes/templates/classes/student_detail.html:90
+msgid "Validated by Teacher"
+msgstr "Validado pelo Professor"
+
+#: checklists/templates/checklists/checklist_detail.html:82
+#: checklists/templates/checklists/checklist_turma.html:47
+msgid "Agreed in Council"
+msgstr "Acordado em Conselho"
+
+#: checklists/templates/checklists/checklist_detail.html:84
+msgid "Criteria:"
+msgstr "Critérios:"
+
+#: checklists/templates/checklists/checklist_detail.html:105
+#: checklists/templates/checklists/checklist_turma.html:122
+msgid "Comment (optional)"
+msgstr "Comentário (opcional)"
+
+#: checklists/templates/checklists/checklist_detail.html:110
+msgid "Save changes for this item"
+msgstr "Guardar alterações para este item"
+
+#: checklists/templates/checklists/checklist_detail.html:110
+#: checklists/templates/checklists/checklist_turma.html:123
+msgid "Save"
+msgstr "Guardar"
+
+#: checklists/templates/checklists/checklist_detail.html:122
+msgid "Back to My Checklists"
+msgstr "Voltar às Minhas Checklists"
+
+#: checklists/templates/checklists/checklist_detail.html:127
+msgid "Congratulations, you have completed all objectives in this list!"
+msgstr "Parabéns, completou todos os objetivos desta lista!"
+
+#: checklists/templates/checklists/checklist_turma.html:4
+#: classes/templates/classes/class_detail.html:58
+msgid "Class Overview"
+msgstr "Visão Geral da Turma"
+
+#: checklists/templates/checklists/checklist_turma.html:10
+#, python-format
+msgid "Class Overview: %(name)s"
+msgstr "Visão Geral da Turma: %(name)s"
+
+#: checklists/templates/checklists/checklist_turma.html:11
+#: classes/templates/classes/student_detail.html:19
+msgid "Back to Class"
+msgstr "Voltar à Turma"
+
+#: checklists/templates/checklists/checklist_turma.html:13
+#, python-format
+msgid "Class: %(name)s (%(year)s)"
+msgstr "Turma: %(name)s (%(year)s)"
+
+#: checklists/templates/checklists/checklist_turma.html:17
+msgid "Overall Class Progress:"
+msgstr "Progresso Geral da Turma:"
+
+#: checklists/templates/checklists/checklist_turma.html:19
+msgid "Overall class progress"
+msgstr "Progresso geral da turma"
+
+#: checklists/templates/checklists/checklist_turma.html:39
+msgid "Class checklist progress table"
+msgstr "Tabela de progresso da checklist da turma"
+
+#: checklists/templates/checklists/checklist_turma.html:42
+msgid "Student"
+msgstr "Aluno"
+
+#: checklists/templates/checklists/checklist_turma.html:63
+msgid "Student progress"
+msgstr "Progresso do aluno"
+
+#: checklists/templates/checklists/checklist_turma.html:103
+msgid "Validate this completion"
+msgstr "Validar esta conclusão"
+
+#: checklists/templates/checklists/checklist_turma.html:109
+msgid "Change status or add comment"
+msgstr "Alterar estado ou adicionar comentário"
+
+#: checklists/templates/checklists/checklist_turma.html:114
+msgid "Status:"
+msgstr "Estado:"
+
+#: checklists/templates/checklists/checklist_turma.html:131
+msgid "No students in this class."
+msgstr "Nenhum aluno nesta turma."
+
+#: checklists/templates/checklists/help.html:4
+msgid "Checklists Documentation"
+msgstr "Documentação das Checklists"
+
+#: checklists/templates/checklists/help.html:9
+msgid "Checklists Module - Technical Overview"
+msgstr "Módulo de Checklists - Visão Técnica"
+
+#: checklists/templates/checklists/help.html:10
+msgid "Brief documentation for developers regarding the Checklists module."
+msgstr "Documentação breve para programadores sobre o módulo Checklists."
+
+#: checklists/templates/checklists/help.html:13
+msgid "Core Models"
+msgstr "Modelos Principais"
+
+#: checklists/templates/checklists/help.html:30
+msgid "Admin Interface"
+msgstr "Interface de Administração"
+
+#: checklists/templates/checklists/help.html:31
+msgid ""
+"Checklist Templates and their Items can be managed via the Django Admin "
+"interface (/admin/). Items are managed inline within their respective "
+"Template."
+msgstr ""
+"Modelos de Checklist e os seus Itens podem ser geridos através da interface "
+"de Administração do Django (/admin/). Os itens são geridos inline dentro do seu "
+"respetivo Modelo."
+
+#: checklists/templates/checklists/help.html:35
+msgid "URL Endpoints (under /checklists/)"
+msgstr "Endpoints URL (em /checklists/)"
+
+#: checklists/templates/checklists/help.html:37
+msgid "(my_checklists)"
+msgstr "(minhas_checklists)"
+
+#: checklists/templates/checklists/help.html:37
+msgid "Lists checklists for the logged-in student."
+msgstr "Lista as checklists para o aluno autenticado."
+
+#: checklists/templates/checklists/help.html:38
+msgid "(checklist_detail)"
+msgstr "(detalhe_checklist)"
+
+#: checklists/templates/checklists/help.html:38
+msgid "Detail and marking page for a student."
+msgstr "Página de detalhe e marcação para um aluno."
+
+#: checklists/templates/checklists/help.html:39
+msgid "(checklist_turma)"
+msgstr "(checklist_turma)"
+
+#: checklists/templates/checklists/help.html:39
+msgid "Class overview grid for teachers/admins."
+msgstr "Grelha de visão geral da turma para professores/admins."
+
+#: checklists/templates/checklists/help.html:46
+msgid "Basic Usage Summary"
+msgstr "Resumo de Utilização Básica"
+
+#: checklists/templates/checklists/help.html:48
+msgid "Student:"
+msgstr "Aluno:"
+
+#: checklists/templates/checklists/help.html:48
+msgid "Marks objectives, adds comments, tracks progress via 'My Checklists'."
+msgstr "Marca objetivos, adiciona comentários, acompanha o progresso via 'Minhas Checklists'."
+
+#: checklists/templates/checklists/help.html:49
+msgid "Teacher:"
+msgstr "Professor:"
+
+#: checklists/templates/checklists/help.html:49
+msgid ""
+"Views class overview, validates/rectifies marks, tracks collective and "
+"individual progress."
+msgstr ""
+"Vê a visão geral da turma, valida/retifica marcas, acompanha o progresso coletivo e "
+"individual."
+
+#: checklists/templates/checklists/help.html:50
+msgid "Admin/Teacher:"
+msgstr "Admin/Professor:"
+
+#: checklists/templates/checklists/help.html:50
+msgid "Manages Checklist Templates and Items via the Admin interface."
+msgstr "Gere Modelos de Checklist e Itens através da interface de Administração."
+
+#: checklists/templates/checklists/help.html:55
+msgid "Automated Tests"
+msgstr "Testes Automatizados"
+
+#: checklists/templates/checklists/help.html:58
+msgid "Tests cover model logic, view permissions, and basic interactions."
+msgstr "Os testes cobrem lógica de modelos, permissões de vistas e interações básicas."
+
+#: checklists/templates/checklists/help.html:59
+msgid "Run with:"
+msgstr "Executar com:"
+
+#: checklists/templates/checklists/help.html:64
+msgid ""
+"For more technical details, refer to the README.md file or contact the "
+"development team."
+msgstr ""
+"Para mais detalhes técnicos, consulte o ficheiro README.md ou contacte a "
+"equipa de desenvolvimento."
+
+#: checklists/templates/checklists/my_checklists.html:17 diary/models.py:12
+#: diary/templates/diary/view_diary.html:32
+msgid "Active"
+msgstr "Ativo"
+
+#: checklists/templates/checklists/my_checklists.html:24
+#, python-format
+msgid "View checklist %(name)s"
+msgstr "Ver checklist %(name)s"
+
+#: checklists/templates/checklists/my_checklists.html:36
+msgid "You have no active checklists assigned."
+msgstr "Não tem checklists ativas atribuídas."
+
+#: checklists/templates/checklists/my_checklists.html:50
+#, python-format
+msgid "Review completed checklist %(name)s"
+msgstr "Rever checklist concluída %(name)s"
+
+#: checklists/templates/checklists/my_checklists.html:61
+msgid "You have no completed checklists."
+msgstr "Não tem checklists concluídas."
+
+#: checklists/views.py:111 checklists/views.py:237 classes/views.py:308
+msgid "Invalid status provided."
+msgstr "Estado inválido fornecido."
+
+#: checklists/views.py:146
+msgid "Objective updated successfully!"
+msgstr "Objetivo atualizado com sucesso!"
+
+#: checklists/views.py:167
+msgid "You do not have permission to view this class checklist."
+msgstr "Não tem permissão para ver esta checklist da turma."
+
+#: checklists/views.py:220
+msgid "You do not have permission to modify this class checklist."
+msgstr "Não tem permissão para modificar esta checklist da turma."
+
+#: checklists/views.py:233
+msgid "Insufficient data to validate/rectify."
+msgstr "Dados insuficientes para validar/retificar."
+
+#: checklists/views.py:275
+#, python-brace-format
+msgid "Mark validated/rectified for {student_name}."
+msgstr "Marcar validado/retificado para {student_name}."
+
+#: classes/models.py:11
+msgid "class name"
+msgstr "nome da turma"
+
+#: classes/models.py:13
+msgid "Name of the class, e.g., \"5º A\", \"Turma Azul\"."
+msgstr "Nome da turma, ex: \"5º A\", \"Turma Azul\"."
+
+#: classes/models.py:16
+msgid "academic year"
+msgstr "ano escolar"
+
+#: classes/models.py:17
+msgid ""
+"Starting year of the academic year (e.g., 2024 for 2024/2025) or the grade "
+"level (e.g., 5 for 5th grade)."
+msgstr ""
+"Ano de início do ano letivo (ex: 2024 para 2024/2025) ou o nível de ensino "
+"(ex: 5 para 5º ano)."
+
+#: classes/models.py:24
+msgid "students"
+msgstr "alunos"
+
+#: classes/models.py:31
+msgid "teachers"
+msgstr "professores"
+
+#: classes/models.py:47 classes/templates/classes/class_detail.html:4
+#: templates/base.html:127
+msgid "Classes"
+msgstr "Turmas"
+
+#: classes/templates/classes/add_student.html:4
+#, python-format
+msgid "Adicionar aluno/convidado à turma: %(turma.name)s"
+msgstr "Adicionar aluno/convidado à turma: %(turma.name)s"
+
+#: classes/templates/classes/add_student.html:9
+msgid "Selecionar convidado:"
+msgstr "Selecionar convidado:"
+
+#: classes/templates/classes/add_student.html:15
+msgid "Promover e adicionar"
+msgstr "Promover e adicionar"
+
+#: classes/templates/classes/add_student.html:18
+msgid "Não há convidados disponíveis para adicionar."
+msgstr "Não há convidados disponíveis para adicionar."
+
+#: classes/templates/classes/add_student.html:20
+msgid "Voltar à turma"
+msgstr "Voltar à turma"
+
+#: classes/templates/classes/base.html:5
+msgid "Turmas | Infantinho 3.0"
+msgstr "Turmas | Infantinho 3.0"
+
+#: classes/templates/classes/class_detail.html:19
+#, python-format
+msgid "Class: %(class_name)s (%(year)s)"
+msgstr "Turma: %(class_name)s (%(year)s)"
+
+#: classes/templates/classes/class_detail.html:22
+msgid "View Class Diary"
+msgstr "Ver Diário da Turma"
+
+#: classes/templates/classes/class_detail.html:38
+msgid "Teachers"
+msgstr "Professores"
+
+#: classes/templates/classes/class_detail.html:43
+msgid "No teachers assigned."
+msgstr "Não há professores atribuídos."
+
+#: classes/templates/classes/class_detail.html:50
+msgid "Add Student"
+msgstr "Adicionar Aluno"
+
+#: classes/templates/classes/class_detail.html:60
+msgid "General Statistics"
+msgstr "Estatísticas Gerais"
+
+#: classes/templates/classes/class_detail.html:64
+#: classes/templates/classes/class_detail.html:89
+msgid "Students"
+msgstr "Alunos"
+
+#: classes/templates/classes/class_detail.html:69
+#: classes/templates/classes/student_detail.html:161
+msgid "Recent Diary Posts"
+msgstr "Publicações Recentes do Diário"
+
+#: classes/templates/classes/class_detail.html:70
+msgid "last 7 days"
+msgstr "últimos 7 dias"
+
+#: classes/templates/classes/class_detail.html:76
+msgid "applicable"
+msgstr "aplicável"
+
+#: classes/templates/classes/class_detail.html:79
+msgid "Overall progress chart coming soon."
+msgstr "Gráfico de progresso geral em breve."
+
+#: classes/templates/classes/class_detail.html:89
+msgid "Progress Summary"
+msgstr "Resumo de Progresso"
+
+#: classes/templates/classes/class_detail.html:95
+msgid "Student Name"
+msgstr "Nome do Aluno"
+
+#: classes/templates/classes/class_detail.html:97
+msgid "Checklist Progress"
+msgstr "Progresso da Checklist"
+
+#: classes/templates/classes/class_detail.html:100
+msgid "Last Diary Post"
+msgstr "Última Publicação do Diário"
+
+#: classes/templates/classes/class_detail.html:102
+msgid "Actions"
+msgstr "Ações"
+
+#: classes/templates/classes/class_detail.html:116
+#: classes/templates/classes/student_detail.html:39
+msgid "completed"
+msgstr "concluído"
+
+#: classes/templates/classes/class_detail.html:137
+msgid "View Details"
+msgstr "Ver Detalhes"
+
+#: classes/templates/classes/class_detail.html:150
+msgid "No students assigned yet."
+msgstr "Ainda não há alunos atribuídos."
+
+#: classes/templates/classes/class_list.html:4
+#: classes/templates/classes/class_list.html:8
+msgid "My Classes"
+msgstr "Minhas Turmas"
+
+#: classes/templates/classes/class_list.html:16
+#: classes/templates/classes/class_list.html:20
+msgid "You are not assigned to any classes."
+msgstr "Não está atribuído a nenhuma turma."
+
+#: classes/templates/classes/class_list.html:25 templates/base.html:154
+msgid "Manage Classes"
+msgstr "Gerir Turmas"
+
+#: classes/templates/classes/landing.html:4
+msgid "Welcome"
+msgstr "Bem-vindo"
+
+#: classes/templates/classes/landing.html:7
+msgid "Bem-vindo ao Infantinho 3.0"
+msgstr "Bem-vindo ao Infantinho 3.0"
+
+#: classes/templates/classes/landing.html:11
+msgid "Minhas Turmas"
+msgstr "Minhas Turmas"
+
+#: classes/templates/classes/landing.html:15
+msgid "Gestão de Turmas (Admin)"
+msgstr "Gestão de Turmas (Admin)"
+
+#: classes/templates/classes/landing.html:20 templates/base.html:149
+msgid "Django Admin"
+msgstr "Admin do Django"
+
+#: classes/templates/classes/landing.html:27 templates/base.html:86
+msgid "Logout"
+msgstr "Logout"
+
+#: classes/templates/classes/landing.html:33
+#: users/templates/users/login.html:19 users/templates/users/login.html:60
+#: users/templates/users/login_choice.html:15
+msgid "Login"
+msgstr "Login"
+
+#: classes/templates/classes/landing.html:36
+msgid "Login Local"
+msgstr "Login Local"
+
+#: classes/templates/classes/landing.html:37
+msgid "Login Microsoft"
+msgstr "Login Microsoft"
+
+#: classes/templates/classes/landing.html:38
+msgid "Recuperar Palavra-passe"
+msgstr "Recuperar Palavra-passe"
+
+#: classes/templates/classes/landing.html:42
+msgid "Esta página inicial será substituída pelo blog futuramente."
+msgstr "Esta página inicial será substituída pelo blog futuramente."
+
+#: classes/templates/classes/manage_classes.html:4
+msgid "Gestão de Turmas"
+msgstr "Gestão de Turmas"
+
+#: classes/templates/classes/manage_classes.html:6
+msgid "Criar nova turma"
+msgstr "Criar nova turma"
+
+#: classes/templates/classes/manage_classes.html:10
+msgid "Criar turma"
+msgstr "Criar turma"
+
+#: classes/templates/classes/manage_classes.html:13
+msgid "Turmas existentes"
+msgstr "Turmas existentes"
+
+#: classes/templates/classes/manage_classes.html:17
+msgid "Nome"
+msgstr "Nome"
+
+#: classes/templates/classes/manage_classes.html:18
+msgid "Ano"
+msgstr "Ano"
+
+#: classes/templates/classes/manage_classes.html:19
+msgid "Professores"
+msgstr "Professores"
+
+#: classes/templates/classes/manage_classes.html:34
+msgid "Nenhuma turma criada ainda."
+msgstr "Não há turmas criadas ainda."
+
+#: classes/templates/classes/student_detail.html:5
+msgid "Student Details"
+msgstr "Detalhes do Aluno"
+
+#: classes/templates/classes/student_detail.html:15
+#, python-format
+msgid "in Class %(class_name)s"
+msgstr "na turma %(class_name)s"
+
+#: classes/templates/classes/student_detail.html:30
+msgid "Checklist Details"
+msgstr "Detalhes da Checklist"
+
+#: classes/templates/classes/student_detail.html:66
+msgid "Update status"
+msgstr "Atualizar estado"
+
+#: classes/templates/classes/student_detail.html:73
+msgid "Save Status"
+msgstr "Guardar Estado"
+
+#: classes/templates/classes/student_detail.html:79
+msgid "Marked Completed by Student"
+msgstr "Marcado Concluído pelo Aluno"
+
+#: classes/templates/classes/student_detail.html:102
+msgid "This checklist template currently has no items."
+msgstr "Este modelo de checklist não tem itens."
+
+#: classes/templates/classes/student_detail.html:111
+msgid "No checklists assigned or started for this student in this class yet."
+msgstr "Não há checklists atribuídas ou iniciadas para este aluno nesta turma ainda."
+
+#: classes/templates/classes/student_detail.html:121
+msgid "Individual Plan (PIT)"
+msgstr "Plano Individual (PIT)"
+
+#: classes/templates/classes/student_detail.html:124
+msgid "PIT details will appear here when implemented."
+msgstr "Detalhes do PIT aparecerão aqui quando implementado."
+
+#: classes/templates/classes/student_detail.html:133
+msgid "Projects"
+msgstr "Projetos"
+
+#: classes/templates/classes/student_detail.html:136
+msgid "Project involvement details will appear here when implemented."
+msgstr "Detalhes de envolvimento no projeto aparecerão aqui quando implementado."
+
+#: classes/templates/classes/student_detail.html:149
+msgid "Student Info"
+msgstr "Informações do Aluno"
+
+#: classes/templates/classes/student_detail.html:152
+#: users/templates/users/password_reset.html:13
+msgid "Email"
+msgstr "Email"
+
+#: classes/templates/classes/student_detail.html:173
+#: classes/templates/classes/student_detail.html:179
+msgid "No diary posts found for this student in this class."
+msgstr "Não há publicações no diário deste aluno nesta turma."
+
+#: classes/views.py:64
+msgid "You do not have permission to view this class page."
+msgstr "Não tem permissão para ver esta página da turma."
+
+#: classes/views.py:188
+msgid "Only teachers of this class or administrators can add students."
+msgstr "Apenas professores desta turma ou administradores podem adicionar alunos."
+
+#: classes/views.py:198
+msgid "No user selected."
+msgstr "Nenhum usuário selecionado."
+
+#: classes/views.py:216
+#, python-brace-format
+msgid "{user_name} promoted to student and added to the class."
+msgstr "{user_name} promovido para aluno e adicionado à turma."
+
+#: classes/views.py:227
+msgid "Select Teachers"
+msgstr "Selecionar Professores"
+
+#: classes/views.py:230
+msgid "Select one or more teachers for this class."
+msgstr "Selecione um ou mais professores para esta turma."
+
+#: classes/views.py:245
+#, python-brace-format
+msgid "Class \"{class_name}\" created successfully!"
+msgstr "Turma \"{class_name}\" criada com sucesso!"
+
+#: classes/views.py:270
+msgid "The requested user is not a student."
+msgstr "O usuário solicitado não é um aluno."
+
+#: classes/views.py:273
+msgid "This student is not enrolled in this class."
+msgstr "Este aluno não está inscrito nesta turma."
+
+#: classes/views.py:283
+msgid "You do not have permission to view this student's details."
+msgstr "Não tem permissão para ver os detalhes deste aluno."
+
+#: classes/views.py:289
+msgid "You do not have permission to mark checklist items."
+msgstr "Não tem permissão para marcar itens da checklist."
+
+#: classes/views.py:298
+msgid "Missing data to update checklist status."
+msgstr "Dados ausentes para atualizar o estado da checklist."
+
+#: classes/views.py:334
+#, python-brace-format
+msgid "Checklist item '{item_code}' updated to '{status}'."
+msgstr "Item da checklist '{item_code}' atualizado para '{status}'."
+
+#: classes/views.py:339
+msgid "Error updating checklist item: {}"
+msgstr "Erro ao atualizar item da checklist: {}"
+
+#: classes/views.py:342
+msgid "An unexpected error occurred: {}"
+msgstr "Um erro inesperado ocorreu: {}"
+
+#: diary/models.py:13
+msgid "Archived"
+msgstr "Arquivado"
+
+#: diary/models.py:18
+msgid "start date"
+msgstr "data de início"
+
+#: diary/models.py:19
+msgid "end date"
+msgstr "data de término"
+
+#: diary/models.py:29
+msgid "Diary Session"
+msgstr "Sessão do Diário"
+
+#: diary/models.py:30
+msgid "Diary Sessions"
+msgstr "Sessões do Diário"
+
+#: diary/models.py:33
+msgid " (Active)"
+msgstr " (Ativo)"
+
+#: diary/models.py:39
+msgid "Liked"
+msgstr "Gosto"
+
+#: diary/models.py:40
+msgid "Disliked"
+msgstr "Não Gosto"
+
+#: diary/models.py:41
+msgid "We Did"
+msgstr "Fizemos"
+
+#: diary/models.py:42
+msgid "We Want"
+msgstr "Queremos"
+
+#: diary/models.py:45
+msgid "column"
+msgstr "coluna"
+
+#: diary/models.py:52
+msgid "Diary Entry"
+msgstr "Entrada do Diário"
+
+#: diary/models.py:53
+msgid "Diary Entries"
+msgstr "Entradas do Diário"
+
+#: diary/templates/diary/no_active_diary.html:4
+#: diary/templates/diary/no_active_diary.html:10
+#: diary/templates/diary/view_diary.html:10
+msgid "Class Diary"
+msgstr "Diário da Turma"
+
+#: diary/templates/diary/no_active_diary.html:18
+msgid "Start New Diary Period"
+msgstr "Iniciar Novo Período do Diário"
+
+#: diary/templates/diary/no_active_diary.html:26
+msgid "There is currently no active diary period for this class."
+msgstr "Não há período ativo do diário para esta turma."
+
+#: diary/templates/diary/no_active_diary.html:28
+msgid "Click the button above to start a new one."
+msgstr "Clique no botão acima para iniciar um novo."
+
+#: diary/templates/diary/view_diary.html:4
+#, python-format
+msgid "Diary: %(class_name)s (%(date)s)"
+msgstr "Diário: %(class_name)s (%(date)s)"
+
+#: diary/templates/diary/view_diary.html:18
+msgid "Archive & Start New Period"
+msgstr "Arquivar e Iniciar Novo Período"
+
+#: diary/templates/diary/view_diary.html:26
+#, python-format
+msgid ""
+"\n"
+"        Period starting: <strong>%(start_date)s</strong>\n"
+"        "
+msgstr ""
+"\n"
+"        Início do período: <strong>%(start_date)s</strong>\n"
+"        "
+
+#: diary/templates/diary/view_diary.html:30
+msgid "Archived on"
+msgstr "Arquivado em"
+
+#: diary/templates/diary/view_diary.html:65
+msgid "Entry added at"
+msgstr "Entrada adicionada em"
+
+#: diary/templates/diary/view_diary.html:69
+msgid "Unknown author"
+msgstr "Autor desconhecido"
+
+#: diary/templates/diary/view_diary.html:78
+msgid "No entries yet."
+msgstr "Ainda não há entradas."
+
+#: diary/templates/diary/view_diary.html:90
+msgid "Add new entry..."
+msgstr "Adicionar nova entrada..."
+
+#: diary/templates/diary/view_diary.html:91
+msgid "Add Entry"
+msgstr "Adicionar Entrada"
+
+#: diary/views.py:42
+msgid "You do not have permission to view this diary."
+msgstr "Não tem permissão para ver este diário."
+
+#: diary/views.py:81
+msgid "You do not have permission to add entries to this diary."
+msgstr "Não tem permissão para adicionar entradas a este diário."
+
+#: diary/views.py:87
+msgid "Cannot add entries to an archived diary session."
+msgstr "Não é possível adicionar entradas a uma sessão de diário arquivada."
+
+#: diary/views.py:95
+msgid "Invalid column specified."
+msgstr "Coluna inválida especificada."
+
+#: diary/views.py:98
+msgid "Content cannot be empty."
+msgstr "Conteúdo não pode estar vazio."
+
+#: diary/views.py:107
+msgid "Diary entry added successfully."
+msgstr "Entrada do diário adicionada com sucesso."
+
+#: diary/views.py:119
+msgid "Only teachers or admins can start/archive diary sessions."
+msgstr "Apenas professores ou administradores podem iniciar/arquivar sessões de diário."
+
+#: diary/views.py:129
+msgid "Previous diary session archived."
+msgstr "Sessão anterior do diário arquivada."
+
+#: diary/views.py:133
+msgid "New diary session started."
+msgstr "Nova sessão de diário iniciada."
+
+#: templates/base.html:32
+#, python-format
+msgid ""
+"\n"
+"          You are currently logged in as <strong>%(impersonated_name)s</"
+"strong> (Impersonator: %(impersonator_name)s).\n"
+"          "
+msgstr ""
+"\n"
+"          Está atualmente ligado como <strong>%(impersonated_name)s</"
+"strong> (Impersonador: %(impersonator_name)s).\n"
+"          "
+
+#: templates/base.html:35 templates/base.html:82
+msgid "Stop Impersonating"
+msgstr "Terminar representação"
+
+#: templates/base.html:46
+msgid "Infantinho 3.0"
+msgstr "Infantinho 3.0"
+
+#: templates/base.html:48
+msgid "Toggle navigation"
+msgstr "Alternar navegação"
+
+#: templates/base.html:66
+msgid "Impersonating"
+msgstr "A representar"
+
+#: templates/base.html:114
+msgid "Blog Home"
+msgstr "Início do Blog"
+
+#: templates/base.html:121
+msgid "Create Post"
+msgstr "Criar Publicação"
+
+#: templates/base.html:144
+msgid "Admin Tools"
+msgstr "Ferramentas de Admin"
+
+#: templates/base.html:159
+msgid "Pending Posts"
+msgstr "Publicações Pendentes"
+
+#: users/models.py:15
+msgid "email address"
+msgstr "endereço de email"
+
+#: users/models.py:18
+msgid "Aluno"
+msgstr "Aluno"
+
+#: users/models.py:19
+msgid "Professor"
+msgstr "Professor"
+
+#: users/models.py:20
+msgid "Administrador"
+msgstr "Administrador"
+
+#: users/models.py:21
+msgid "Encarregado de Educação"
+msgstr "Encarregado de Educação"
+
+#: users/models.py:28
+msgid "role"
+msgstr "função"
+
+#: users/models.py:34
+msgid "The primary role of the user within the system."
+msgstr "A função principal do utilizador no sistema."
+
+#: users/models.py:39
+msgid "profile photo"
+msgstr "foto de perfil"
+
+#: users/models.py:43
+msgid "Optional user profile picture."
+msgstr "Foto de perfil opcional do utilizador."
+
+#: users/models.py:52
+msgid "User status, e.g., 'convidado' (guest) or 'ativo' (active)."
+msgstr "Estado do utilizador, ex: 'convidado' ou 'ativo'."
+
+#: users/models.py:61
+msgid "Guests cannot have an assigned role."
+msgstr "Convidados não podem ter uma função atribuída."
+
+#: users/models.py:77
+msgid "Invalid role specified."
+msgstr "Função inválida especificada."
+
+#: users/models.py:122
+msgid "guardian"
+msgstr "encarregado de educação"
+
+#: users/models.py:127
+msgid "relationship"
+msgstr "relação"
+
+#: users/models.py:130
+msgid "e.g., Father, Mother, Legal Tutor"
+msgstr "ex: Pai, Mãe, Tutor Legal"
+
+#: users/models.py:136
+msgid "Guardian Relationship"
+msgstr "Relação com Encarregado"
+
+#: users/models.py:137
+msgid "Guardian Relationships"
+msgstr "Relações com Encarregados"
+
+#: users/templates/users/login.html:4
+msgid "Login | Infantinho 3.0"
+msgstr "Login | Infantinho 3.0"
+
+#: users/templates/users/login.html:27
+msgid "Login (Guardians & Admins)"
+msgstr "Login (Encarregados de Educação e Admins)"
+
+#: users/templates/users/login.html:40 users/templates/users/login.html:44
+msgid "Email Address"
+msgstr "Endereço de Email"
+
+#: users/templates/users/login.html:52 users/templates/users/login.html:55
+msgid "Password"
+msgstr "Palavra-passe"
+
+#: users/templates/users/login.html:64
+#: users/templates/users/login_choice.html:35
+msgid "Forgot password?"
+msgstr "Esqueceu-se da palavra-passe?"
+
+#: users/templates/users/login.html:72
+msgid "Login (Students & Teachers)"
+msgstr "Login (Alunos e Professores)"
+
+#: users/templates/users/login.html:75
+msgid "Login with Microsoft Account"
+msgstr "Login com Conta Microsoft"
+
+#: users/templates/users/login.html:82
+msgid "Back to Login Options"
+msgstr "Voltar às Opções de Login"
+
+#: users/templates/users/login_choice.html:4
+msgid "Login Choice"
+msgstr "Escolha de Login"
+
+#: users/templates/users/login_choice.html:13
+msgid "Infantinho 3.0 Logo"
+msgstr "Logótipo Infantinho 3.0"
+
+#: users/templates/users/login_choice.html:16
+msgid "Select your login method:"
+msgstr "Selecione o seu método de login:"
+
+#: users/templates/users/login_choice.html:22
+msgid "Microsoft Account"
+msgstr "Conta Microsoft"
+
+#: users/templates/users/login_choice.html:23
+msgid "Students & Teachers"
+msgstr "Alunos e Professores"
+
+#: users/templates/users/login_choice.html:28
+msgid "Email & Password"
+msgstr "Email e Palavra-passe"
+
+#: users/templates/users/login_choice.html:29
+msgid "Guardians & Admins"
+msgstr "Encarregados de Educação e Admins"
+
+#: users/templates/users/password_reset.html:4
+msgid "Recuperar palavra-passe | Infantinho 3.0"
+msgstr "Recuperar palavra-passe | Infantinho 3.0"
+
+#: users/templates/users/password_reset.html:8
+msgid "Recuperar palavra-passe"
+msgstr "Recuperar palavra-passe"
+
+#: users/templates/users/password_reset.html:16
+msgid "Enviar instruções"
+msgstr "Enviar instruções"
+
+#: users/templates/users/password_reset_done.html:4
+msgid "Instruções enviadas | Infantinho 3.0"
+msgstr "Instruções enviadas | Infantinho 3.0"
+
+#: users/templates/users/password_reset_done.html:8
+msgid "Verifique o seu email"
+msgstr "Verifique o seu email"
+
+#: users/templates/users/password_reset_done.html:9
+msgid ""
+"Se o email estiver registado, receberá instruções para recuperar a palavra-"
+"passe."
+msgstr ""
+"Se o email estiver registado, receberá instruções para recuperar a palavra-"
+"passe."
+
+#: users/templates/users/password_reset_done.html:10
+msgid "Voltar à página inicial"
+msgstr "Voltar à página inicial"
