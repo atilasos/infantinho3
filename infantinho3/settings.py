@@ -165,6 +165,8 @@ STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'staticfiles') # For coll
 STATICFILES_DIRS = [
     BASE_DIR / "static", # Add project-level static directory
 ]
+# Use ManifestStaticFilesStorage for cache busting in production
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
