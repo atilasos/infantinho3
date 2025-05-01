@@ -49,8 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize', # Added for humanize filters (like naturaltime)
     
     # Third-party apps
-    'ckeditor',
+    # 'ckeditor', # REMOVED
     # 'ckeditor_uploader', # Not currently used
+    'tinymce', # ADDED
     'widget_tweaks', # Added for form rendering
     'impersonate', # Add impersonate app
     
@@ -169,16 +170,36 @@ STATICFILES_DIRS = [
 MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', BASE_DIR / 'media')
 
-# CKEditor Config (Basic - No uploader for now)
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'basic',
-        'height': 150,
-        'width': '100%',
-    },
-}
-CKEDITOR_UPLOAD_PATH = "uploads/" # Only needed for ckeditor_uploader
+# REMOVED CKEditor Config section
+# CKEDITOR_CONFIGS = { ... }
+# CKEDITOR_UPLOAD_PATH = "uploads/"
 
+# --- TinyMCE Config --- ADDED Section
+TINYMCE_DEFAULT_CONFIG = {
+    "theme": "silver", # Default theme
+    "height": 300,
+    "menubar": False,
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount",
+    "toolbar": "undo redo | formatselect | bold italic backcolor | \
+                alignleft aligncenter alignright alignjustify | \
+                bullist numlist outdent indent | removeformat | help",
+    "content_css": "//www.tiny.cloud/css/codepen.min.css", # Example CDN CSS
+    "relative_urls": False, # Important for media URLs
+    "language": "pt_PT" # Use Portuguese language pack if available via CDN or downloaded
+}
+TINYMCE_EXTRA_MEDIA = { # Optional: Include extra JS/CSS if needed, e.g., for custom plugins
+    # 'css': {
+    #    'all': [
+    #        ...
+    #    ],
+    # },
+    # 'js': [
+    #    ...
+    # ],
+}
+# TINYMCE_JS_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js' # Use if you have an API key or self-hosted
+TINYMCE_COMPRESSOR = False # Set to True in production if you download the JS
+# --- End TinyMCE Config ---
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

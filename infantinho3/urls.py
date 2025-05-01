@@ -53,6 +53,10 @@ urlpatterns = [
     # CKEditor URLs (Only needed if using django-ckeditor-uploader)
     # path('ckeditor/', include('ckeditor_uploader.urls')), # Commented out as uploader is not used
     
+    # --- TinyMCE URLs --- ADDED
+    path('tinymce/', include('tinymce.urls')),
+    # ---------------------
+    
     # General Help View
     path('ajuda/', HelpView.as_view(), name='ajuda'),
 ]
