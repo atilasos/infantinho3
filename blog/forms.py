@@ -3,7 +3,8 @@ from django import forms
 from .models import Post, Comment, Class
 from django.utils.translation import gettext_lazy as _
 # Import the standard widget since django-ckeditor-uploader is not installed
-from ckeditor.widgets import CKEditorWidget 
+# from ckeditor.widgets import CKEditorWidget # REMOVED
+from tinymce.widgets import TinyMCE # ADDED
 
 class PostForm(forms.ModelForm):
     """
@@ -14,9 +15,10 @@ class PostForm(forms.ModelForm):
     turma = forms.ModelChoiceField(
         queryset=Class.objects.all().order_by('name'), 
         label=_("Class"),
-        help_text=_("Select the class this post relates to."),
-        required=True,
-        widget=forms.Select(attrs={'class': 'form-select'}) # Add bootstrap class
+        help_text=_("Select the class this post relates to, or leave blank for a general announcement."),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        empty_label=_("--- Geral (Toda a Escola) ---")
     )
     
     class Meta:
@@ -24,7 +26,8 @@ class PostForm(forms.ModelForm):
         # REMOVED 'subcategoria_diario' from fields
         fields = ['turma', 'titulo', 'categoria', 'conteudo', 'image', 'attachment']
         widgets = {
-            'conteudo': CKEditorWidget(), 
+            # 'conteudo': CKEditorWidget(), # REPLACED
+            'conteudo': TinyMCE(), # with TinyMCE
         }
         labels = {
             'turma': _("Class"), # Explicitly add label here now
@@ -36,7 +39,6 @@ class PostForm(forms.ModelForm):
             'attachment': _('Attachment (PDF, etc.)'),
         }
         help_texts = {
-            'turma': _("Select the class this post relates to."), # Add help text here
             'titulo': _('(Optional)'),
             # Removed subcategoria help_text
         }

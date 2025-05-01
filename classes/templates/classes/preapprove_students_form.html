@@ -1,0 +1,120 @@
+{# classes/templates/classes/preapprove_students_form.html #}
+{% extends "base.html" %} 
+{% load i18n humanize widget_tweaks %}
+
+{% block title %}{% trans "Pré-Aprovar Alunos para" %} {{ turma.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{% trans "Pré-Aprovar Alunos para a Turma:" %} {{ turma }}</h1>
+    <p>{% trans "Adicione os endereços de email Microsoft dos alunos que pertencem a esta turma. Quando um aluno com um destes emails fizer login pela primeira vez, será automaticamente adicionado a esta turma com o papel 'Aluno'." %}</p>
+    
+    <hr>
+
+    {# Mostrar Mensagens #}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {# Formulário de Adição #}
+    <div class="card mb-4">
+        <div class="card-header">
+            {% trans "Adicionar Novos Emails" %}
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {# Renderizar erros não associados a campos específicos (ex: validação geral do clean) #}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {# Renderizar campos do formulário manualmente para melhor controlo ou usar form.as_p/crispy-forms #}
+                <div class="mb-3">
+                    <label for="{{ form.email_list.id_for_label }}" class="form-label">{{ form.email_list.label }}</label>
+                    {% render_field form.email_list class+="form-control" %}
+                    {% if form.email_list.help_text %}
+                        <div class="form-text">{{ form.email_list.help_text }}</div>
+                    {% endif %}
+                     {% for error in form.email_list.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="mb-3">
+                     <label for="{{ form.email_file.id_for_label }}" class="form-label">{{ form.email_file.label }}</label>
+                     {% render_field form.email_file class+="form-control" %}
+                     {% if form.email_file.help_text %}
+                        <div class="form-text">{{ form.email_file.help_text }}</div>
+                     {% endif %}
+                     {% for error in form.email_file.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">{% trans "Adicionar Emails" %}</button>
+            </form>
+        </div>
+    </div>
+
+    {# Lista de Emails Já Pré-Aprovados #}
+    <div class="card">
+        <div class="card-header">
+            {% trans "Emails Pré-Aprovados para Esta Turma" %}
+        </div>
+        <div class="card-body">
+            {% if preapproved_list %}
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Email" %}</th>
+                            <th>{% trans "Estado" %}</th>
+                            <th>{% trans "Adicionado Por" %}</th>
+                            <th>{% trans "Data Adição" %}</th>
+                            <th>{% trans "Reivindicado Por" %}</th>
+                            <th>{% trans "Data Reivindicação" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in preapproved_list %}
+                            <tr>
+                                <td>{{ entry.email }}</td>
+                                <td>
+                                    {% if entry.status == 'Pending' %}
+                                        <span class="badge bg-warning text-dark">{% trans "Pendente" %}</span>
+                                    {% elif entry.status == 'Claimed' %}
+                                         <span class="badge bg-success">{% trans "Reivindicado" %}</span>
+                                    {% else %}
+                                        {{ entry.get_status_display }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ entry.added_by.get_full_name|default:entry.added_by.username|default:"N/A" }}</td>
+                                <td>{{ entry.date_added|naturaltime }}</td>
+                                <td>{{ entry.claimed_by.get_full_name|default:entry.claimed_by.username|default:"-" }}</td>
+                                <td>{{ entry.date_claimed|date:"d/m/Y H:i"|default:"-" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>{% trans "Ainda não foram adicionados emails pré-aprovados para esta turma." %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-secondary">{% trans "Voltar à Turma" %}</a>
+    </div>
+
+</div>
+{% endblock %} 

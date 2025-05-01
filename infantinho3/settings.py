@@ -49,8 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize', # Added for humanize filters (like naturaltime)
     
     # Third-party apps
-    'ckeditor',
+    # 'ckeditor', # REMOVED
     # 'ckeditor_uploader', # Not currently used
+    'tinymce', # ADDED
     'widget_tweaks', # Added for form rendering
     'impersonate', # Add impersonate app
     
@@ -65,6 +66,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -145,7 +147,14 @@ TIME_ZONE = os.environ.get('TIME_ZONE', 'Europe/Lisbon')
 
 USE_I18N = True
 
+USE_L10N = True # Added for locale formatting
+
 USE_TZ = True
+
+# Define the path for translation files
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 
 
 # Static files (CSS, JavaScript, Images)
@@ -161,16 +170,36 @@ STATICFILES_DIRS = [
 MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', BASE_DIR / 'media')
 
-# CKEditor Config (Basic - No uploader for now)
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'basic',
-        'height': 150,
-        'width': '100%',
-    },
-}
-# CKEDITOR_UPLOAD_PATH = "uploads/" # Only needed for ckeditor_uploader
+# REMOVED CKEditor Config section
+# CKEDITOR_CONFIGS = { ... }
+# CKEDITOR_UPLOAD_PATH = "uploads/"
 
+# --- TinyMCE Config --- ADDED Section
+TINYMCE_DEFAULT_CONFIG = {
+    "theme": "silver", # Default theme
+    "height": 300,
+    "menubar": False,
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount",
+    "toolbar": "undo redo | formatselect | bold italic backcolor | \
+                alignleft aligncenter alignright alignjustify | \
+                bullist numlist outdent indent | removeformat | help",
+    "content_css": "//www.tiny.cloud/css/codepen.min.css", # Example CDN CSS
+    "relative_urls": False, # Important for media URLs
+    "language": "pt_PT" # Use Portuguese language pack if available via CDN or downloaded
+}
+TINYMCE_EXTRA_MEDIA = { # Optional: Include extra JS/CSS if needed, e.g., for custom plugins
+    # 'css': {
+    #    'all': [
+    #        ...
+    #    ],
+    # },
+    # 'js': [
+    #    ...
+    # ],
+}
+# TINYMCE_JS_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js' # Use if you have an API key or self-hosted
+TINYMCE_COMPRESSOR = False # Set to True in production if you download the JS
+# --- End TinyMCE Config ---
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -229,27 +258,26 @@ OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
 
-# Logging (Basic console logging for dev)
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+# --- Logging para produção ---
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'WARNING',
+                'class': 'logging.FileHandler',
+                'filename': os.environ.get('DJANGO_LOG_FILE', BASE_DIR / 'django.log'),
+            },
         },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': False,
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'WARNING',
+                'propagate': True,
+            },
         },
-    },
-}
+    }
 
 # --- Import environment-specific settings if they exist --- 
 # (Allows overriding settings in prod.py or local.py without version control)
@@ -263,3 +291,60 @@ try:
     print("Loaded local settings")
 except ImportError:
     pass
+
+# -- Social Auth App Django Settings --
+# (Assume que já tem outras configurações como AUTHENTICATION_BACKENDS, Keys, etc.)
+
+SOCIAL_AUTH_PIPELINE = (
+    # Default pipeline steps from social-auth-core
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    # 'social_core.pipeline.user.create_user', # Opcional: Descomente se quiser permitir criação de utilizadores via SSO
+    'social_core.pipeline.social_auth.associate_user', # Associa a conta social a um utilizador existente
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+
+    # Nosso passo customizado - corre depois do utilizador ser associado/identificado
+    'users.pipeline.assign_class_on_signup', 
+)
+
+# Se permitir a criação de utilizadores via SSO (descomentando create_user acima), 
+# pode querer colocar 'users.pipeline.assign_class_on_signup' *depois* de create_user
+# e *depois* de associate_user para garantir que corre para ambos os casos.
+# A ordem atual (depois de associate_user) deve funcionar bem, pois user já existe ou foi encontrado.
+
+# É importante garantir que o pipeline padrão que está a usar é este.
+# Se estiver a usar um backend específico (ex: AzureAD), ele pode ter um pipeline ligeiramente diferente.
+# Verifique a documentação da social-auth-app-django para o seu backend específico se tiver problemas.
+
+# Adicione também configuração básica de logging se ainda não tiver, 
+# para poder ver os logs gerados pelo pipeline.py
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO', # Ou 'DEBUG' para mais detalhes
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        # Adicione um logger específico para a sua app ou pipeline se quiser mais controlo
+        'users.pipeline': { 
+             'handlers': ['console'],
+             'level': 'DEBUG', # Captura logs DEBUG e acima do nosso pipeline
+             'propagate': False,
+        },
+    },
+}
