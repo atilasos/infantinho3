@@ -181,13 +181,26 @@ TINYMCE_DEFAULT_CONFIG = {
     "theme": "silver", # Default theme
     "height": 300,
     "menubar": False,
-    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount",
-    "toolbar": "undo redo | formatselect | bold italic backcolor | \
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount autosave hr",
+    "toolbar": "undo redo | restoredraft | formatselect | bold italic backcolor | \
                 alignleft aligncenter alignright alignjustify | \
-                bullist numlist outdent indent | removeformat | help",
+                bullist numlist outdent indent | link image media table hr | removeformat | code fullscreen preview | help",
     "content_css": "//www.tiny.cloud/css/codepen.min.css", # Example CDN CSS
     "relative_urls": False, # Important for media URLs
-    "language": "pt_PT" # Use Portuguese language pack if available via CDN or downloaded
+    "language": "pt_PT", # Use Portuguese language pack if available via CDN or downloaded
+    "autosave_ask_before_unload": True, # Ask before leaving page if there are unsaved changes
+    "autosave_interval": "30s", # Save every 30 seconds
+    "autosave_restore_when_empty": True, # Offer restore even if editor is empty
+    "autosave_retention": "20m", # Keep drafts for 20 minutes
+    # --- Added image upload settings ---
+    "images_upload_url": reverse_lazy('blog:tinymce_image_upload'), # URL to the upload handler view
+    "images_upload_base_path": "/media/", # Optional: If your MEDIA_URL is different from root
+    "images_upload_credentials": True, # Send cookies with the upload request (for @login_required)
+    "automatic_uploads": True, # Upload automatically when pasting/dropping images
+    "image_advtab": True, # Add advanced tab to image dialog
+    "file_picker_types": 'image', # Allow image picker
+    # TODO: Consider adding a file_picker_callback for more control if needed
+    # "file_picker_callback": "function(cb, value, meta) { ... }",
 }
 TINYMCE_EXTRA_MEDIA = { # Optional: Include extra JS/CSS if needed, e.g., for custom plugins
     # 'css': {

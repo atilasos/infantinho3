@@ -13,6 +13,10 @@ urlpatterns = [
     path('criar/', views.post_create_global, name='post_create_global'),
     # -----------------------------------
     
+    # --- TinyMCE Image Upload URL --- 
+    path('tinymce/upload_image/', views.tinymce_image_upload, name='tinymce_image_upload'),
+    # --------------------------------
+    
     # Post specific actions (global, identified by post_id)
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
     path('post/<int:post_id>/editar/', views.post_edit, name='post_edit'),
