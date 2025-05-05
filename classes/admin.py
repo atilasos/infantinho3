@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Class
 
 # Register your models here.
-# admin.site.register(Class) # Replaced with ModelAdmin registration below
+# admin.site.register(Class) # REMOVER ESTA LINHA DUPLICADA
 
 @admin.register(Class)
 class ClassAdmin(admin.ModelAdmin):

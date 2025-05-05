@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from users.decorators import group_required
 from classes.models import Class
-from users.models import User
+from users.models import User, PreApprovedStudent # Adicionado PreApprovedStudent
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods, require_POST
 from django import forms
@@ -17,7 +17,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse # Para redirecionamento
 
 # Importar o novo formulário e o modelo PreApprovedStudent
-from .forms import PreapproveStudentsForm
+from .forms import PreapproveStudentsForm, AssignChecklistForm # Adicionado AssignChecklistForm
 from users.models import PreApprovedStudent # Modelo está na app users
 from .models import Class # Modelo da turma local
 
@@ -515,3 +515,63 @@ def preapprove_students(request, class_id):
         'preapproved_list': preapproved_list,
     }
     return render(request, 'classes/preapprove_students_form.html', context)
+
+@login_required
+def add_checklist_to_class(request, pk):
+    """View para adicionar um ChecklistTemplate existente a uma turma."""
+    turma = get_object_or_404(Class, pk=pk)
+    user = request.user
+
+    # Verificar Permissões
+    if not user_is_teacher_or_admin_for_class(user, turma):
+        messages.error(request, _("You do not have permission to assign checklists to this class."))
+        return redirect('classes:class_detail', class_id=turma.pk)
+
+    # Verificar se a app checklists está ativa
+    if not CHECKLISTS_APP_EXISTS:
+        messages.error(request, _("Checklist functionality is currently disabled."))
+        return redirect('classes:class_detail', class_id=turma.pk)
+
+    if request.method == 'POST':
+        form = AssignChecklistForm(request.POST, turma=turma)
+        if form.is_valid():
+            checklist_template = form.cleaned_data['checklist_template']
+            
+            # 1. Adicionar a turma à relação M2M do template
+            checklist_template.classes.add(turma)
+            
+            # 2. Criar ChecklistStatus para os alunos atuais da turma (se não existir)
+            students_in_class = turma.students.filter(role='aluno') # Filtrar apenas alunos
+            created_count = 0
+            for student in students_in_class:
+                status, created = ChecklistStatus.objects.get_or_create(
+                    student=student,
+                    template=checklist_template,
+                    student_class=turma
+                )
+                if created:
+                    created_count += 1
+            
+            # Mensagem de sucesso
+            messages.success(request, _("Checklist template '{template_name}' assigned to class '{class_name}'.").format(
+                template_name=checklist_template.name, class_name=turma.name
+            ))
+            if created_count > 0:
+                messages.info(request, _("{count} student checklist status records were created.").format(count=created_count))
+            
+            return redirect('classes:class_detail', class_id=turma.pk)
+        else:
+            messages.error(request, _("Please correct the errors below."))
+    else:
+        form = AssignChecklistForm(turma=turma)
+
+    # Listar checklists já associados a esta turma para informação
+    # Corrigir consulta para usar o related_name que definimos ('checklist_templates')
+    associated_checklists = turma.checklist_templates.all()
+
+    context = {
+        'turma': turma,
+        'form': form,
+        'associated_checklists': associated_checklists,
+    }
+    return render(request, 'classes/add_checklist_to_class.html', context)

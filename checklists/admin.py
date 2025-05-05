@@ -68,3 +68,5 @@ class ChecklistStatusAdmin(admin.ModelAdmin):
 
 # Note: Models were previously registered simply with admin.site.register(ModelName)
 # The @admin.register decorator replaces that when using a ModelAdmin class.
+
+# Register your models here.

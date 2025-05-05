@@ -17,6 +17,12 @@ class ChecklistTemplate(models.Model):
     # applicable_year = models.IntegerField(_("applicable year"), null=True, blank=True)
     description = models.TextField(_("description"), blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    classes = models.ManyToManyField(
+        Class, 
+        blank=True, # Permite que um template não esteja associado a nenhuma turma
+        related_name='checklist_templates', # Nome reverso explícito
+        verbose_name=_('Associated Classes')
+    )
 
     class Meta:
         ordering = ['name']
