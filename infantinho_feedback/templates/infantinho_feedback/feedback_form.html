@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% load i18n widget_tweaks humanize feedback_tags %}
+
+{% block title %}{% trans "Enviar Feedback" %} | {{ block.super }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Estilos para os botões de status e ações de admin (mantidos e adaptados) */
+    .status-btn-group .btn, .admin-actions-buttons .btn {
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+    @media (max-width: 768px) {
+        .status-btn-group, .admin-actions-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch; /* Faz os botões ocuparem a largura */
+        }
+        .status-btn-group .btn, .admin-actions-buttons .btn {
+            margin-right: 0;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+    }
+
+    /* Estilos para os cards de feedback */
+    .feedback-card {
+        border-left-width: 5px;
+        border-left-style: solid;
+    }
+    .feedback-card-novo { border-left-color: var(--bs-primary); }
+    .feedback-card-em_analise { border-left-color: var(--bs-warning); }
+    .feedback-card-concluido { border-left-color: var(--bs-success); }
+    .feedback-card-rejeitado { border-left-color: var(--bs-secondary); }
+
+    .feedback-category-badge {
+        font-size: 0.9em;
+    }
+
+    .feedback-column .card-body {
+        /* min-height: 150px; Se quiser altura mínima para colunas vazias */
+        overflow-y: auto; /* Para o caso de muitos cards numa coluna */
+        max-height: 500px; /* Limitar altura máxima da coluna antes de scroll */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-11 col-xl-10"> {# Largura geral do container dos feedbacks e formulário #}
+
+            {# Secção para Listar Feedbacks Enviados - Modificada para Colunas de Cards #}
+            <h2 class="mb-4">{% trans "Feedbacks Enviados Anteriormente" %}</h2>
+            {% if feedback_list %} {# Ainda verificamos se há algum feedback no geral #}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-5"> 
+                    {% for col_key, col_name in feedback_column_choices %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm feedback-column">
+                            <div class="card-header text-center fw-bold">{{ col_name }}</div>
+                            <div class="card-body feedback-column-body" id="column-{{ col_key }}">
+                                {% with items_in_column=feedbacks_by_category|get_item:col_key %}
+                                    {% if items_in_column %}
+                                        {% for item in items_in_column %}
+                                            <div class="card shadow-sm feedback-card feedback-card-{{ item.status|lower }} mb-3">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <div>
+                                                            {# A categoria já é dada pelo título da coluna, mas o status é útil #}
+                                                            <span class="badge rounded-pill
+                                                                {% if item.status == 'NOVO' %}bg-primary
+                                                                {% elif item.status == 'EM_ANALISE' %}bg-warning text-dark
+                                                                {% elif item.status == 'CONCLUIDO' %}bg-success
+                                                                {% elif item.status == 'REJEITADO' %}bg-secondary
+                                                                {% else %}bg-light text-dark{% endif %}
+                                                            ">
+                                                                {{ item.get_status_display }}
+                                                            </span>
+                                                        </div>
+                                                        <small class="text-muted" title="{{ item.created_at|date:"d/m/Y H:i:s" }}">{{ item.created_at|naturaltime }}</small>
+                                                    </div>
+
+                                                    <p class="card-text">{{ item.content|linebreaksbr }}</p>
+                                                    
+                                                    <div class="mt-2 mb-2">
+                                                        <small class="text-muted">
+                                                            <strong>{% trans "Por" %}:</strong> 
+                                                            {% if item.author %}
+                                                                {{ item.author.get_full_name|default:item.author.username }}
+                                                                {% if item.author.turma_atual %}({{ item.author.turma_atual.nome }}){% endif %}
+                                                            {% else %}
+                                                                {% trans "Anónimo" %}
+                                                            {% endif %}<br>
+                                                            {% if item.turma %}
+                                                                <strong>{% trans "Turma" %}:</strong> {{ item.turma.nome }}<br>
+                                                            {% endif %}
+                                                            {% if item.page_url %}
+                                                                <strong>{% trans "Página" %}:</strong> <a href="{{ item.page_url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">{% trans "Link" %} <i class="bi bi-box-arrow-up-right small"></i></a>
+                                                            {% endif %}
+                                                        </small>
+                                                    </div>
+
+                                                    {% if request.user.is_superuser or request.user.role == 'admin' or request.user == item.author and item.status == 'NOVO' %}
+                                                    <hr class="my-2">
+                                                    <div class="admin-actions">
+                                                        {% if request.user.is_superuser or request.user.role == 'admin' %}
+                                                        <div class="status-btn-group mb-2 d-flex flex-wrap justify-content-start">
+                                                            {% for status_val, status_display in item.STATUS_CHOICES %}
+                                                                <form method="POST" action="{% url 'infantinho_feedback:update_status' item.pk %}" class="d-inline-block me-1 mb-1">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="status" value="{{ status_val }}">
+                                                                    <button type="submit" class="btn btn-sm 
+                                                                        {% if item.status == status_val %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                                                                        {% if item.status == status_val %}disabled aria-pressed="true"{% else %}aria-pressed="false"{% endif %} title="{% blocktrans with status_name=status_display %}Marcar como {{ status_name }}{% endblocktrans %}">
+                                                                        {{ status_display }}
+                                                                    </button>
+                                                                </form>
+                                                            {% endfor %}
+                                                        </div>
+                                                        <div class="admin-actions-buttons d-flex flex-wrap justify-content-start align-items-center">
+                                                            <a href="{% url 'admin:infantinho_feedback_feedbackitem_change' item.pk %}" class="btn btn-outline-secondary btn-sm me-1 mb-1" target="_blank" title="{% trans 'Editar no painel de administração' %}">
+                                                                <i class="bi bi-pencil-square"></i> {% trans "Admin Edit" %}
+                                                            </a>
+                                                        {% endif %}
+                                                        {% if request.user.is_superuser or request.user.role == 'admin' or request.user == item.author and item.status == 'NOVO' %}
+                                                            <form method="POST" action="{% url 'infantinho_feedback:delete_feedback' item.pk %}" onsubmit="return confirm('{% trans "Tem a certeza que quer apagar este item de feedback?"|escapejs %}');" class="d-inline-block ms-auto">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm mb-1" title="{% trans 'Apagar feedback' %}">
+                                                                    <i class="bi bi-trash"></i> {% if request.user.is_superuser or request.user.role == 'admin' %} {% trans "Apagar" %}{% else %} {% trans "Apagar Meu Pedido" %}{% endif %}
+                                                                </button>
+                                                            </form>
+                                                        {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-muted text-center small fst-italic p-3">{% trans "Sem feedbacks nesta categoria." %}</p>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif request.user.is_authenticated %}
+                 <div class="alert alert-info text-center shadow-sm">{% trans "Ainda não enviou nenhum feedback ou os seus feedbacks já foram processados." %}</div>
+            {% else %}
+                <div class="alert alert-warning text-center shadow-sm">{% trans "Deverá iniciar sessão para ver ou submeter feedback." %}</div>
+            {% endif %}
+
+            {# Formulário de Submissão de Novo Feedback #}
+            <div class="card shadow-sm mt-5">
+                <div class="card-body p-lg-4">
+                    <h2 class="mb-3 card-title">{% trans "Partilhe o seu Feedback" %}</h2>
+                    <p class="card-text lead mb-4">
+                        {% blocktrans %}A sua opinião é importante para nós! Se encontrou um erro, tem uma sugestão de melhoria, ou simplesmente algo que gostou, por favor, partilhe connosco.{% endblocktrans %}
+                    </p>
+        
+                    {% if form.errors or form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>{% trans "Por favor, corrija os erros abaixo:" %}</strong>
+                            {% if form.non_field_errors %}
+                                <ul class="mb-0 mt-1">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    <ul class="mb-0 mt-1">
+                                        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                    </ul>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Fechar' %}"></button>
+                        </div>
+                    {% endif %}
+        
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+        
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {% with help_id=field.id_for_label|add:"_help" %}
+                                    {% if field.field.widget.input_type == 'select' %}
+                                        {% render_field field class="form-select" aria-describedby=help_id %}
+                                    {% elif field.field.widget.input_type == 'textarea' %}
+                                        {% render_field field class="form-control" rows="4" aria-describedby=help_id %}
+                                    {% else %}
+                                        {% render_field field class="form-control" aria-describedby=help_id %}
+                                    {% endif %}
+                                    {% if field.help_text %}
+                                        <small id="{{ help_id }}" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        {% endfor %}
+        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send me-2"></i> {% trans "Enviar Feedback" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

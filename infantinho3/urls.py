@@ -59,6 +59,9 @@ urlpatterns = [
     
     # General Help View
     path('ajuda/', HelpView.as_view(), name='ajuda'),
+
+    # Infantinho Feedback URLs
+    path('feedback/', include('infantinho_feedback.urls', namespace='infantinho_feedback')),
 ]
 
 # Serve media files during development
