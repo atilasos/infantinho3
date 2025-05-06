@@ -118,6 +118,11 @@
               
              <li class="nav-item d-md-none"><hr class="my-2"></li> {# Separator #}
               
+             <li class="nav-item d-md-none">
+                <a class="nav-link {% if request.resolver_match.app_name == 'infantinho_feedback' %}active{% endif %}" href="{% url 'infantinho_feedback:feedback_submit' %}">
+                    <i class="bi bi-chat-left-text me-2"></i>{% trans "Enviar Feedback" %}
+                </a>
+            </li>
              <li class="nav-item d-md-none"> {# Removed mt-auto as it might not work well here #}
                  <a class="nav-link {% if request.resolver_match.url_name == 'ajuda' %}active{% endif %}" href="{% url 'ajuda' %}">
                    <i class="bi bi-question-circle me-2"></i>{% trans "Help" %}
@@ -241,8 +246,13 @@
                            {% endif %}
                            {# --- End Admin Section --- #}
                            
-                          <li class="nav-item mt-auto">
-                              <hr>
+                          <li class="nav-item mt-auto"> {# Ensure this is always pushed to the bottom #}
+                               <hr class="mb-2 mt-3"> {# Adjusted margins for visual separation #}
+                               <a class="nav-link {% if request.resolver_match.app_name == 'infantinho_feedback' %}active{% endif %}" href="{% url 'infantinho_feedback:feedback_submit' %}">
+                                   <i class="bi bi-chat-left-text me-2"></i>{% trans "Enviar Feedback" %}
+                               </a>
+                           </li>
+                          <li class="nav-item"> {# Removed mt-auto from here to keep Help directly below Feedback #}
                               <a class="nav-link {% if request.resolver_match.url_name == 'ajuda' %}active{% endif %}" href="{% url 'ajuda' %}">
                                 <i class="bi bi-question-circle me-2"></i>{% trans "Help" %}
                               </a>
