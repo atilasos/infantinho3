@@ -52,6 +52,11 @@
                 <a href="{% url 'classes:preapprove_students' class_id=turma.id %}" class="btn btn-secondary">
                     <i class="bi bi-envelope-check-fill me-1"></i> {% trans "Manage Pre-approved Emails" %}
                 </a>
+                {% if checklist_app_enabled %}
+                    <a href="{% url 'classes:add_checklist_to_class' turma.pk %}" class="btn btn-outline-success">
+                        <i class="bi bi-list-check me-1"></i> {% trans "Assign Checklist" %}
+                    </a>
+                {% endif %}
             {% endif %}
         </div>
     </div>

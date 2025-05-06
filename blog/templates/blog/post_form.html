@@ -71,15 +71,8 @@
 
   <!-- Action Buttons -->
   <div class="mt-4">
-    <button type="submit" class="btn btn-success" title="{% if edit_mode %}{% trans 'Save Changes' %}{% else %}{% trans 'Publish Post' %}{% endif %}">
-        {% if edit_mode %}<i class="bi bi-check-lg"></i> {% trans "Save Changes" %}{% else %}<i class="bi bi-send"></i> {% trans "Publish" %}{% endif %}
-    </button>
-    {# Use blog:post_list or blog:post_detail depending on context #}
-    {% if post %}
-      <a href="{% url 'blog:post_detail' class_id=turma.id post_id=post.id %}" class="btn btn-secondary" title="{% trans 'Cancel editing and return to post' %}">{% trans "Cancel" %}</a>
-    {% else %}
-      <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Cancel and return to list' %}">{% trans "Cancel" %}</a>
-    {% endif %}
+    <button type="submit" class="btn btn-primary me-2">{% if edit_mode %}{% trans "Save Changes" %}{% else %}{% trans "Create Post" %}{% endif %}</button>
+    <a href="{% url 'blog:post_detail' post_id=post.id %}" class="btn btn-secondary" title="{% trans 'Cancel editing and return to post' %}">{% trans "Cancel" %}</a>
   </div>
 
 </form>

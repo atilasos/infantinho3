@@ -1,6 +1,8 @@
 from django import forms
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from checklists.models import ChecklistTemplate
+from django.utils.translation import gettext_lazy as _
 
 class PreapproveStudentsForm(forms.Form):
     """
@@ -88,3 +90,27 @@ class PreapproveStudentsForm(forms.Form):
         cleaned_data['valid_emails'] = list(emails)
         
         return cleaned_data 
+
+class AssignChecklistForm(forms.Form):
+    """Formulário para selecionar um ChecklistTemplate para associar a uma turma."""
+    # Usar ModelChoiceField para obter uma lista de templates existentes.
+    # O queryset será definido na view para filtrar os que já estão associados.
+    checklist_template = forms.ModelChoiceField(
+        queryset=ChecklistTemplate.objects.none(), # Queryset vazio inicialmente
+        label=_("Checklist Template to Assign"),
+        empty_label=_("Select a template..."),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        # Remover a turma do kwargs antes de chamar o super
+        self.turma = kwargs.pop('turma', None)
+        super().__init__(*args, **kwargs)
+
+        if self.turma:
+            # Obter IDs dos templates JÁ associados a esta turma
+            associated_template_ids = ChecklistTemplate.objects.filter(classes=self.turma).values_list('id', flat=True)
+            # Definir o queryset para mostrar apenas templates NÃO associados
+            self.fields['checklist_template'].queryset = ChecklistTemplate.objects.exclude(
+                id__in=associated_template_ids
+            ).order_by('name') 

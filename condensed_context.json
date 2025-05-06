@@ -77,7 +77,7 @@
         "name": "Post",
         "fields": ["class (FK)", "author (FK User)", "title", "content (Rich Text)", "publish_date", "category"]
       },
-      "editor": "Rich Text (e.g., CKEditor)",
+      "editor": "TinyMCE",
       "visibility": "Class members (Students, Teachers, Guardians of students in class), Admins.",
       "features": ["Chronological listing", "Category filtering", "Optional Comments (Internal first)", "Notifications (new post/comment)"],
       "diary_category": "Special category/tag for official diary entries."
@@ -169,5 +169,14 @@
       "Phase 11: Refinement, Final Tests, Pilot Deploy",
       "Phase 12: Post-Pilot Review & Full Rollout"
     ]
+  },
+  "logging": {
+    "gunicorn": {
+      "service_file": "/etc/systemd/system/gunicorn.service",
+      "error_log": "/var/log/gunicorn/error.log",
+      "access_log": "/var/log/gunicorn/access.log",
+      "level": "debug",
+      "capture_output": true
+    }
   }
 } 

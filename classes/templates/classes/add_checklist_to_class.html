@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Assign Checklist to" %} {{ turma.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Assign Checklist Template to Class" %}: {{ turma.name }} ({{ turma.year }})</h2>
+    <hr>
+
+    {% if form.fields.checklist_template.queryset.exists %}
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="{{ form.checklist_template.id_for_label }}" class="form-label">{{ form.checklist_template.label }}</label>
+                {% render_field form.checklist_template class="form-select" %}
+                {% if form.checklist_template.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.checklist_template.errors|striptags }}
+                    </div>
+                {% endif %}
+                <div class="form-text">{% trans "Select a checklist template to make available for this class." %}</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">{% trans "Assign Template" %}</button>
+            <a href="{% url 'classes:class_detail' turma.pk %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </form>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            {% trans "There are no more available checklist templates to assign to this class." %}
+        </div>
+        <a href="{% url 'classes:class_detail' turma.pk %}" class="btn btn-secondary">{% trans "Back to Class" %}</a>
+    {% endif %}
+
+    <h3 class="mt-5">{% trans "Checklists Already Assigned to This Class" %}</h3>
+    {% if associated_checklists %}
+        <ul class="list-group">
+            {% for checklist in associated_checklists %}
+                <li class="list-group-item">{{ checklist.name }} {% if checklist.description %}- {{ checklist.description }}{% endif %}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>{% trans "No checklist templates are currently assigned to this class." %}</p>
+    {% endif %}
+
+</div>
+{% endblock %} 

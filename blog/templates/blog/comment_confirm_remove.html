@@ -33,7 +33,7 @@
   </div>
   <button type="submit" class="btn btn-danger" title="{% trans 'Confirm removal of this comment' %}">{% trans "Confirm Removal" %}</button>
   {# Updated URL namespace #}
-  <a href="{% url 'blog:post_detail' class_id=turma.id post_id=post.id %}#comment-{{ comentario.id }}" class="btn btn-secondary" title="{% trans 'Cancel and return to post' %}">{% trans "Cancel" %}</a>
+  <a href="{% url 'blog:post_detail' post_id=post.id %}#comment-{{ comentario.id }}" class="btn btn-secondary" title="{% trans 'Cancel and return to post' %}">{% trans "Cancel" %}</a>
 </form>
 
 </main>
