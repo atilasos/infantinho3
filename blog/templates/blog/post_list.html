@@ -65,7 +65,7 @@
       <div class="list-group mb-3 shadow-sm">
         {% for post in posts_mes %}
           {# Link each item to the post detail page #}
-          <a href="{% url 'blog:post_detail' class_id=turma.id post_id=post.id %}" 
+          <a href="{% url 'blog:post_detail' post_id=post.id %}" 
              class="list-group-item list-group-item-action flex-column align-items-start" 
              title="{% blocktrans with title=post.titulo|default:post.get_category_display_full %}View details of post: {{ title }}{% endblocktrans %}">
             <div class="d-flex w-100 justify-content-between">

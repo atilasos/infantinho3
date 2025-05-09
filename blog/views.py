@@ -14,6 +14,12 @@ import itertools
 from django.utils.translation import gettext_lazy as _
 from django.db import models # Import models for Q objects
 from django.contrib.auth.decorators import login_required
+import os
+import uuid
+from datetime import datetime
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
 
 # App-specific imports
 from .models import Post, Comment, ModerationLog
@@ -637,3 +643,54 @@ def post_create_global(request):
     }
     # Use a generic form template, maybe rename post_form.html?
     return render(request, 'blog/post_form_global.html', context)
+
+# --- TinyMCE Image Upload View ---
+@csrf_exempt # TinyMCE might not send CSRF token
+@login_required # Ensure only logged-in users can upload
+@require_POST # Only accept POST requests
+def tinymce_image_upload(request):
+    """
+    Receives an image upload from TinyMCE, saves it, and returns the URL.
+    """
+    if 'file' not in request.FILES:
+        return JsonResponse({'error': 'No file uploaded.'}, status=400)
+
+    uploaded_file = request.FILES['file']
+
+    # Basic validation (optional, enhance as needed)
+    allowed_content_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if uploaded_file.content_type not in allowed_content_types:
+        return JsonResponse({'error': f'Invalid file type: {uploaded_file.content_type}. Allowed: {", ".join(allowed_content_types)}'}, status=400)
+
+    # Max size validation (e.g., 5MB)
+    max_size = 5 * 1024 * 1024 # 5MB
+    if uploaded_file.size > max_size:
+        return JsonResponse({'error': f'File size exceeds limit ({max_size / 1024 / 1024}MB).'}, status=400)
+
+    # Generate a unique filename with date structure
+    today = datetime.now()
+    file_ext = os.path.splitext(uploaded_file.name)[1]
+    unique_filename = f"{uuid.uuid4()}{file_ext}"
+    # Define path within MEDIA_ROOT
+    upload_path = os.path.join(
+        'uploads',
+        'posts',
+        'images',
+        today.strftime('%Y'),
+        today.strftime('%m'),
+        unique_filename
+    )
+
+    try:
+        # Save the file using Django's default storage
+        saved_path = default_storage.save(upload_path, uploaded_file)
+        # Get the public URL for the saved file
+        file_url = default_storage.url(saved_path)
+
+        # TinyMCE expects a JSON response with a 'location' key
+        return JsonResponse({'location': file_url})
+
+    except Exception as e:
+        # Log the error (consider proper logging setup)
+        print(f"Error uploading file: {e}")
+        return JsonResponse({'error': 'Failed to save uploaded file.'}, status=500)

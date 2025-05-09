@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Feedback Enviado" %} | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7 text-center">
+            
+            {# Display success messages passed from the view #}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Fechar' %}"></button>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {# Fallback message if no specific message is passed #}
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">{% trans "Obrigado!" %}</h4>
+                    <p>{% trans "O seu feedback foi enviado com sucesso." %}</p>
+                </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+            </div>
+
+            <p class="lead mt-3">
+                {% trans "Agradecemos a sua contribuição para melhorar a plataforma." %}
+            </p>
+            
+            <div class="mt-4 d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="{% url 'landing_page' %}" class="btn btn-primary btn-lg me-sm-2 mb-2 mb-sm-0">
+                    <i class="bi bi-house-door me-1"></i> {% trans "Voltar ao Início" %}
+                </a>
+                {# Pode adicionar outro link se fizer sentido, por exemplo, voltar a submeter outro feedback #}
+                {# <a href="{% url 'infantinho_feedback:feedback_submit' %}" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-pencil-square me-1"></i> {% trans "Enviar Novo Feedback" %}
+                </a> #}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

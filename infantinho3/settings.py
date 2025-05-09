@@ -16,7 +16,7 @@ import os
 from dotenv import load_dotenv
 from django.urls import reverse_lazy # Use reverse_lazy for settings
 
-load_dotenv()
+load_dotenv(override=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,8 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize', # Added for humanize filters (like naturaltime)
     
     # Third-party apps
-    'ckeditor',
+    # 'ckeditor', # REMOVED
     # 'ckeditor_uploader', # Not currently used
+    'tinymce', # ADDED
     'widget_tweaks', # Added for form rendering
     'impersonate', # Add impersonate app
     
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'checklists.apps.ChecklistsConfig',
     'diary.apps.DiaryConfig', # Add the new diary app
+    'infantinho_feedback.apps.InfantinhoFeedbackConfig', # Add the new feedback app
 ]
 
 MIDDLEWARE = [
@@ -164,21 +166,56 @@ STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'staticfiles') # For coll
 STATICFILES_DIRS = [
     BASE_DIR / "static", # Add project-level static directory
 ]
+# Use ManifestStaticFilesStorage for cache busting in production
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', BASE_DIR / 'media')
 
-# CKEditor Config (Basic - No uploader for now)
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'basic',
-        'height': 150,
-        'width': '100%',
-    },
-}
-CKEDITOR_UPLOAD_PATH = "uploads/" # Only needed for ckeditor_uploader
+# REMOVED CKEditor Config section
+# CKEDITOR_CONFIGS = { ... }
+# CKEDITOR_UPLOAD_PATH = "uploads/"
 
+# --- TinyMCE Config --- ADDED Section
+TINYMCE_DEFAULT_CONFIG = {
+    "theme": "silver", # Default theme
+    "height": 300,
+    "menubar": False,
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount autosave hr",
+    "toolbar": "undo redo | restoredraft | formatselect | bold italic backcolor | \
+                alignleft aligncenter alignright alignjustify | \
+                bullist numlist outdent indent | link image media table hr | removeformat | code fullscreen preview | help",
+    "content_css": "//www.tiny.cloud/css/codepen.min.css", # Example CDN CSS
+    "relative_urls": False, # Important for media URLs
+    "language": "pt_PT", # Use Portuguese language pack if available via CDN or downloaded
+    "autosave_ask_before_unload": True, # Ask before leaving page if there are unsaved changes
+    "autosave_interval": "30s", # Save every 30 seconds
+    "autosave_restore_when_empty": True, # Offer restore even if editor is empty
+    "autosave_retention": "20m", # Keep drafts for 20 minutes
+    # --- Added image upload settings ---
+    "images_upload_url": reverse_lazy('blog:tinymce_image_upload'), # URL to the upload handler view
+    "images_upload_base_path": "/media/", # Optional: If your MEDIA_URL is different from root
+    "images_upload_credentials": True, # Send cookies with the upload request (for @login_required)
+    "automatic_uploads": True, # Upload automatically when pasting/dropping images
+    "image_advtab": True, # Add advanced tab to image dialog
+    "file_picker_types": 'image', # Allow image picker
+    # TODO: Consider adding a file_picker_callback for more control if needed
+    # "file_picker_callback": "function(cb, value, meta) { ... }",
+}
+TINYMCE_EXTRA_MEDIA = { # Optional: Include extra JS/CSS if needed, e.g., for custom plugins
+    # 'css': {
+    #    'all': [
+    #        ...
+    #    ],
+    # },
+    # 'js': [
+    #    ...
+    # ],
+}
+# TINYMCE_JS_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js' # Use if you have an API key or self-hosted
+TINYMCE_COMPRESSOR = False # Set to True in production if you download the JS
+# --- End TinyMCE Config ---
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -270,3 +307,60 @@ try:
     print("Loaded local settings")
 except ImportError:
     pass
+
+# -- Social Auth App Django Settings --
+# (Assume que já tem outras configurações como AUTHENTICATION_BACKENDS, Keys, etc.)
+
+SOCIAL_AUTH_PIPELINE = (
+    # Default pipeline steps from social-auth-core
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    # 'social_core.pipeline.user.create_user', # Opcional: Descomente se quiser permitir criação de utilizadores via SSO
+    'social_core.pipeline.social_auth.associate_user', # Associa a conta social a um utilizador existente
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+
+    # Nosso passo customizado - corre depois do utilizador ser associado/identificado
+    'users.pipeline.assign_class_on_signup', 
+)
+
+# Se permitir a criação de utilizadores via SSO (descomentando create_user acima), 
+# pode querer colocar 'users.pipeline.assign_class_on_signup' *depois* de create_user
+# e *depois* de associate_user para garantir que corre para ambos os casos.
+# A ordem atual (depois de associate_user) deve funcionar bem, pois user já existe ou foi encontrado.
+
+# É importante garantir que o pipeline padrão que está a usar é este.
+# Se estiver a usar um backend específico (ex: AzureAD), ele pode ter um pipeline ligeiramente diferente.
+# Verifique a documentação da social-auth-app-django para o seu backend específico se tiver problemas.
+
+# Adicione também configuração básica de logging se ainda não tiver, 
+# para poder ver os logs gerados pelo pipeline.py
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO', # Ou 'DEBUG' para mais detalhes
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        # Adicione um logger específico para a sua app ou pipeline se quiser mais controlo
+        'users.pipeline': { 
+             'handlers': ['console'],
+             'level': 'DEBUG', # Captura logs DEBUG e acima do nosso pipeline
+             'propagate': False,
+        },
+    },
+}

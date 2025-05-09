@@ -3,7 +3,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-from ckeditor.fields import RichTextField
 
 # Assuming User and Class models are defined elsewhere as specified
 from users.models import User
@@ -18,7 +17,9 @@ class Post(models.Model):
         Class, 
         on_delete=models.CASCADE, 
         related_name='posts',
-        verbose_name=_('class')
+        verbose_name=_('class'),
+        null=True,
+        blank=True
     )
     # Foreign Key linking to the user who authored the post.
     autor = models.ForeignKey(
@@ -35,7 +36,7 @@ class Post(models.Model):
         help_text=_('Optional title for the post.')
     )
     # Main content of the post, using a rich text editor.
-    conteudo = RichTextField(
+    conteudo = models.TextField(
         _('content')
     )
     # --- New Fields for Attachments ---

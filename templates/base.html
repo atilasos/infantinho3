@@ -53,6 +53,82 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
              {# Example Nav Item #}
              {# <li class="nav-item"><a class="nav-link" href="#">Link</a></li> #}
+             
+             {# --- Copied Sidebar Links (Visible only on < md screens) --- #}
+             <li class="nav-item d-md-none">
+                 <a class="nav-link {% if request.resolver_match.url_name == 'landing_page' %}active{% endif %}" href="{% url 'landing_page' %}">
+                   <i class="bi bi-house-door me-2"></i>{% trans "Blog Home" %}
+                 </a>
+             </li> 
+             {# Add Global Create Post Link for Authenticated Users #}
+             {% if user.is_authenticated %}
+               <li class="nav-item d-md-none">
+                   <a class="nav-link {% if request.resolver_match.view_name == 'blog:post_create_global' %}active{% endif %}" href="{% url 'blog:post_create_global' %}">
+                       <i class="bi bi-plus-square me-2"></i>{% trans "Create Post" %}
+                   </a>
+               </li>
+             {% endif %}
+             <li class="nav-item d-md-none">
+                 <a class="nav-link {% if request.resolver_match.app_name == 'classes' %}active{% endif %}" href="{% url 'classes:class_list' %}">
+                   <i class="bi bi-people me-2"></i>{% trans "Classes" %}
+                 </a>
+             </li>
+             {# Only show My Checklists link to students #}
+             {% if user.is_authenticated and user.role == 'aluno' %}
+               <li class="nav-item d-md-none">
+                 <a class="nav-link {% if request.resolver_match.app_name == 'checklists' %}active{% endif %}" href="{% url 'checklists:my_checklists' %}">
+                   <i class="bi bi-check2-square me-2"></i>{% trans "My Checklists" %}
+                 </a>
+               </li>
+             {% endif %}
+              {# TODO: Add other role-based links here - e.g., teacher views for checklists #}
+              
+              {# --- Admin Section (Visible only on < md screens) --- #}
+              {% if request.user.is_superuser or request.user.role == 'admin' %}
+               <li class="nav-item mt-3 d-md-none"> {# Use mt-3 for spacing before header #}
+                   <h6 class="sidebar-heading px-3 mt-2 mb-1 text-muted text-uppercase">
+                       <span>{% trans "Admin Tools" %}</span>
+                   </h6>
+               </li>
+               <li class="nav-item d-md-none">
+                   <a class="nav-link {% if request.resolver_match.app_name == 'admin' %}active{% endif %}" href="{% url 'admin:index' %}">
+                       <i class="bi bi-gear-wide-connected me-2"></i>{% trans "Django Admin" %}
+                   </a>
+               </li>
+               <li class="nav-item d-md-none">
+                   <a class="nav-link {% if request.resolver_match.view_name == 'classes:manage_classes' %}active{% endif %}" href="{% url 'classes:manage_classes' %}">
+                       <i class="bi bi-pencil-square me-2"></i>{% trans "Manage Classes" %}
+                   </a>
+               </li>
+                <li class="nav-item d-md-none">
+                   <a class="nav-link {% if request.resolver_match.view_name == 'blog:post_pending_list' %}active{% endif %}" href="{% url 'blog:post_pending_list' %}">
+                       <i class="bi bi-hourglass-split me-2"></i>{% trans "Pending Posts" %}
+                   </a>
+               </li>
+               {# Add link to manage users if needed - Use standard Django comment tag #}
+               {% comment %}
+               <li class="nav-item d-md-none">
+                   <a class="nav-link" href="{% url 'admin:users_user_changelist' %}">
+                       <i class="bi bi-person-badge me-2"></i>{% trans "Manage Users" %}
+                   </a>
+               </li>
+               {% endcomment %} 
+              {% endif %}
+              {# --- End Admin Section --- #}
+              
+             <li class="nav-item d-md-none"><hr class="my-2"></li> {# Separator #}
+              
+             <li class="nav-item d-md-none">
+                <a class="nav-link {% if request.resolver_match.app_name == 'infantinho_feedback' %}active{% endif %}" href="{% url 'infantinho_feedback:feedback_submit' %}">
+                    <i class="bi bi-chat-left-text me-2"></i>{% trans "Enviar Feedback" %}
+                </a>
+            </li>
+             <li class="nav-item d-md-none"> {# Removed mt-auto as it might not work well here #}
+                 <a class="nav-link {% if request.resolver_match.url_name == 'ajuda' %}active{% endif %}" href="{% url 'ajuda' %}">
+                   <i class="bi bi-question-circle me-2"></i>{% trans "Help" %}
+                 </a>
+             </li>
+             {# --- End Copied Sidebar Links --- #}
           </ul>
           
           {# Right-aligned User Menu #}
@@ -170,8 +246,13 @@
                            {% endif %}
                            {# --- End Admin Section --- #}
                            
-                          <li class="nav-item mt-auto">
-                              <hr>
+                          <li class="nav-item mt-auto"> {# Ensure this is always pushed to the bottom #}
+                               <hr class="mb-2 mt-3"> {# Adjusted margins for visual separation #}
+                               <a class="nav-link {% if request.resolver_match.app_name == 'infantinho_feedback' %}active{% endif %}" href="{% url 'infantinho_feedback:feedback_submit' %}">
+                                   <i class="bi bi-chat-left-text me-2"></i>{% trans "Enviar Feedback" %}
+                               </a>
+                           </li>
+                          <li class="nav-item"> {# Removed mt-auto from here to keep Help directly below Feedback #}
                               <a class="nav-link {% if request.resolver_match.url_name == 'ajuda' %}active{% endif %}" href="{% url 'ajuda' %}">
                                 <i class="bi bi-question-circle me-2"></i>{% trans "Help" %}
                               </a>
