@@ -100,13 +100,7 @@
                                 </td>
                                 <td>{{ entry.added_by.get_full_name|default:entry.added_by.username|default:"N/A" }}</td>
                                 <td>{{ entry.date_added|naturaltime }}</td>
-                                <td>
-                                    {% if entry.claimed_by %}
-                                        {{ entry.claimed_by.get_full_name|default:entry.claimed_by.username|default:"-" }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
+                                <td>{% if entry.claimed_by %}{{ entry.claimed_by.get_full_name|default:entry.claimed_by.username }}{% else %}-{% endif %}</td>
                                 <td>{{ entry.date_claimed|date:"d/m/Y H:i"|default:"-" }}</td>
                             </tr>
                         {% endfor %}
