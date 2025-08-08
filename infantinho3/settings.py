@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'diary.apps.DiaryConfig', # Add the new diary app
     'infantinho_feedback.apps.InfantinhoFeedbackConfig', # Add the new feedback app
     'pit.apps.PitConfig', # Add PIT app
+    'projects.apps.ProjectsConfig', # Add Projects app
 ]
 
 MIDDLEWARE = [

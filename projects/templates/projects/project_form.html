@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load i18n widget_tweaks %}
+
+{% block content %}
+<div class="container mt-3">
+  <h1 class="h4">{% trans "Novo Projeto" %} — {{ turma.name }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Título" %}</label>
+            {{ form.title|add_class:"form-control" }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Membros" %}</label>
+            {{ form.members|add_class:"form-select" }}
+          </div>
+        </div>
+        <div class="row g-2 mt-2">
+          <div class="col-md-3">
+            <label class="form-label">{% trans "Início" %}</label>
+            {{ form.start_date|add_class:"form-control" }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">{% trans "Fim previsto" %}</label>
+            {{ form.end_date|add_class:"form-control" }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{% trans "Produto final" %}</label>
+            {{ form.product_description|add_class:"form-control" }}
+          </div>
+        </div>
+        <div class="mt-2">
+          <label class="form-label">{% trans "Descrição/tema" %}</label>
+          {{ form.description|add_class:"form-control" }}
+        </div>
+      </div>
+    </div>
+
+    <h2 class="h5">{% trans "Tarefas" %}</h2>
+    {{ formset.management_form }}
+    {% for f in formset.forms %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+              <label class="form-label">{% trans "Descrição" %}</label>
+              {{ f.description|add_class:"form-control" }}
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">{% trans "Responsável" %}</label>
+              {{ f.responsible|add_class:"form-select" }}
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">{% trans "Data limite" %}</label>
+              {{ f.due_date|add_class:"form-control" }}
+            </div>
+            <div class="col-md-1">
+              <label class="form-label">{% trans "Estado" %}</label>
+              {{ f.state|add_class:"form-select" }}
+            </div>
+            <div class="col-md-1">
+              <label class="form-label">{% trans "Ordem" %}</label>
+              {{ f.order|add_class:"form-control" }}
+            </div>
+          </div>
+          {% if f.DELETE %}<div class="form-check mt-2">{{ f.DELETE }} <label class="form-check-label">{% trans "Remover" %}</label></div>{% endif %}
+        </div>
+      </div>
+    {% endfor %}
+
+    <div class="d-flex gap-2 mt-3">
+      <button type="submit" class="btn btn-primary">{% trans "Guardar" %}</button>
+      <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-secondary">{% trans "Cancelar" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+

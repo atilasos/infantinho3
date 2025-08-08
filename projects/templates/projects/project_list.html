@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-3">
+  <h1 class="h4">{% trans "Projetos da Turma" %} — {{ turma.name }}</h1>
+  <div class="d-flex justify-content-end mb-2">
+    <a href="{% url 'projects:project_create' class_id=turma.id %}" class="btn btn-primary btn-sm">{% trans "Novo Projeto" %}</a>
+  </div>
+  <div class="list-group">
+    {% for p in projects %}
+      <a class="list-group-item list-group-item-action" href="{% url 'projects:project_detail' class_id=turma.id project_id=p.id %}">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ p.title }}</h5>
+          <small class="text-muted">{{ p.get_state_display }}</small>
+        </div>
+        <p class="mb-1 text-muted">{{ p.description|truncatechars:140 }}</p>
+      </a>
+    {% empty %}
+      <div class="list-group-item text-muted">{% trans "Sem projetos." %}</div>
+    {% endfor %}
+  </div>
+  <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-secondary btn-sm mt-3">{% trans "Voltar à turma" %}</a>
+  
+</div>
+{% endblock %}
+
+

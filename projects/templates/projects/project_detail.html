@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-3">
+  <h1 class="h4">{{ project.title }} — {{ turma.name }}</h1>
+  <p class="text-muted">{{ project.description|default:_("Sem descrição.") }}</p>
+  <p><strong>{% trans "Estado" %}:</strong> {{ project.get_state_display }}</p>
+  <p><strong>{% trans "Membros" %}:</strong> {% for m in project.members.all %}{{ m.get_full_name|default:m.username }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-muted">-</span>{% endfor %}</p>
+
+  <h2 class="h5 mt-4">{% trans "Tarefas" %}</h2>
+  <ul class="list-group">
+    {% for t in project.tasks.all %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fw-bold">{{ t.description }}</div>
+          <div class="small text-muted">{% trans "Responsável" %}: {{ t.responsible.get_full_name|default:t.responsible.username|default:"-" }} · {% trans "Data" %}: {{ t.due_date|date:"Y-m-d"|default:"-" }}</div>
+        </div>
+        <span class="badge text-bg-secondary">{{ t.get_state_display }}</span>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">{% trans "Sem tarefas." %}</li>
+    {% endfor %}
+  </ul>
+
+  <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-secondary btn-sm mt-3">{% trans "Voltar" %}</a>
+</div>
+{% endblock %}
+
+
