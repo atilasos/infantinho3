@@ -135,7 +135,7 @@ class ChecklistDetailView(View):
                 turma_url = request.build_absolute_uri(
                     reverse('checklists:checklist_turma', args=[student_class.id, template.id])
                 )
-                message = f"""Student {request.user.get_full_name() or request.user.username} updated the item '{item.description}' to '{mark.get_mark_status_display()}'.
+                message = f"""Student {request.user.get_full_name() or request.user.username} updated the item '{item.text}' to '{mark.get_mark_status_display()}'.
 Comment: {comment_text}
 
 View class progress: {turma_url}"""
@@ -165,7 +165,7 @@ class ChecklistTurmaView(View):
         # --- Add specific teacher check --- 
         if not request.user.is_superuser and request.user not in turma.teachers.all():
             messages.error(request, _('You do not have permission to view this class checklist.'))
-            return redirect('class_detail', class_id=turma.id) # Redirect to class detail or another appropriate page
+            return redirect('classes:class_detail', class_id=turma.id) # Redirect to class detail or another appropriate page
         # ----------------------------------
             
         template = get_object_or_404(ChecklistTemplate, id=template_id)
@@ -219,7 +219,7 @@ class ChecklistTurmaView(View):
         if not request.user.is_superuser and request.user not in turma.teachers.all():
             messages.error(request, _('You do not have permission to modify this class checklist.'))
             # Redirect or return forbidden? Redirect might be better UX.
-            return redirect('class_detail', class_id=turma.id) 
+            return redirect('classes:class_detail', class_id=turma.id) 
         # ----------------------------------
             
         template = get_object_or_404(ChecklistTemplate, id=template_id)
@@ -264,7 +264,7 @@ class ChecklistTurmaView(View):
                 detail_url = request.build_absolute_uri(
                     reverse('checklists:checklist_detail', args=[template.id]) + f'?highlight={item_id}' # Add highlight
                 )
-                message = f"""Your teacher {request.user.get_full_name() or request.user.username} updated the item '{item.description}' to '{mark.get_mark_status_display()}'.
+                message = f"""Your teacher {request.user.get_full_name() or request.user.username} updated the item '{item.text}' to '{mark.get_mark_status_display()}'.
 Comment: {comment_text}
 
 View your checklist: {detail_url}"""

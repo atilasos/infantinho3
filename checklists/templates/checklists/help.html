@@ -3,7 +3,17 @@
 
 {% block title %}{% trans "Checklists Documentation" %}{% endblock %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'classes:class_list' %}">{% trans "Classes" %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Checklists Help" %}</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
+<div class="container mt-3">
 <main role="main" aria-labelledby="checklist-docs-heading">
 
 <h2 id="checklist-docs-heading">{% trans "Checklists Module - Technical Overview" %}</h2>
@@ -64,4 +74,5 @@
 <p class="mt-4 text-muted small">{% trans "For more technical details, refer to the README.md file or contact the development team." %}</p>
 
 </main>
+</div>
 {% endblock %}

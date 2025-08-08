@@ -376,12 +376,12 @@ class ModerationLog(models.Model):
     """
     # Choices for the type of moderation action performed.
     ACAO_CHOICES = [
-        ('REMOVER_POST', _('Remove Post')),
-        # ('EDITAR_POST', _('Edit Post')), # Maybe log edits implicitly or separately
-        ('RESTAURAR_POST', _('Restore Post')),
-        ('REMOVER_COMMENT', _('Remove Comment')),
-        # ('EDITAR_COMMENT', _('Edit Comment')), 
-        # ('RESTAURAR_COMMENT', _('Restore Comment')), # Add if restore needed
+        ('REMOVER_POST', _('Remover Post')),
+        # ('EDITAR_POST', _('Editar Post')), # Maybe log edits implicitly or separately
+        ('RESTAURAR_POST', _('Restaurar Post')),
+        ('REMOVER_COMMENT', _('Remover Comentário')),
+        # ('EDITAR_COMMENT', _('Editar Comentário')), 
+        # ('RESTAURAR_COMMENT', _('Restaurar Comentário')), # Add if restore needed
     ]
     acao = models.CharField(
         _('action'),

@@ -7,9 +7,14 @@
 {# It can define specific blocks for the blog section if needed #}
 
 {% block content %}
-  {# Content from specific blog templates (list, detail, form) goes here #}
-  {% block blog_content %}
-  {% endblock blog_content %}
+  <div class="container mt-3">
+    {# Breadcrumbs (override per page) #}
+    {% block breadcrumbs %}{% endblock %}
+
+    {# Content from specific blog templates (list, detail, form) goes here #}
+    {% block blog_content %}
+    {% endblock blog_content %}
+  </div>
 {% endblock content %}
 
 {# Remove form.media rendering from here; it will be handled in the main base.html #}
