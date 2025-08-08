@@ -3,6 +3,15 @@
 
 {% block checklist_title %}{% trans "My Checklists" %}{% endblock %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'classes:class_list' %}">{% trans "Classes" %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "My Checklists" %}</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block checklist_content %}
 
 <!-- Page Header -->
@@ -24,7 +33,7 @@
            title="{% blocktrans with name=status.template.name %}View checklist {{ name }}{% endblocktrans %}">
           <div>
             <span class="fw-bold">{{ status.template.name }}</span>
-            <small class="text-muted d-block">{{ status.template.subject }}{% if status.template.grade_level %} - {% trans "Grade" %} {{ status.template.grade_level }}{% endif %} | {{ status.student_class.name }}</small>
+            <small class="text-muted d-block">{{ status.student_class.name }}</small>
           </div>
           {# Progress Badge #}
           <span class="badge bg-primary rounded-pill">{{ status.percent_complete|floatformat:0 }}%</span> 
@@ -50,7 +59,7 @@
            title="{% blocktrans with name=status.template.name %}Review completed checklist {{ name }}{% endblocktrans %}">
           <div>
             <span class="text-decoration-line-through">{{ status.template.name }}</span>
-             <small class="d-block">{{ status.template.subject}}{% if status.template.grade_level %} - {% trans "Grade" %} {{ status.template.grade_level }}{% endif %} | {{ status.student_class.name }}</small> 
+             <small class="d-block">{{ status.student_class.name }}</small> 
           </div>
            {# Completed Badge #}
            <span class="badge bg-success rounded-pill"><i class="bi bi-check-circle-fill me-1"></i> 100%</span>

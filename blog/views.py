@@ -331,7 +331,7 @@ def moderation_logs(request, class_id):
     
     if not (is_admin or is_teacher_in_class):
         messages.error(request, _('Access restricted to class moderators.'))
-        return redirect('blog:post_list', class_id=class_id)
+        return redirect('class_blog:post_list', class_id=class_id)
         
     # Fetch logs related to posts or comments in this class
     logs = ModerationLog.objects.filter(
