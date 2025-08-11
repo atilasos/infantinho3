@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n widget_tweaks %}
+
+{% block content %}
+<div class="container mt-3">
+  <h1 class="h4">{% trans "Nova decisão" %} — {{ turma.name }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="card">
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-md-3"><label class="form-label">{% trans "Data" %}</label>{{ form.date|add_class:"form-control" }}</div>
+          <div class="col-md-3"><label class="form-label">{% trans "Categoria" %}</label>{{ form.category|add_class:"form-select" }}</div>
+          <div class="col-md-3"><label class="form-label">{% trans "Estado" %}</label>{{ form.status|add_class:"form-select" }}</div>
+          <div class="col-md-3"><label class="form-label">{% trans "Responsável" %}</label>{{ form.responsible|add_class:"form-select" }}</div>
+        </div>
+        <div class="mt-2"><label class="form-label">{% trans "Descrição" %}</label>{{ form.description|add_class:"form-control" }}</div>
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-3">
+      <button type="submit" class="btn btn-primary">{% trans "Guardar" %}</button>
+      <a href="{% url 'council:decision_list' class_id=turma.id %}" class="btn btn-secondary">{% trans "Cancelar" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+
