@@ -10,8 +10,31 @@
         <li class="breadcrumb-item active" aria-current="page">{% trans "Blog" %}</li>
       </ol>
     </nav>
-    {# Removed H1 as it might be redundant if this is the main page content #}
-    {# <h1 class="mb-4">{% trans "Blog" %}</h1> #}
+    
+    {# Filtros simples #}
+    <form method="get" class="mb-4 p-3 bg-light border rounded" aria-label="{% trans 'Blog Filters' %}">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label for="categoria" class="form-label">{% trans "Category:" %}</label>
+          <select name="categoria" id="categoria" class="form-select form-select-sm">
+            <option value="">{% trans "All" %}</option>
+            {% for key, label in categorias %}
+              <option value="{{ key }}" {% if key == categoria_atual %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="data" class="form-label">{% trans "Date:" %}</label>
+          <input type="date" name="data" id="data" value="{{ data_atual|default:'' }}" class="form-control form-control-sm">
+        </div>
+        <div class="col-md-auto">
+          <button type="submit" class="btn btn-primary btn-sm">{% trans "Filter" %}</button>
+          {% if categoria_atual or data_atual %}
+            <a href="?" class="btn btn-outline-secondary btn-sm ms-2">{% trans "Clear" %}</a>
+          {% endif %}
+        </div>
+      </div>
+    </form>
 
     {% if posts %}
         <div class="row row-cols-1 row-cols-md-2 g-4"> {# Use Bootstrap grid for responsiveness #}
@@ -38,8 +61,8 @@
                                 <i class="bi bi-people me-1"></i> <a href="{% url 'classes:class_detail' class_id=post.turma.id %}" class="text-muted text-decoration-none">{{ post.turma.name }}</a>
                             {% endif %}
                             {% if post.categoria %} 
-                                <span class="mx-1">|</span> 
-                                <i class="bi bi-tag me-1"></i> {{ post.get_categoria_display }}
+                                <span class="mx-1">|</span>
+                                <span class="badge bg-secondary"><i class="bi bi-tag me-1"></i> {{ post.get_categoria_display }}</span>
                             {% endif %}
                         </p>
                         <div class="card-text text-secondary mb-3"> {# Excerpt styling #}
@@ -91,9 +114,7 @@
                     {# Current Page Info #}
                     <li class="page-item disabled">
                         <span class="page-link">
-                            {% blocktrans with current_page=posts.number total_pages=posts.paginator.num_pages %}
-                            Page {{ current_page }} of {{ total_pages }}
-                            {% endblocktrans %}
+                            {% blocktrans with current_page=posts.number total_pages=posts.paginator.num_pages %}Page {{ current_page }} of {{ total_pages }}{% endblocktrans %}
                         </span>
                      </li>
 

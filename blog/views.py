@@ -520,7 +520,20 @@ def post_list_public(request):
         status='PUBLISHED',
         removido=False
     ).select_related('autor', 'turma').order_by('-publicado_em') 
-    
+
+    # Optional filtering
+    categoria_atual = request.GET.get('categoria', '')
+    data_atual = request.GET.get('data', '')
+
+    if categoria_atual:
+        all_posts = all_posts.filter(categoria=categoria_atual)
+    if data_atual:
+        try:
+            data = timezone.datetime.strptime(data_atual, '%Y-%m-%d').date()
+            all_posts = all_posts.filter(publicado_em__date=data)
+        except ValueError:
+            messages.warning(request, _("Invalid date format for filtering."))
+
     # Pagination
     paginator = Paginator(all_posts, 10) # Show 10 posts per page
     page_number = request.GET.get('page')
@@ -528,6 +541,9 @@ def post_list_public(request):
     
     context = {
         'posts': page_obj, # Pass the page object to the template
+        'categorias': Post.CATEGORIA_CHOICES,
+        'categoria_atual': categoria_atual,
+        'data_atual': data_atual,
     }
     # Render a new template specifically for the public list
     return render(request, 'blog/post_list_public.html', context)
