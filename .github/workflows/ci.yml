@@ -44,9 +44,9 @@ jobs:
           python manage.py check
           python manage.py makemigrations --check --dry-run
 
-      - name: Run tests
+      - name: Run tests (Django)
         env:
           DJANGO_SETTINGS_MODULE: infantinho3.settings
         run: |
-          pytest -q || python manage.py test -q
+          python manage.py test
  
