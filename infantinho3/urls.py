@@ -18,12 +18,19 @@ from django.contrib import admin
 from django.urls import path, include
 # from users import views as user_views # Not directly used here
 from classes.views import landing_page # Used for root path
+from classes import views as class_views
 from django.conf import settings
 from django.conf.urls.static import static
 from checklists.views import HelpView # Used for /ajuda/
 from blog.views import post_list_public # Import the new public view
 
 urlpatterns = [
+    # Expor nomes globais exigidos pelos testes para classes
+    path('gerir-turmas/', class_views.manage_classes, name='manage_classes'),
+    path('turmas/<int:class_id>/adicionar-aluno/', class_views.add_student, name='add_student'),
+    path('turmas/', class_views.class_list, name='class_list'),
+    path('turmas/<int:class_id>/', class_views.class_detail, name='class_detail'),
+
     # Admin site
     path('admin/', admin.site.urls),
     
@@ -39,7 +46,8 @@ urlpatterns = [
     # ---------------------------------------
     
     # Class-related URLs (including landing page at root)
-    path('turmas/', include('classes.urls')), # Keep other class URLs under /turmas/
+    path('', include('classes.urls')), # global names
+    path('', include(('classes.urls', 'classes'), namespace='classes')), # namespaced for templates
     # Blog por turma (aninhado sob /turmas/<id>/blog/) com namespace distinto
     path('turmas/<int:class_id>/blog/', include('blog.class_urls', namespace='class_blog')), 
     
