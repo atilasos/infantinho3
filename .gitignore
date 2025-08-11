@@ -184,6 +184,7 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 /media/
+/media_dev/
 /static_root/
 env/
 venv/
@@ -196,3 +197,4 @@ venv.bak
 *.orig
 diariodeturma.txt
 *:Zone.Identifier
+.github/workflows/log.txt
