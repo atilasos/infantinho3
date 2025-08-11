@@ -165,7 +165,8 @@ class ChecklistTurmaView(View):
         # --- Add specific teacher check --- 
         if not request.user.is_superuser and request.user not in turma.teachers.all():
             messages.error(request, _('You do not have permission to view this class checklist.'))
-            return redirect('classes:class_detail', class_id=turma.id) # Redirect to class detail or another appropriate page
+            # Redirect to class list as expected by tests
+            return redirect('classes:class_list')
         # ----------------------------------
             
         template = get_object_or_404(ChecklistTemplate, id=template_id)
@@ -218,8 +219,8 @@ class ChecklistTurmaView(View):
         # --- Add specific teacher check --- 
         if not request.user.is_superuser and request.user not in turma.teachers.all():
             messages.error(request, _('You do not have permission to modify this class checklist.'))
-            # Redirect or return forbidden? Redirect might be better UX.
-            return redirect('classes:class_detail', class_id=turma.id) 
+            # Redirect to class list as expected by tests
+            return redirect('classes:class_list')
         # ----------------------------------
             
         template = get_object_or_404(ChecklistTemplate, id=template_id)
