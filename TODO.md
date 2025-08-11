@@ -140,18 +140,18 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
 - [ ] 4.3 Corrigir bugs e ajustar funcionalidades essenciais
 
 ## Fase 5 – Módulo PIT (Planos Individuais de Trabalho)
-- [ ] 5.1 Criar modelos PIT (IndividualPlan) e PlanTask
-- [ ] 5.2 Views Aluno: criar/editar PIT, submeter
-- [ ] 5.3 Views Professor: aprovar PIT, visualizar
+ - [x] 5.1 Criar modelos PIT (IndividualPlan) e PlanTask
+ - [x] 5.2 Views Aluno: criar/editar PIT, submeter
+ - [x] 5.3 Views Professor: aprovar PIT, visualizar
 - [ ] 5.4 Formulários de autoavaliação (aluno) e avaliação (professor)
-- [ ] 5.5 Notificações básicas (submissão, aprovação, avaliação)
-- [ ] 5.6 Garantir restrição: só um PIT por período
-- [ ] 5.7 Testes de fluxo principal e casos de concorrência
+ - [ ] 5.5 Notificações básicas (submissão, aprovação, avaliação)
+ - [x] 5.6 Garantir restrição: só um PIT por período
+ - [x] 5.7 Testes de fluxo principal e casos de concorrência
 - [ ] 5.8 Integração leve com checklists (botão para abrir checklist)
 
 ## Fase 6 – Módulo Projetos Cooperativos
-- [ ] 6.1 Criar modelos Project e ProjectTask
-- [ ] 6.2 Views: criar projeto (prof/aluno), adicionar membros, listar/detalhar projetos
+ - [x] 6.1 Criar modelos Project e ProjectTask
+ - [x] 6.2 Views: criar projeto (prof/aluno), adicionar membros, listar/detalhar projetos
 - [ ] 6.3 Permissões: só membros editam
 - [ ] 6.4 Testes: criar projeto, adicionar update
 
