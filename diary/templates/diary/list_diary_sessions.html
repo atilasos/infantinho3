@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Diary Sessions" %} | {{ turma.name }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h1 class="mb-0">{% blocktrans with class_name=turma.name %}Diary Sessions — {{ class_name }}{% endblocktrans %}</h1>
+    <div>
+      <a href="{% url 'diary:view_diary_active' class_id=turma.id %}" class="btn btn-primary">{% trans "View Active Session" %}</a>
+      <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-outline-secondary">{% trans "Back to Class" %}</a>
+    </div>
+  </div>
+
+  {% if sessions %}
+  <div class="list-group">
+    {% for s in sessions %}
+      <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{% url 'diary:view_diary_session' class_id=turma.id session_id=s.id %}">
+        <div>
+          <strong>{{ s.start_date|date:'Y-m-d' }}</strong>
+          {% if s.end_date %}– {{ s.end_date|date:'Y-m-d' }}{% endif %}
+          <span class="badge bg-{{ 'success' if s.status == 'ACTIVE' else 'secondary' }} ms-2">{{ s.get_status_display }}</span>
+        </div>
+        <span class="text-muted small">#{{ s.id }}</span>
+      </a>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="alert alert-info">{% trans "No diary sessions found." %}</div>
+  {% endif %}
+</div>
+{% endblock %}
+
+
