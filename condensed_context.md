@@ -36,12 +36,12 @@
 - Projetos (`projects`)
   - Modelos: `Project`, `ProjectTask`.
   - Views: listar/criar/detalhar por turma.
-  - UI: listagem com cartões, badges por estado e contagem de membros; filtros (estado/pesquisa), paginação; breadcrumbs/CTAs consistentes.
+  - UI: listagem com cartões, badges por estado e contagem de membros; filtros (estado/pesquisa), paginação; breadcrumbs/CTAs consistentes (lista, detalhe e formulário).
 
 - Conselho (`council`)
   - Modelos: `CouncilDecision` e `StudentProposal`.
   - Views: listar decisões e propostas, criar decisão (professor), criar proposta (aluno).
-  - UI: listagem com cartões e badges por estado; filtros (estado/categoria), paginação; breadcrumbs/CTAs consistentes.
+  - UI: listagem com cartões e badges por estado; filtros (estado/categoria), paginação; breadcrumbs/CTAs consistentes (lista e formulários).
 
 - Feedback interno (`infantinho_feedback`)
   - Modelo `FeedbackItem` e views para submeter, listar (por utilizador/admin) e atualizar estado/apagar (admin).

@@ -3,7 +3,13 @@
 
 {% block content %}
 <div class="container mt-3">
-  <h1 class="h4">{{ project.title }} — {{ turma.name }}</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{{ project.title }} — {{ turma.name }}</h1>
+    <div class="btn-group">
+      <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-left"></i> {% trans "Voltar à lista" %}</a>
+      <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-people"></i> {% trans "Turma" %}</a>
+    </div>
+  </div>
   <p class="text-muted">{{ project.description|default:_("Sem descrição.") }}</p>
   <p><strong>{% trans "Estado" %}:</strong> {{ project.get_state_display }}</p>
   <p><strong>{% trans "Membros" %}:</strong> {% for m in project.members.all %}{{ m.get_full_name|default:m.username }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-muted">-</span>{% endfor %}</p>
