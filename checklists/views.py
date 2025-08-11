@@ -199,6 +199,25 @@ class ChecklistTurmaView(View):
         if status_qs.exists():
             total_percentage = sum(s.percent_complete for s in status_qs)
             progresso_coletivo = int(total_percentage / status_qs.count()) if status_qs.count() > 0 else 0
+
+        # --- Aggregate status counts per item for header badges ---
+        item_status_counts = {item.id: {"validated": 0, "completed": 0, "in_progress": 0, "not_started": 0} for item in items}
+        student_ids = list(students.values_list('id', flat=True))
+        for item in items:
+            for sid in student_ids:
+                mark = latest_marks_by_student_item.get((sid, item.id))
+                if not mark:
+                    item_status_counts[item.id]["not_started"] += 1
+                else:
+                    # Treat teacher_validated or explicit VALIDATED as validated
+                    if getattr(mark, 'teacher_validated', False) or getattr(mark, 'mark_status', '') == 'VALIDATED':
+                        item_status_counts[item.id]["validated"] += 1
+                    elif getattr(mark, 'mark_status', '') == 'COMPLETED':
+                        item_status_counts[item.id]["completed"] += 1
+                    elif getattr(mark, 'mark_status', '') == 'IN_PROGRESS':
+                        item_status_counts[item.id]["in_progress"] += 1
+                    else:
+                        item_status_counts[item.id]["not_started"] += 1
             
         context = {
             'turma': turma,
@@ -209,6 +228,8 @@ class ChecklistTurmaView(View):
             'progresso_individual': progresso_individual,
             'progresso_coletivo': progresso_coletivo,
             'mark_status_choices': ChecklistMark.STATUS_CHOICES, 
+            'item_status_counts': item_status_counts,
+            'num_students': students.count(),
         }
         return render(request, self.template_name, context)
 

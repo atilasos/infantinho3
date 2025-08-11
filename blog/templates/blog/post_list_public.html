@@ -42,13 +42,13 @@
             <div class="col">
                 <div class="card h-100 shadow-sm post-card"> {# Ensure cards have same height in a row #}
                     {% if post.image %}
-                        <a href="{% url 'blog:post_detail' post_id=post.id %}">
+                        <a href="/blog/post/{{ post.id }}/">
                             <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.titulo|default:_('(Post Image)') }}" style="max-height: 250px; object-fit: cover;">
                         </a>
                     {% endif %}
                     <div class="card-body d-flex flex-column"> {# Use flexbox for alignment #}
                         <h2 class="card-title h5 mb-2"> {# Slightly smaller heading #}
-                            <a href="{% url 'blog:post_detail' post_id=post.id %}" class="text-decoration-none text-dark stretched-link">
+                            <a href="/blog/post/{{ post.id }}/" class="text-decoration-none text-dark stretched-link">
                                {{ post.titulo|default:_('(No Title)') }}
                             </a>
                         </h2>

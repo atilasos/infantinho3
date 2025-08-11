@@ -56,10 +56,21 @@
         {# Checklist Items as Columns #}
         {% for item in items %}
           <th scope="col" class="item-col" title="{{ item.text }}">
-            {% if item.council_agreed %}
-                <i class="bi bi-star-fill text-warning me-1" title="{% trans 'Agreed in Council' %}"></i>
-            {% endif %}
-            <span class="item-header-text">{{ item.text|truncatechars:40 }}</span>
+            <div class="d-flex flex-column align-items-start">
+              <div>
+                {% if item.council_agreed %}
+                    <i class="bi bi-star-fill text-warning me-1" title="{% trans 'Agreed in Council' %}"></i>
+                {% endif %}
+                <span class="item-header-text">{{ item.text|truncatechars:40 }}</span>
+              </div>
+              {% get_item item_status_counts item.id as counts %}
+              <div class="mt-1 small">
+                <span class="badge bg-success me-1" title="{% trans 'Validated' %}">{{ counts.validated|default:0 }}</span>
+                <span class="badge bg-primary me-1" title="{% trans 'Completed' %}">{{ counts.completed|default:0 }}</span>
+                <span class="badge bg-info text-dark me-1" title="{% trans 'In Progress' %}">{{ counts.in_progress|default:0 }}</span>
+                <span class="badge bg-secondary" title="{% trans 'Not Started' %}">{{ counts.not_started|default:0 }}</span>
+              </div>
+            </div>
           </th>
         {% endfor %}
       </tr>
