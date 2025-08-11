@@ -7,6 +7,7 @@ from classes.models import Class
 from users.decorators import group_required
 from users.permissions import class_member_required, class_teacher_required
 from .models import CouncilDecision, StudentProposal
+from django.core.paginator import Paginator
 from .forms import CouncilDecisionForm, StudentProposalForm
 
 
@@ -14,12 +15,29 @@ from .forms import CouncilDecisionForm, StudentProposalForm
 @class_member_required
 def decision_list(request, class_id):
     turma = get_object_or_404(Class, id=class_id)
-    decisions = CouncilDecision.objects.filter(student_class=turma).order_by('-date')
+    # Filtros
+    status = request.GET.get('status', '')
+    categoria = request.GET.get('categoria', '')
+    decisions_qs = CouncilDecision.objects.filter(student_class=turma)
+    if status:
+        decisions_qs = decisions_qs.filter(status=status)
+    if categoria:
+        decisions_qs = decisions_qs.filter(category=categoria)
+    decisions_qs = decisions_qs.order_by('-date')
+
+    # Paginação
+    paginator = Paginator(decisions_qs, 12)
+    page_number = request.GET.get('page')
+    decisions = paginator.get_page(page_number)
+
+    # Propostas (mostra últimas 10 sem paginação)
     proposals = StudentProposal.objects.filter(student_class=turma).order_by('-date_submitted')[:10]
     return render(request, 'council/decision_list.html', {
         'turma': turma,
         'decisions': decisions,
         'proposals': proposals,
+        'status': status,
+        'categoria': categoria,
     })
 
 

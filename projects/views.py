@@ -9,6 +9,7 @@ from classes.models import Class
 from users.decorators import group_required
 from users.permissions import class_member_required, class_teacher_required
 from .models import Project
+from django.core.paginator import Paginator
 from .forms import ProjectForm, ProjectTaskFormSet
 
 
@@ -16,11 +17,27 @@ from .forms import ProjectForm, ProjectTaskFormSet
 @class_member_required
 def project_list(request, class_id):
     turma = get_object_or_404(Class, id=class_id)
-    # Qualquer membro da turma pode ver a lista
-    projects = Project.objects.filter(student_class=turma).order_by('-created_at')
+    # Filtros simples
+    state = request.GET.get('state', '')
+    q = request.GET.get('q', '')
+    projects_qs = Project.objects.filter(student_class=turma)
+    if state:
+        projects_qs = projects_qs.filter(state=state)
+    if q:
+        projects_qs = projects_qs.filter(title__icontains=q)
+
+    projects_qs = projects_qs.order_by('-created_at')
+
+    # Paginação
+    paginator = Paginator(projects_qs, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'projects/project_list.html', {
         'turma': turma,
-        'projects': projects,
+        'projects': page_obj,
+        'state': state,
+        'q': q,
     })
 
 

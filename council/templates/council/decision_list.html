@@ -11,6 +11,36 @@
     </div>
   </div>
 
+  <form method="get" class="mb-3 p-3 bg-light border rounded">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label" for="status">{% trans "Estado" %}</label>
+        <select class="form-select form-select-sm" id="status" name="status">
+          <option value="">{% trans "Todos" %}</option>
+          <option value="pending" {% if status == 'pending' %}selected{% endif %}>{% trans "Pendente" %}</option>
+          <option value="in_progress" {% if status == 'in_progress' %}selected{% endif %}>{% trans "Em curso" %}</option>
+          <option value="done" {% if status == 'done' %}selected{% endif %}>{% trans "Concluída" %}</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="categoria">{% trans "Categoria" %}</label>
+        <select class="form-select form-select-sm" id="categoria" name="categoria">
+          <option value="">{% trans "Todas" %}</option>
+          <option value="rule" {% if categoria == 'rule' %}selected{% endif %}>{% trans "Regra" %}</option>
+          <option value="learning_goal" {% if categoria == 'learning_goal' %}selected{% endif %}>{% trans "Objetivo de aprendizagem" %}</option>
+          <option value="activity" {% if categoria == 'activity' %}selected{% endif %}>{% trans "Atividade" %}</option>
+          <option value="other" {% if categoria == 'other' %}selected{% endif %}>{% trans "Outro" %}</option>
+        </select>
+      </div>
+      <div class="col-md-auto">
+        <button class="btn btn-sm btn-primary" type="submit">{% trans "Filtrar" %}</button>
+        {% if status or categoria %}
+          <a class="btn btn-sm btn-outline-secondary ms-1" href="?">{% trans "Limpar" %}</a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+
   <h2 class="h6 mt-3">{% trans "Decisões" %}</h2>
   <div class="row row-cols-1 row-cols-md-2 g-3 mb-3">
     {% for d in decisions %}
@@ -34,6 +64,26 @@
       </div>
     {% endfor %}
   </div>
+
+  {% if decisions.has_other_pages %}
+    <nav aria-label="{% trans 'Paginação' %}">
+      <ul class="pagination justify-content-center">
+        <li class="page-item {% if not decisions.has_previous %}disabled{% endif %}">
+          <a class="page-link" href="?page=1{% if status %}&status={{ status }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}">&laquo;</a>
+        </li>
+        <li class="page-item {% if not decisions.has_previous %}disabled{% endif %}">
+          <a class="page-link" href="{% if decisions.has_previous %}?page={{ decisions.previous_page_number }}{% if status %}&status={{ status }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}{% endif %}">&lsaquo;</a>
+        </li>
+        <li class="page-item disabled"><span class="page-link">{{ decisions.number }}/{{ decisions.paginator.num_pages }}</span></li>
+        <li class="page-item {% if not decisions.has_next %}disabled{% endif %}">
+          <a class="page-link" href="{% if decisions.has_next %}?page={{ decisions.next_page_number }}{% if status %}&status={{ status }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}{% endif %}">&rsaquo;</a>
+        </li>
+        <li class="page-item {% if not decisions.has_next %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ decisions.paginator.num_pages }}{% if status %}&status={{ status }}{% endif %}{% if categoria %}&categoria={{ categoria }}{% endif %}">&raquo;</a>
+        </li>
+      </ul>
+    </nav>
+  {% endif %}
 
   <h2 class="h6">{% trans "Propostas recentes" %}</h2>
   <div class="list-group">
