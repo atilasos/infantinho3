@@ -45,8 +45,7 @@ urlpatterns = [
     path('turmas/<int:class_id>/diario/', include('diary.urls', namespace='diary')), 
     # ---------------------------------------
     
-    # Class-related URLs (including landing page at root)
-    path('', include('classes.urls')), # global names
+    # Class-related URLs (namespaced)
     path('', include(('classes.urls', 'classes'), namespace='classes')), # namespaced for templates
     # Blog por turma (aninhado sob /turmas/<id>/blog/) com namespace distinto
     path('turmas/<int:class_id>/blog/', include('blog.class_urls', namespace='class_blog')), 

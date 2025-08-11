@@ -443,8 +443,8 @@ Ver post completo: {post_url}"""
             # Log email sending failure
             print(f"Error sending post notification email to members: {e}")
 
-    # Notify guardians if category is DIARIO or AVISO
-    if post.categoria in ['DIARIO', 'AVISO']:
+    # Notify guardians only for AVISO (announcements)
+    if post.categoria in ['AVISO']:
         encarregado_emails = list(set(
             GuardianRelation.objects.filter(aluno__in=turma.students.all())
             .values_list('encarregado__email', flat=True)

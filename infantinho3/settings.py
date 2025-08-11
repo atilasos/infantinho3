@@ -311,59 +311,9 @@ try:
 except ImportError:
     pass
 
-# -- Social Auth App Django Settings --
-# (Assume que já tem outras configurações como AUTHENTICATION_BACKENDS, Keys, etc.)
+# --- Social Auth desativado ---
+# Removido pipeline do social-auth; a app usa MSAL diretamente em `users.views`.
 
-SOCIAL_AUTH_PIPELINE = (
-    # Default pipeline steps from social-auth-core
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    # 'social_core.pipeline.user.create_user', # Opcional: Descomente se quiser permitir criação de utilizadores via SSO
-    'social_core.pipeline.social_auth.associate_user', # Associa a conta social a um utilizador existente
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
-
-    # Nosso passo customizado - corre depois do utilizador ser associado/identificado
-    'users.pipeline.assign_class_on_signup', 
-)
-
-# Se permitir a criação de utilizadores via SSO (descomentando create_user acima), 
-# pode querer colocar 'users.pipeline.assign_class_on_signup' *depois* de create_user
-# e *depois* de associate_user para garantir que corre para ambos os casos.
-# A ordem atual (depois de associate_user) deve funcionar bem, pois user já existe ou foi encontrado.
-
-# É importante garantir que o pipeline padrão que está a usar é este.
-# Se estiver a usar um backend específico (ex: AzureAD), ele pode ter um pipeline ligeiramente diferente.
-# Verifique a documentação da social-auth-app-django para o seu backend específico se tiver problemas.
-
-# Adicione também configuração básica de logging se ainda não tiver, 
-# para poder ver os logs gerados pelo pipeline.py
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO', # Ou 'DEBUG' para mais detalhes
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        # Adicione um logger específico para a sua app ou pipeline se quiser mais controlo
-        'users.pipeline': { 
-             'handlers': ['console'],
-             'level': 'DEBUG', # Captura logs DEBUG e acima do nosso pipeline
-             'propagate': False,
-        },
-    },
-}
+# Domínios permitidos para login MSAL (usado em users.views)
+ALLOWED_EMAIL_DOMAINS = os.environ.get('ALLOWED_EMAIL_DOMAINS', '')
+ALLOWED_EMAIL_DOMAINS = [d.strip() for d in ALLOWED_EMAIL_DOMAINS.split(',') if d.strip()]

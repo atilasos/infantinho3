@@ -82,11 +82,11 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
     - [x] 2.4.2 Herdar de `base.html` global e de turma.
 - [ ] 2.5 Editor de Texto Rico
     - [x] 2.5.1 Integrar CKEditor (ou similar) no campo de conteúdo do post.
-    - [ ] 2.5.2 Configurar upload de imagens (media storage seguro).
+    - [x] 2.5.2 Configurar upload de imagens (media storage seguro) [TinyMCE ativo]
     - [ ] 2.5.3 Testar formatação básica, listas, links, imagens.
-- [ ] 2.6 Notificações
+    - [ ] 2.6 Notificações
     - [x] 2.6.1 Enviar email para membros da turma ao criar post (usar SMTP O365).
-    - [x] 2.6.2 Notificar encarregados apenas para categorias "Diário de Turma" ou "Aviso".
+    - [x] 2.6.2 Notificar encarregados apenas para categorias "Aviso" (corrigido).
     - [x] 2.6.3 Notificar autor do post sobre novos comentários.
 - [x] 2.7 Testes e Validação
     - [x] 2.7.1 Testes unitários dos modelos (criação, permissões).
@@ -138,6 +138,13 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
 - [ ] 4.1 Apresentar MVP a professores MEM (validação de usabilidade)
 - [ ] 4.2 Recolher feedback e iterar design se necessário
 - [ ] 4.3 Corrigir bugs e ajustar funcionalidades essenciais
+
+### Permissões Unificadas
+- [ ] Criar e aplicar decorators de permissão comuns por app (evitar checks inline)
+
+### Autenticação MSAL
+- [x] Documentar `ALLOWED_EMAIL_DOMAINS` e ler via env
+- [x] Remover pipeline social-auth não utilizado dos settings
 
 ## Fase 5 – Módulo PIT (Planos Individuais de Trabalho)
  - [x] 5.1 Criar modelos PIT (IndividualPlan) e PlanTask

@@ -80,7 +80,15 @@ O MVP inclui:
 - [ ] Configure backup regular do banco e da pasta `/media/`
 
 ### Variáveis de Ambiente
-Veja o arquivo `deploy/.env.example` para todas as variáveis necessárias.
+Veja o arquivo `deploy/.env.example` para todas as variáveis necessárias. Em particular:
+
+```
+ALLOWED_EMAIL_DOMAINS=infantedomhenrique.edu.pt,example.pt
+AZURE_AD_CLIENT_ID=...
+AZURE_AD_CLIENT_SECRET=...
+AZURE_AD_TENANT_ID=...
+AZURE_AD_REDIRECT_URI=https://SEU_HOST/auth/callback/microsoft/
+```
 
 ### Comandos Essenciais
 ```sh
