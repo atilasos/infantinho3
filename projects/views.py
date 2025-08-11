@@ -7,11 +7,13 @@ from django.views import View
 
 from classes.models import Class
 from users.decorators import group_required
+from users.permissions import class_member_required, class_teacher_required
 from .models import Project
 from .forms import ProjectForm, ProjectTaskFormSet
 
 
 @login_required
+@class_member_required
 def project_list(request, class_id):
     turma = get_object_or_404(Class, id=class_id)
     # Qualquer membro da turma pode ver a lista
@@ -23,7 +25,7 @@ def project_list(request, class_id):
 
 
 @login_required
-@group_required('professor')
+@class_teacher_required
 def project_create(request, class_id):
     turma = get_object_or_404(Class, id=class_id)
     if request.method == 'POST':
@@ -52,6 +54,7 @@ def project_create(request, class_id):
 
 
 @login_required
+@class_member_required
 def project_detail(request, class_id, project_id):
     turma = get_object_or_404(Class, id=class_id)
     project = get_object_or_404(Project, id=project_id, student_class=turma)

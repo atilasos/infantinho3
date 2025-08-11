@@ -5,11 +5,13 @@ from django.utils.translation import gettext as _
 
 from classes.models import Class
 from users.decorators import group_required
+from users.permissions import class_member_required, class_teacher_required
 from .models import CouncilDecision, StudentProposal
 from .forms import CouncilDecisionForm, StudentProposalForm
 
 
 @login_required
+@class_member_required
 def decision_list(request, class_id):
     turma = get_object_or_404(Class, id=class_id)
     decisions = CouncilDecision.objects.filter(student_class=turma).order_by('-date')
@@ -22,7 +24,7 @@ def decision_list(request, class_id):
 
 
 @login_required
-@group_required('professor')
+@class_teacher_required
 def decision_create(request, class_id):
     turma = get_object_or_404(Class, id=class_id)
     if request.method == 'POST':
@@ -39,7 +41,7 @@ def decision_create(request, class_id):
 
 
 @login_required
-@group_required('aluno')
+@class_member_required
 def proposal_create(request, class_id):
     turma = get_object_or_404(Class, id=class_id)
     if request.method == 'POST':

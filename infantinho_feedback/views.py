@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 
 from .models import FeedbackItem
+from users.permissions import is_admin
 from .forms import FeedbackItemForm
 # from classes.models import Class # Import Class if you implement dynamic queryset filtering in the form
 
@@ -29,7 +30,7 @@ def feedback_submit_view(request):
     else:
         form = FeedbackItemForm()
 
-    if request.user.is_superuser or (hasattr(request.user, 'role') and request.user.role == 'admin'):
+    if is_admin(request.user):
         feedback_list_qs = FeedbackItem.objects.all().order_by('-created_at')
     elif request.user.is_authenticated:
         feedback_list_qs = FeedbackItem.objects.filter(author=request.user).order_by('-created_at')
