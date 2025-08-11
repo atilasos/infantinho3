@@ -24,6 +24,7 @@
   {# Use class name from context #}
   <h1 class="h2">{% trans "Blog/Diary" %} - {{ turma.name }}</h1>
   <div>
+    <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-arrow-left"></i> {% trans "Voltar à turma" %}</a>
     {# Button to create a new post #}
     {% load auth_extras %}
     {% if request.user.is_superuser or request.user.role == 'admin' or request.user|has_group:'professor' or request.user|has_group:'aluno' %}

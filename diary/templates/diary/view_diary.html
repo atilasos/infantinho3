@@ -10,15 +10,19 @@
             <h1 class="mb-1">{% trans "Class Diary" %}</h1>
             <h2 class="h4 text-muted mb-0">{{ turma.name }}</h2>
         </div>
-        {# Button for Moderators to Archive & Start New #}
-        {% if can_moderate %}
-            <form method="post" action="{% url 'diary:start_new_session' class_id=turma.id %}" class="ms-3">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-warning">
-                    <i class="bi bi-archive me-1"></i> {% trans "Archive & Start New Period" %}
-                </button>
-            </form>
-        {% endif %}
+        <div class="d-flex align-items-center gap-2">
+            <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> {% trans "Voltar à turma" %}</a>
+            <a href="{% url 'class_blog:post_list' class_id=turma.id %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-card-text"></i> {% trans "Blog da Turma" %}</a>
+            {# Button for Moderators to Archive & Start New #}
+            {% if can_moderate %}
+                <form method="post" action="{% url 'diary:start_new_session' class_id=turma.id %}" class="ms-2">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-archive me-1"></i> {% trans "Archive & Start New Period" %}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
     </div>
     
     {# Session Info #}

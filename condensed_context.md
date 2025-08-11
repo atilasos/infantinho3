@@ -14,12 +14,13 @@
 - Blog/Diário de Turma (`blog`)
   - Modelos: `Post`, `Comment`, `ModerationLog` com workflow PENDING/PUBLISHED, soft-delete, anexos (imagem/ficheiro) e aprovação por professor/admin.
   - Views: lista por turma, criação por turma, detalhe global por `post_id`, editar/remover/restaurar, lista de pendentes, aprovar post, listagem pública paginada (landing), upload de imagens (TinyMCE).
-  - UI: listagens (turma e pública) com cartões responsivos, filtros por categoria/data e badges de estado.
+  - UI: listagens (turma e pública) com cartões responsivos, filtros por categoria/data e badges de estado; breadcrumbs/CTAs para regressar à turma/blog nas páginas de lista e detalhe.
   - Editor: TinyMCE configurado com upload.
 
 - Diário MEM (`diary`)
   - Modelos: `DiarySession` (sessão ativa/arquivada), `DiaryEntry` (colunas: GOSTEI/NAO_GOSTEI/FIZEMOS/QUEREMOS).
   - Views: ver sessão ativa/por id, adicionar entrada, arquivar e iniciar nova sessão.
+  - UI: cabeçalho com CTAs consistentes para “Voltar à turma” e “Blog da Turma”.
 
 - Listas de Verificação (`checklists`)
   - Modelos: `ChecklistTemplate`, `ChecklistItem`, `ChecklistStatus` (por aluno/turma/template), `ChecklistMark` (estado do item: NOT_STARTED/IN_PROGRESS/COMPLETED/VALIDATED, com comentários e validação docente).

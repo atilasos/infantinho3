@@ -182,9 +182,13 @@
             </div>
         {% endif %}
         
-        {# Back to list link #}
-        <div class="mt-5">
+        {# Back links #}
+        <div class="mt-5 d-flex gap-2">
              <a href="{% url 'blog:post_list_public' %}" class="btn btn-outline-secondary" title="{% trans 'Return to blog list' %}"><i class="bi bi-arrow-left"></i> {% trans "Back to Blog" %}</a>
+             {% if post.turma %}
+               <a href="{% url 'classes:class_detail' class_id=post.turma.id %}" class="btn btn-outline-secondary" title="{% trans 'Go to class' %}"><i class="bi bi-people"></i> {% trans "Class" %}</a>
+               <a href="{% url 'class_blog:post_list' class_id=post.turma.id %}" class="btn btn-outline-secondary" title="{% trans 'Go to class blog' %}"><i class="bi bi-card-text"></i> {% trans "Class Blog" %}</a>
+             {% endif %}
         </div>
         
     </article>
