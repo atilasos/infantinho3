@@ -26,17 +26,18 @@ from .models import Post, Comment, ModerationLog
 from .forms import PostForm, CommentForm
 # Use the new/updated permission decorators
 from .permissions import (
-    turma_member_required, 
-    turma_post_create_required, 
-    post_edit_permission_required, 
-    post_remove_permission_required, 
-    comment_remove_permission_required
+    turma_member_required,  # manter para views específicas da app
+    turma_post_create_required,
+    post_edit_permission_required,
+    post_remove_permission_required,
+    comment_remove_permission_required,
 )
+from users.permissions import class_teacher_required
 from classes.models import Class
 from users.models import GuardianRelation
 from users.decorators import group_required # Assuming this exists for teacher/admin checks
 
-@turma_member_required # Checks user is authenticated and related to the class
+@turma_member_required
 def post_list(request, class_id):
     """Displays a list of non-removed posts for a specific class, with filtering and pagination."""
     turma = get_object_or_404(Class, id=class_id)
@@ -139,7 +140,7 @@ def post_detail(request, post_id): # Removed class_id
     }
     return render(request, 'blog/post_detail.html', context)
 
-@turma_post_create_required # Checks user role (student/teacher/admin) and class membership
+@turma_post_create_required
 def post_create(request, class_id):
     """Handles the creation of a new post."""
     turma = get_object_or_404(Class, id=class_id)

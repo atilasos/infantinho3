@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from users.decorators import group_required
+from users.permissions import can_access_class, can_moderate_class
 from classes.models import Class
 from users.models import User, PreApprovedStudent # Adicionado PreApprovedStudent
 from django.contrib import messages
@@ -64,16 +65,9 @@ def class_detail(request, class_id):
     user = request.user
     
     # --- Permission Checks --- 
-    is_admin = user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')
-    is_teacher_of_class = turma.teachers.filter(id=user.id).exists()
-    is_student_in_class = turma.students.filter(id=user.id).exists()
-    # TODO: Add guardian visibility check if needed
-    
-    # Permitir que qualquer professor autenticado visualize a página da turma
-    is_professor = hasattr(user, 'role') and user.role == 'professor'
-    can_view_class = is_admin or is_teacher_of_class or is_student_in_class or is_professor
-    can_create_post = is_admin or is_teacher_of_class # Same logic for creating posts in this class
-    can_add_student = is_admin or is_teacher_of_class # Only admins or teachers of class can add students
+    can_view_class = can_access_class(user, turma) or (hasattr(user, 'role') and user.role == 'professor')
+    can_create_post = can_moderate_class(user, turma)
+    can_add_student = can_moderate_class(user, turma)
 
     if not can_view_class:
         messages.error(request, _("You do not have permission to view this class page."))

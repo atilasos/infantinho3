@@ -1,4 +1,7 @@
-from django.conf import settings
+from functools import wraps
+from django.utils.translation import gettext_lazy as _
+from django.shortcuts import redirect, get_object_or_404
+from django.http import HttpResponseForbidden
 
 
 def is_admin(user) -> bool:
@@ -27,5 +30,46 @@ def can_access_class(user, class_obj) -> bool:
 
 def can_moderate_class(user, class_obj) -> bool:
     return is_admin(user) or is_teacher_of_class(user, class_obj)
+
+
+# --- Decorators reutilizáveis (esperam um parâmetro class_id na URL) ---
+def class_member_required(view_func):
+    @wraps(view_func)
+    def _wrapped(request, class_id, *args, **kwargs):
+        from classes.models import Class  # import local para evitar ciclos
+
+        turma = get_object_or_404(Class, id=class_id)
+        if can_access_class(request.user, turma):
+            return view_func(request, class_id, *args, **kwargs)
+        # Responder 403 para endpoints que exigem bloqueio explícito
+        return HttpResponseForbidden(_('Access restricted to members of this class.'))
+
+    return _wrapped
+
+
+def class_teacher_required(view_func):
+    @wraps(view_func)
+    def _wrapped(request, class_id, *args, **kwargs):
+        from classes.models import Class
+
+        turma = get_object_or_404(Class, id=class_id)
+        if can_moderate_class(request.user, turma):
+            return view_func(request, class_id, *args, **kwargs)
+        return HttpResponseForbidden(_('Access restricted to class moderators.'))
+
+    return _wrapped
+
+
+def class_student_required(view_func):
+    @wraps(view_func)
+    def _wrapped(request, class_id, *args, **kwargs):
+        from classes.models import Class
+
+        turma = get_object_or_404(Class, id=class_id)
+        if is_student_in_class(request.user, turma) or is_admin(request.user):
+            return view_func(request, class_id, *args, **kwargs)
+        return HttpResponseForbidden(_('Access restricted to students of this class.'))
+
+    return _wrapped
 
 
