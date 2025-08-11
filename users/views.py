@@ -57,7 +57,7 @@ def callback_microsoft(request):
     claims = result["id_token_claims"]
     email = claims.get("preferred_username") or claims.get("email")
     name = claims.get("name")
-    sub = claims.get("sub")
+    # sub = claims.get("sub")  # not used
 
     if not email:
         return HttpResponse('Erro: email não encontrado no perfil do utilizador.', status=400)

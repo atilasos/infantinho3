@@ -1,21 +1,23 @@
 [tool.black]
 target-version = ["py311"]
-line-length = 100
+line-length = 120
 
 [tool.isort]
 profile = "black"
-line_length = 100
+line_length = 120
 
 [tool.ruff]
 target-version = "py311"
-line-length = 100
-select = ["E","F","I","W"]
-ignore = []
+line-length = 120
 exclude = [
   ".venv",
   "venv",
   "migrations",
   "static",
 ]
+
+[tool.ruff.lint]
+select = ["E","F","I","W"]
+ignore = ["E501"]
 
 
