@@ -3,27 +3,35 @@
 
 {% block content %}
 <div class="container mt-3">
-  <h1 class="h4">{% trans "Conselho de Turma" %} — {{ turma.name }}</h1>
-
-  <div class="d-flex gap-2 mb-3">
-    <a href="{% url 'council:decision_create' class_id=turma.id %}" class="btn btn-primary btn-sm">{% trans "Nova decisão" %}</a>
-    <a href="{% url 'council:proposal_create' class_id=turma.id %}" class="btn btn-outline-primary btn-sm">{% trans "Nova proposta (aluno)" %}</a>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{% trans "Conselho de Turma" %} — {{ turma.name }}</h1>
+    <div class="d-flex gap-2">
+      <a href="{% url 'council:decision_create' class_id=turma.id %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i> {% trans "Nova decisão" %}</a>
+      <a href="{% url 'council:proposal_create' class_id=turma.id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-lightbulb me-1"></i> {% trans "Nova proposta (aluno)" %}</a>
+    </div>
   </div>
 
   <h2 class="h6 mt-3">{% trans "Decisões" %}</h2>
-  <div class="list-group mb-3">
+  <div class="row row-cols-1 row-cols-md-2 g-3 mb-3">
     {% for d in decisions %}
-      <div class="list-group-item">
-        <div class="d-flex justify-content-between">
-          <div>
-            <strong>{{ d.get_category_display }}</strong> · {{ d.date|date:'Y-m-d' }}<br>
-            {{ d.description|linebreaksbr }}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="badge text-bg-secondary me-2">{{ d.get_category_display }}</span>
+                <small class="text-muted">{{ d.date|date:'Y-m-d' }}</small>
+              </div>
+              <span class="badge {% if d.status == 'done' %}text-bg-success{% elif d.status == 'in_progress' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">{{ d.get_status_display }}</span>
+            </div>
+            <p class="mt-2 mb-0">{{ d.description|linebreaksbr }}</p>
           </div>
-          <span class="badge text-bg-secondary">{{ d.get_status_display }}</span>
         </div>
       </div>
     {% empty %}
-      <div class="list-group-item text-muted">{% trans "Sem decisões." %}</div>
+      <div class="col-12">
+        <div class="alert alert-info">{% trans "Sem decisões." %}</div>
+      </div>
     {% endfor %}
   </div>
 

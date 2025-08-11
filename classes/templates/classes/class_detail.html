@@ -99,31 +99,44 @@
     {# --- Class Overview Section --- #}
     <div class="mb-4">
         <h4>{% trans "Class Overview" %}</h4>
-        <div class="card">
-            <div class="card-header">{% trans "General Statistics" %}</div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <h5><i class="bi bi-people-fill me-2"></i>{% trans "Students" %}</h5>
-                        <p class="fs-4">{{ general_stats.student_count }}</p>
-                    </div>
-                    {% if diary_app_enabled %}
-                    <div class="col-md-4">
-                        <h5><i class="bi bi-calendar-event me-2"></i>{% trans "Recent Diary Posts" %}</h5>
-                        <p class="fs-4">{{ general_stats.recent_posts_count }} <span class="fs-6 text-muted">({% trans "last 7 days" %})</span></p>
-                    </div>
-                    {% endif %}
-                    {% if checklist_app_enabled %}
-                    <div class="col-md-4">
-                        <h5><i class="bi bi-list-check me-2"></i>{% trans "Checklist Templates" %}</h5>
-                        <p class="fs-4">{{ general_stats.checklist_template_count }} <span class="fs-6 text-muted">({% trans "applicable" %})</span></p>
-                        {# Placeholder for overall completion chart #}
-                        {# <canvas id="overallCompletionChart" height="100"></canvas> #}
-                        <p class="text-muted small"><em>{% trans "Overall progress chart coming soon." %}</em></p>
-                    </div>
-                    {% endif %}
-                </div>
+        <div class="row g-3">
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="text-muted small">{% trans "Students" %}</div>
+                <div class="fs-3 fw-bold">{{ general_stats.student_count }}</div>
+              </div>
             </div>
+          </div>
+          {% if diary_app_enabled %}
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="text-muted small">{% trans "Recent Diary Posts" %}</div>
+                <div class="fs-3 fw-bold">{{ general_stats.recent_posts_count }}</div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% if checklist_app_enabled %}
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="text-muted small">{% trans "Checklist Templates" %}</div>
+                <div class="fs-3 fw-bold">{{ general_stats.checklist_template_count }}</div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {# Placeholders for future counters: Projects active, Council pending, PITs submitted #}
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="text-muted small">{% trans "Projects (active)" %}</div>
+                <div class="fs-3 fw-bold">—</div>
+              </div>
+            </div>
+          </div>
         </div>
     </div>
 
