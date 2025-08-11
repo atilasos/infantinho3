@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views import View
+from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
 from django.core.mail import send_mail
 
@@ -110,10 +111,28 @@ class TeacherPlanListView(View):
     @method_decorator(group_required('professor'))
     def get(self, request, class_id):
         turma = get_object_or_404(Class, id=class_id)
-        plans = IndividualPlan.objects.filter(student_class=turma).select_related('student').order_by('-created_at')
+        plans_qs = IndividualPlan.objects.filter(student_class=turma).select_related('student')
+        status = request.GET.get('status', '')
+        q = request.GET.get('q', '')
+        if status:
+            plans_qs = plans_qs.filter(status=status)
+        if q:
+            plans_qs = plans_qs.filter(
+                models.Q(student__first_name__icontains=q) |
+                models.Q(student__last_name__icontains=q) |
+                models.Q(period_label__icontains=q)
+            )
+        plans_qs = plans_qs.order_by('-created_at')
+
+        paginator = Paginator(plans_qs, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
         return render(request, 'pit/plan_list_teacher.html', {
             'turma': turma,
-            'plans': plans,
+            'plans': page_obj,
+            'status': status,
+            'q': q,
         })
 
 
