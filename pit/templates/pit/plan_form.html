@@ -28,6 +28,12 @@
           <label class="form-label">{% trans "Objetivos gerais" %}</label>
           {{ form.general_objectives|add_class:"form-control" }}
         </div>
+        {% if not is_create %}
+        <div class="mt-3">
+          <label class="form-label">{% trans "Autoavaliação do aluno" %}</label>
+          {{ form.self_evaluation|add_class:"form-control" }}
+        </div>
+        {% endif %}
       </div>
     </div>
 

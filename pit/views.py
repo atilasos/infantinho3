@@ -158,6 +158,24 @@ class TeacherPlanApproveView(View):
                     )
                 except Exception:
                     pass
+        elif action == 'evaluate':
+            eval_text = request.POST.get('teacher_evaluation', '').strip()
+            plan.teacher_evaluation = eval_text
+            plan.status = IndividualPlan.PlanStatus.EVALUATED
+            plan.save(update_fields=['teacher_evaluation', 'status'])
+            messages.success(request, _('Avaliação do professor guardada.'))
+            if plan.student.email:
+                try:
+                    plan_url = request.build_absolute_uri(reverse('pit:plan_edit', args=[turma.id, plan.id]))
+                    send_mail(
+                        subject='[Infantinho] O seu PIT foi avaliado',
+                        message=f"O seu PIT foi avaliado pelo professor.\nVer: {plan_url}",
+                        from_email=None,
+                        recipient_list=[plan.student.email],
+                        fail_silently=True,
+                    )
+                except Exception:
+                    pass
         return redirect('pit:teacher_plan_list', class_id=turma.id)
 
 

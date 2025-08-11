@@ -6,8 +6,17 @@ class IndividualPlanForm(forms.ModelForm):
     class Meta:
         model = IndividualPlan
         fields = [
-            'period_label', 'start_date', 'end_date', 'general_objectives',
+            'period_label', 'start_date', 'end_date', 'general_objectives', 'self_evaluation',
         ]
+
+
+class TeacherEvaluationForm(forms.ModelForm):
+    class Meta:
+        model = IndividualPlan
+        fields = ['teacher_evaluation']
+        widgets = {
+            'teacher_evaluation': forms.Textarea(attrs={'rows': 6}),
+        }
 
 
 class PlanTaskForm(forms.ModelForm):

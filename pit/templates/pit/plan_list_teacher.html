@@ -28,6 +28,17 @@
               <button class="btn btn-outline-secondary" name="action" value="return" {% if plan.status != 'submitted' %}disabled{% endif %}>{% trans "Devolver" %}</button>
             </div>
           </form>
+          {% if plan.status == 'approved' or plan.teacher_evaluation %}
+          <div class="mt-1">
+            <form method="post" action="{% url 'pit:teacher_plan_approve' class_id=turma.id plan_id=plan.id %}">
+              {% csrf_token %}
+              <textarea class="form-control form-control-sm" name="teacher_evaluation" rows="2" placeholder="{% trans 'Avaliação do professor' %}">{{ plan.teacher_evaluation }}</textarea>
+              <div class="text-end mt-1">
+                <button class="btn btn-sm btn-primary" name="action" value="evaluate">{% trans "Guardar avaliação" %}</button>
+              </div>
+            </form>
+          </div>
+          {% endif %}
         </td>
       </tr>
       {% empty %}
