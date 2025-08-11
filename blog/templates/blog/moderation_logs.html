@@ -38,11 +38,11 @@
           <td>
             {# Link to the specific post or comment #}
             {% if log.post %}
-              <a href="{% url 'blog:post_detail' post_id=log.post.id %}" 
+              <a href="/blog/post/{{ log.post.id }}/" 
                  title="{% trans 'View details of post' %} #{{ log.post.id }}">{% trans "Post" %} #{{ log.post.id }}</a>
             {% elif log.comment %}
               {% if log.comment.post %}
-                <a href="{% url 'blog:post_detail' post_id=log.comment.post.id %}#comment-{{ log.comment.id }}" 
+                <a href="/blog/post/{{ log.comment.post.id }}/#comment-{{ log.comment.id }}" 
                    title="{% trans 'View comment on post' %} #{{ log.comment.id }}">{% trans "Comment" %} #{{ log.comment.id }}</a>
               {% else %}
                 {% trans "Comment" %} #{{ log.comment.id }} {% trans "(Post Unknown)" %}
@@ -64,7 +64,7 @@
 
 <!-- Back Button -->
 <div class="mt-3">
-    <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Return to Blog' %}">{% trans "Back to Blog" %}</a>
+    <a href="{% url 'class_blog:post_list' class_id=turma.id %}" class="btn btn-secondary" title="{% trans 'Return to Blog' %}">{% trans "Back to Blog" %}</a>
 </div>
 
 </main>

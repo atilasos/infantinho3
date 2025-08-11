@@ -7,7 +7,7 @@
 <main role="main" aria-label="{% trans 'Confirm post removal' %}">
 <h2>{% trans "Remove Post" %}</h2>
 <p role="alert">{% trans "Are you sure you want to remove this post? This action might be logged." %}</p>
-<p><strong>{{ post.titulo|default:post.get_category_display_full }}</strong></p>
+<p><strong>{{ post.titulo|default:post.get_categoria_display }}</strong></p>
 
 <form method="post" aria-label="{% trans 'Post removal form' %}">
   {% csrf_token %}

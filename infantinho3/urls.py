@@ -40,6 +40,8 @@ urlpatterns = [
     
     # Class-related URLs (including landing page at root)
     path('turmas/', include('classes.urls')), # Keep other class URLs under /turmas/
+    # Blog por turma (aninhado sob /turmas/<id>/blog/) com namespace distinto
+    path('turmas/<int:class_id>/blog/', include('blog.class_urls', namespace='class_blog')), 
     
     # --- Root path now points to the public blog list --- 
     path('', post_list_public, name='landing_page'), # Use the same name for simplicity for now
@@ -49,6 +51,12 @@ urlpatterns = [
     
     # Checklists URLs
     path('checklists/', include('checklists.urls', namespace='checklists')),
+    # PIT URLs
+    path('pit/', include('pit.urls', namespace='pit')),
+    # Projects URLs
+    path('', include('projects.urls', namespace='projects')),
+    # Council URLs
+    path('', include('council.urls', namespace='council')),
     
     # CKEditor URLs (Only needed if using django-ckeditor-uploader)
     # path('ckeditor/', include('ckeditor_uploader.urls')), # Commented out as uploader is not used

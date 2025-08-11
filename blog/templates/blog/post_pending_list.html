@@ -5,6 +5,12 @@
 
 {% block content %}
 <div class="container mt-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'landing_page' %}">{% trans "Blog" %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans "Pending Posts" %}</li>
+      </ol>
+    </nav>
     <h1 class="mb-4">{% trans "Posts Pending Approval" %}</h1>
 
     {% if pending_posts %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-3">
+  <h1 class="h4">{% trans "Conselho de Turma" %} — {{ turma.name }}</h1>
+
+  <div class="d-flex gap-2 mb-3">
+    <a href="{% url 'council:decision_create' class_id=turma.id %}" class="btn btn-primary btn-sm">{% trans "Nova decisão" %}</a>
+    <a href="{% url 'council:proposal_create' class_id=turma.id %}" class="btn btn-outline-primary btn-sm">{% trans "Nova proposta (aluno)" %}</a>
+  </div>
+
+  <h2 class="h6 mt-3">{% trans "Decisões" %}</h2>
+  <div class="list-group mb-3">
+    {% for d in decisions %}
+      <div class="list-group-item">
+        <div class="d-flex justify-content-between">
+          <div>
+            <strong>{{ d.get_category_display }}</strong> · {{ d.date|date:'Y-m-d' }}<br>
+            {{ d.description|linebreaksbr }}
+          </div>
+          <span class="badge text-bg-secondary">{{ d.get_status_display }}</span>
+        </div>
+      </div>
+    {% empty %}
+      <div class="list-group-item text-muted">{% trans "Sem decisões." %}</div>
+    {% endfor %}
+  </div>
+
+  <h2 class="h6">{% trans "Propostas recentes" %}</h2>
+  <div class="list-group">
+    {% for p in proposals %}
+      <div class="list-group-item">
+        <div class="d-flex justify-content-between">
+          <div>
+            <strong>{{ p.author.get_full_name|default:p.author.username }}</strong> · {{ p.date_submitted|date:'Y-m-d' }}<br>
+            {{ p.text|linebreaksbr }}
+          </div>
+          <span class="badge text-bg-light">{{ p.get_status_display }}</span>
+        </div>
+      </div>
+    {% empty %}
+      <div class="list-group-item text-muted">{% trans "Sem propostas." %}</div>
+    {% endfor %}
+  </div>
+
+  <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-secondary btn-sm mt-3">{% trans "Voltar à turma" %}</a>
+</div>
+{% endblock %}
+
+

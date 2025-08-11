@@ -7,9 +7,12 @@
 {# For example, a sidebar or specific navigation if needed later #}
 
 {% block content %}
-  {# Content from specific checklist templates (list, detail, turma) goes here #}
-  {% block checklist_content %}
-  {% endblock checklist_content %}
+  <div class="container mt-3">
+    {% block breadcrumbs %}{% endblock %}
+    {# Content from specific checklist templates (list, detail, turma) goes here #}
+    {% block checklist_content %}
+    {% endblock checklist_content %}
+  </div>
 {% endblock content %}
 
 {# Ensure necessary JS/CSS for this app are included #}

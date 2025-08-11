@@ -1,8 +1,20 @@
 {% extends 'blog/base.html' %}
 {% load i18n %}
 {% load tz %}{# Required for timezone conversions if needed #}
+{% load auth_extras %}
 
 {% block blog_title %}{% trans "Blog/Diary" %} - {{ turma.name }}{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'landing_page' %}">{% trans "Blog" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'classes:class_list' %}">{% trans "Classes" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'classes:class_detail' class_id=turma.id %}">{{ turma.name }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Class Blog" %}</li>
+  </ol>
+ </nav>
+{% endblock %}
 
 {# Override the main content block from the parent base template #}
 {% block blog_content %}
@@ -13,16 +25,16 @@
   <h1 class="h2">{% trans "Blog/Diary" %} - {{ turma.name }}</h1>
   <div>
     {# Button to create a new post #}
-    {# Temporarily commented out due to TemplateSyntaxError in tests #}
-    {# {% if request.user|has_group:"professor" or request.user|has_group:"aluno" %} #}
-    <div class="mt-3">
-        <a href="{% url 'blog:post_create' class_id=turma.id %}" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> {% trans "Create New Post" %}
-        </a>
-    </div>
-    {# {% endif %} #}
+    {% load auth_extras %}
+    {% if request.user.is_superuser or request.user.role == 'admin' or request.user|has_group:'professor' or request.user|has_group:'aluno' %}
+      <div class="mt-3">
+          <a href="{% url 'class_blog:post_create' class_id=turma.id %}" class="btn btn-success">
+              <i class="bi bi-plus-circle"></i> {% trans "Create New Post" %}
+          </a>
+      </div>
+    {% endif %}
     {# Link to help page #}
-    <a href="{% url 'blog:blog_help' class_id=turma.id %}" class="btn btn-outline-info btn-sm" title="{% trans 'Help for Blog/Diary' %}">
+        <a href="{% url 'class_blog:blog_help' class_id=turma.id %}" class="btn btn-outline-info btn-sm" title="{% trans 'Help for Blog/Diary' %}">
       <i class="bi bi-question-circle"></i> {% trans "Help" %}
     </a>
   </div>
@@ -50,7 +62,7 @@
       <button type="submit" class="btn btn-primary btn-sm" title="{% trans 'Apply Filters' %}">{% trans "Filter" %}</button>
       {# Add a clear button if filters are active #}
       {% if categoria_atual or data_atual %}
-        <a href="{% url 'blog:post_list' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm ms-2">{% trans "Clear" %}</a>
+        <a href="{% url 'class_blog:post_list' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm ms-2">{% trans "Clear" %}</a>
       {% endif %}
     </div>
   </div>
@@ -64,19 +76,31 @@
       <h4 class="mt-4 text-muted">{{ month }}/{{ year }}</h4> 
       <div class="list-group mb-3 shadow-sm">
         {% for post in posts_mes %}
-          {# Link each item to the post detail page #}
-          <a href="{% url 'blog:post_detail' post_id=post.id %}" 
+           {# Link each item to the post detail page (global detail) #}
+           <a href="/blog/post/{{ post.id }}/" 
              class="list-group-item list-group-item-action flex-column align-items-start" 
-             title="{% blocktrans with title=post.titulo|default:post.get_category_display_full %}View details of post: {{ title }}{% endblocktrans %}">
+              title="{% blocktrans with title=post.titulo|default:post.get_categoria_display %}View details of post: {{ title }}{% endblocktrans %}">
             <div class="d-flex w-100 justify-content-between">
               {# Display post title or fallback #}
-              <h5 class="mb-1">{{ post.titulo|default:post.get_category_display_full }}</h5>
+              <h5 class="mb-1">
+                {{ post.titulo|default:post.get_categoria_display }}
+                {% if request.user.is_authenticated %}
+                  {% if request.user.is_superuser or request.user.role == 'admin' or request.user|has_group:'professor' %}
+                    {% if post.status == 'PENDING' %}
+                      <span class="badge bg-warning text-dark ms-2 align-middle">{% trans "Pending" %}</span>
+                    {% elif post.removido %}
+                      <span class="badge bg-secondary ms-2 align-middle">{% trans "Removed" %}</span>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              </h5>
               {# Display localized publication date #}
-              <small class="text-muted">{{ post.publicado_em|timezone:request.user.timezone|date:"SHORT_DATETIME_FORMAT" }}</small>
+              {# Use localtime to avoid relying on request.user.timezone in tests #}
+              <small class="text-muted">{{ post.publicado_em|localtime|date:"SHORT_DATETIME_FORMAT" }}</small>
             </div>
             <p class="mb-1">
               <small class="text-muted">
-                {% blocktrans with author=post.autor.get_full_name|default:post.autor.username category=post.get_category_display_full %}
+                {% blocktrans with author=post.autor.get_full_name|default:post.autor.username category=post.get_categoria_display %}
                   by {{ author }} | {{ category }}
                 {% endblocktrans %}
               </small>

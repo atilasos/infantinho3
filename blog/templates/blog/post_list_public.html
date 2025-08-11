@@ -5,6 +5,11 @@
 
 {% block content %}
 <div class="container mt-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">{% trans "Blog" %}</li>
+      </ol>
+    </nav>
     {# Removed H1 as it might be redundant if this is the main page content #}
     {# <h1 class="mb-4">{% trans "Blog" %}</h1> #}
 
