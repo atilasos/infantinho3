@@ -82,7 +82,9 @@ def class_detail(request, class_id):
         'student_count': student_count,
         'recent_posts_count': 0,
         'checklist_template_count': 0,
-        # Add more stats here later, e.g., average completion
+        'projects_active_count': 0,
+        'council_pending_count': 0,
+        'pits_submitted_count': 0,
     }
 
     if DIARY_APP_EXISTS and Post:
@@ -95,6 +97,24 @@ def class_detail(request, class_id):
     if CHECKLISTS_APP_EXISTS and ChecklistTemplate:
         # Option A: Count all available templates
         stats['checklist_template_count'] = ChecklistTemplate.objects.count()
+    # Optional counters from other apps
+    try:
+        from projects.models import Project
+        stats['projects_active_count'] = Project.objects.filter(student_class=turma, state='active').count()
+    except Exception:
+        pass
+
+    try:
+        from council.models import CouncilDecision
+        stats['council_pending_count'] = CouncilDecision.objects.filter(student_class=turma, status__in=['pending','in_progress']).count()
+    except Exception:
+        pass
+
+    try:
+        from pit.models import IndividualPlan
+        stats['pits_submitted_count'] = IndividualPlan.objects.filter(student_class=turma, status='submitted').count()
+    except Exception:
+        pass
         # Option B (alternative): Count templates actively used in this class
         # stats['checklist_template_count'] = ChecklistStatus.objects.filter(student_class=turma).values('template').distinct().count()
 

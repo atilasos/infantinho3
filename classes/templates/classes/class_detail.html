@@ -128,12 +128,27 @@
             </div>
           </div>
           {% endif %}
-          {# Placeholders for future counters: Projects active, Council pending, PITs submitted #}
           <div class="col-6 col-md-3">
             <div class="card shadow-sm h-100">
               <div class="card-body text-center">
                 <div class="text-muted small">{% trans "Projects (active)" %}</div>
-                <div class="fs-3 fw-bold">—</div>
+                <div class="fs-3 fw-bold">{{ general_stats.projects_active_count }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="text-muted small">{% trans "Council (pending/in progress)" %}</div>
+                <div class="fs-3 fw-bold">{{ general_stats.council_pending_count }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+              <div class="card-body text-center">
+                <div class="text-muted small">{% trans "PITs (submitted)" %}</div>
+                <div class="fs-3 fw-bold">{{ general_stats.pits_submitted_count }}</div>
               </div>
             </div>
           </div>
