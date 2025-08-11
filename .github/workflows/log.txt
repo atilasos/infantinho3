@@ -1,0 +1,41 @@
+Run python manage.py test
+Creating test database for alias 'default'...
+sss...................................F......................
+======================================================================
+FAIL: test_other_teacher_cannot_access_checklist_turma (checklists.tests.ChecklistViewTests.test_other_teacher_cannot_access_checklist_turma)
+Test a teacher not assigned to the class cannot access turma view.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/runner/work/infantinho3/infantinho3/checklists/tests.py", line 274, in test_other_teacher_cannot_access_checklist_turma
+    self.assertRedirects(response, class_detail_url, status_code=302, target_status_code=200)
+AssertionError: '/turmas/1/' != '/turmas/'
+- /turmas/1/
+?         --
++ /turmas/
+ : Response redirected to '/turmas/1/', expected '/turmas/': Expected '/turmas/1/' to equal '/turmas/'.
+
+----------------------------------------------------------------------
+Ran 61 tests in 26.265s
+
+FAILED (failures=1, skipped=3)
+Destroying test database for alias 'default'...
+Found 61 test(s).
+System check identified no issues (0 silenced).
+Post 1 marked as removed by blogprof1
+Post 1 marked as removed by blogadmin
+Comment 1 marked as removed by blogprof1
+Comment 1 marked as removed by blogadmin
+Post 1 marked as removed by blogadmin
+Post 1 marked as removed by blogadmin
+Post 1 marked as removed by blogprof1
+DEBUG callback_microsoft request.GET: <QueryDict: {'code': ['dummy_auth_code']}>
+MSAL result: {'id_token_claims': {'preferred_username': 'aluno.teste@test.escola.pt', 'name': 'Aluno Teste', 'sub': 'unique_ms_id_123'}, 'access_token': 'dummy_access_token'}
+DEBUG callback_microsoft request.GET: <QueryDict: {'code': ['dummy_auth_code']}>
+MSAL result: {'id_token_claims': {'preferred_username': 'outsider@otherdomain.com', 'name': 'Out Sider', 'sub': 'unique_ms_id_456'}, 'access_token': 'dummy_access_token_other'}
+DEBUG callback_microsoft request.GET: <QueryDict: {}>
+DEBUG callback_microsoft request.GET: <QueryDict: {'code': ['dummy_auth_code']}>
+MSAL result: {'error': 'invalid_grant', 'error_description': 'Invalid authorization code.'}
+DEBUG callback_microsoft request.GET: <QueryDict: {'code': ['dummy_auth_code']}>
+MSAL result: {'id_token_claims': {'preferred_username': 'anyone@anydomain.com', 'name': 'Any One', 'sub': 'unique_ms_id_789'}, 'access_token': 'dummy_access_token_any'}
+WARNING: ALLOWED_EMAIL_DOMAINS not set in settings. Allowing all domains.
+Error: Process completed with exit code 1.

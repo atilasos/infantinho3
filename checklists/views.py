@@ -16,6 +16,7 @@ from django.db.models import Q # Import Q for query
 from .models import ChecklistStatus, ChecklistTemplate, ChecklistItem, ChecklistMark
 from classes.models import Class
 from users.decorators import group_required # Import the new decorator
+from users.permissions import class_student_required, class_teacher_required
 # TODO: Import permission decorators once created
 
 # Helper function for permission check (to be replaced by decorator)
@@ -148,8 +149,6 @@ View class progress: {turma_url}"""
 
 
 @method_decorator(login_required, name='dispatch')
-# Apply the group_required decorator after login_required
-# Assumes your teacher group is named 'professor'
 @method_decorator(group_required('professor'), name='dispatch')
 class ChecklistTurmaView(View):
     """
