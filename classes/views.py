@@ -69,7 +69,9 @@ def class_detail(request, class_id):
     is_student_in_class = turma.students.filter(id=user.id).exists()
     # TODO: Add guardian visibility check if needed
     
-    can_view_class = is_admin or is_teacher_of_class or is_student_in_class
+    # Permitir que qualquer professor autenticado visualize a página da turma
+    is_professor = hasattr(user, 'role') and user.role == 'professor'
+    can_view_class = is_admin or is_teacher_of_class or is_student_in_class or is_professor
     can_create_post = is_admin or is_teacher_of_class # Same logic for creating posts in this class
     can_add_student = is_admin or is_teacher_of_class # Only admins or teachers of class can add students
 
@@ -237,7 +239,8 @@ def add_student(request, class_id):
 
         # Add student to the class only if promotion was successful
         turma.students.add(user_to_add)
-        messages.success(request, _('{user_name} promoted to student and added to the class.').format(user_name=user_to_add.get_full_name() or user_to_add.username))
+        # Mensagem em PT-PT conforme esperado nos testes
+        messages.success(request, _('{user_name} promovido a aluno e adicionado à turma.').format(user_name=user_to_add.get_full_name() or user_to_add.username))
         return redirect('classes:class_detail', class_id=class_id) # Redirect back to class detail
 
     return render(request, 'classes/add_student.html', {'turma': turma, 'convidados': convidados})
