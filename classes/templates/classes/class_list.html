@@ -5,25 +5,35 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">{% trans "My Classes" %}</h1>
-    {% if turmas %}
-        <div class="list-group shadow-sm">
-            {% for turma in turmas %}
-                <a href="{% url 'classes:class_detail' turma.id %}" class="list-group-item list-group-item-action">
-                    {{ turma.name }} ({{ turma.year }})
-                </a>
-            {% empty %}
-                <div class="list-group-item">{% trans "You are not assigned to any classes." %}</div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-info">{% trans "You are not assigned to any classes." %}</div>
-    {% endif %}
-    
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">{% trans "My Classes" %}</h1>
     {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'professor' %}
-    <div class="mt-4">
-        <a href="{% url 'classes:manage_classes' %}" class="btn btn-primary">{% trans "Manage Classes" %}</a>
-    </div>
+      <a href="{% url 'classes:manage_classes' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-plus-circle me-1"></i> {% trans "Manage/Add Class" %}
+      </a>
     {% endif %}
+  </div>
+
+  {% if turmas %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+      {% for turma in turmas %}
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ turma.name }}</h5>
+              <p class="card-text text-muted">{% trans "Year" %}: {{ turma.year }}</p>
+              <div class="mt-auto d-flex gap-2">
+                <a href="{% url 'classes:class_detail' turma.id %}" class="btn btn-primary btn-sm">{% trans "Open" %}</a>
+                <a href="{% url 'class_blog:post_list' class_id=turma.id %}" class="btn btn-outline-primary btn-sm">{% trans "Blog" %}</a>
+                <a href="{% url 'diary:view_diary_active' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm">{% trans "Diary" %}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">{% trans "You are not assigned to any classes." %}</div>
+  {% endif %}
 </div>
 {% endblock %} 
