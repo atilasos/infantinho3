@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.core.mail import send_mail
 
 from classes.models import Class
 from users.decorators import group_required
@@ -76,6 +77,21 @@ def plan_edit(request, class_id, plan_id):
                 plan.status = IndividualPlan.PlanStatus.SUBMITTED
                 plan.save(update_fields=['status'])
                 messages.success(request, _('PIT submetido para aprovação.'))
+                # Notify teachers of the class
+                teachers = turma.teachers.all()
+                teacher_emails = [t.email for t in teachers if t.email]
+                if teacher_emails:
+                    try:
+                        plan_url = request.build_absolute_uri(reverse('pit:teacher_plan_list', args=[turma.id]))
+                        send_mail(
+                            subject=f"[Infantinho] PIT submetido por {request.user.get_full_name() or request.user.username}",
+                            message=f"O aluno {request.user.get_full_name() or request.user.username} submeteu o PIT.\nVer: {plan_url}",
+                            from_email=None,
+                            recipient_list=teacher_emails,
+                            fail_silently=True,
+                        )
+                    except Exception:
+                        pass
             return redirect('pit:plan_edit', class_id=turma.id, plan_id=plan.id)
     else:
         form = IndividualPlanForm(instance=plan)
@@ -112,10 +128,36 @@ class TeacherPlanApproveView(View):
             plan.status = IndividualPlan.PlanStatus.APPROVED
             plan.save(update_fields=['status'])
             messages.success(request, _('PIT aprovado.'))
+            # Notify student
+            if plan.student.email:
+                try:
+                    plan_url = request.build_absolute_uri(reverse('pit:plan_edit', args=[turma.id, plan.id]))
+                    send_mail(
+                        subject='[Infantinho] O seu PIT foi aprovado',
+                        message=f"O seu PIT foi aprovado pelo professor.\nVer: {plan_url}",
+                        from_email=None,
+                        recipient_list=[plan.student.email],
+                        fail_silently=True,
+                    )
+                except Exception:
+                    pass
         elif action == 'return':
             plan.status = IndividualPlan.PlanStatus.DRAFT
             plan.save(update_fields=['status'])
             messages.info(request, _('PIT devolvido para revisão.'))
+            # Notify student
+            if plan.student.email:
+                try:
+                    plan_url = request.build_absolute_uri(reverse('pit:plan_edit', args=[turma.id, plan.id]))
+                    send_mail(
+                        subject='[Infantinho] O seu PIT foi devolvido para revisão',
+                        message=f"O seu PIT foi devolvido para revisão.\nVer: {plan_url}",
+                        from_email=None,
+                        recipient_list=[plan.student.email],
+                        fail_silently=True,
+                    )
+                except Exception:
+                    pass
         return redirect('pit:teacher_plan_list', class_id=turma.id)
 
 

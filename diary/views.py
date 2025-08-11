@@ -12,26 +12,15 @@ from .models import DiarySession, DiaryEntry
 from classes.models import Class
 # Assuming a permission decorator exists or using inline checks
 from users.decorators import group_required 
+from users.permissions import can_access_class, can_moderate_class
 
 # --- Helper to check if user can moderate diary (teacher/admin) ---
 def _can_moderate_diary(user, turma):
-    if not user or not user.is_authenticated:
-        return False
-    is_admin = user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')
-    is_teacher_of_class = False
-    if hasattr(user, 'role') and user.role == 'professor':
-        is_teacher_of_class = turma in getattr(user, 'classes_taught', Class.objects.none()).all()
-    return is_admin or is_teacher_of_class
+    return can_moderate_class(user, turma)
 
 # --- Helper to check if user can view/add to diary (member) ---
 def _can_access_diary(user, turma):
-    if not user or not user.is_authenticated:
-        return False # Anonymous users cannot access internal diaries
-    is_admin = user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')
-    is_teacher_of_class = turma in getattr(user, 'classes_taught', Class.objects.none()).all()
-    is_student_in_class = turma in getattr(user, 'classes_attended', Class.objects.none()).all()
-    # TODO: Add guardian access check if needed
-    return is_admin or is_teacher_of_class or is_student_in_class
+    return can_access_class(user, turma)
 
 @login_required
 def view_diary(request, class_id, session_id=None):
@@ -69,6 +58,16 @@ def view_diary(request, class_id, session_id=None):
         'can_moderate': _can_moderate_diary(request.user, turma), # Pass moderation flag
     }
     return render(request, 'diary/view_diary.html', context)
+
+
+@login_required
+def list_diary_sessions(request, class_id):
+    turma = get_object_or_404(Class, id=class_id)
+    if not _can_access_diary(request.user, turma):
+        messages.error(request, _("You do not have permission to view this diary."))
+        return redirect('/')
+    sessions = DiarySession.objects.filter(turma=turma).order_by('-start_date')
+    return render(request, 'diary/list_diary_sessions.html', {"turma": turma, "sessions": sessions})
 
 @require_POST
 @login_required

@@ -13,6 +13,6 @@ urlpatterns = [
     path('session/<int:session_id>/add/', views.add_diary_entry, name='add_diary_entry'),
     # Action to archive current session and start a new one
     path('start_new/', views.archive_and_start_new_session, name='start_new_session'),
-    # TODO: Add URL for listing archived sessions
-    # path('archived/', views.list_diary_sessions, name='list_sessions'), 
+    # List all sessions (active + archived)
+    path('archived/', views.list_diary_sessions, name='list_sessions'), 
 ] 
