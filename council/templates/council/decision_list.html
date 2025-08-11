@@ -6,6 +6,7 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0">{% trans "Conselho de Turma" %} — {{ turma.name }}</h1>
     <div class="d-flex gap-2">
+      <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> {% trans "Voltar à turma" %}</a>
       <a href="{% url 'council:decision_create' class_id=turma.id %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i> {% trans "Nova decisão" %}</a>
       <a href="{% url 'council:proposal_create' class_id=turma.id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-lightbulb me-1"></i> {% trans "Nova proposta (aluno)" %}</a>
     </div>

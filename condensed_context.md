@@ -31,16 +31,17 @@
   - Modelos: `IndividualPlan` (rascunho/submetido/aprovado/concluído/avaliado) e `PlanTask`.
   - Views: criar/editar/submeter (aluno), listar e aprovar/devolver (professor), autoavaliação do aluno e avaliação do professor.
   - Notificações: emails em submissão e aprovação/devolução implementados.
+  - UI/UX: lista do professor com filtros (estado/pesquisa), paginação e badges de estado; formulário do aluno com breadcrumbs/CTAs consistentes.
 
 - Projetos (`projects`)
   - Modelos: `Project`, `ProjectTask`.
   - Views: listar/criar/detalhar por turma.
-  - UI: listagem com cartões, badges por estado e contagem de membros.
+  - UI: listagem com cartões, badges por estado e contagem de membros; filtros (estado/pesquisa), paginação; breadcrumbs/CTAs consistentes.
 
 - Conselho (`council`)
   - Modelos: `CouncilDecision` e `StudentProposal`.
   - Views: listar decisões e propostas, criar decisão (professor), criar proposta (aluno).
-  - UI: listagem com cartões e badges por estado; CTAs claros.
+  - UI: listagem com cartões e badges por estado; filtros (estado/categoria), paginação; breadcrumbs/CTAs consistentes.
 
 - Feedback interno (`infantinho_feedback`)
   - Modelo `FeedbackItem` e views para submeter, listar (por utilizador/admin) e atualizar estado/apagar (admin).
