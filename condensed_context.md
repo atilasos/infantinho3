@@ -44,6 +44,21 @@
   - Django 5.2, i18n ativada (PT-PT), estáticos/media prontos, `django-impersonate`, `widget_tweaks`, `tinymce`.
   - `requirements.txt` atualizado; BD SQLite por defeito (PostgreSQL via env vars).
 
+### Permissões (unificadas)
+- Módulo `users/permissions.py` com helpers:
+  - `is_admin`, `is_teacher_of_class`, `is_student_in_class`
+  - `can_access_class` (acesso de leitura: admin/professor/aluno)
+  - `can_moderate_class` (moderação: admin/professor)
+- Decorators reutilizáveis (respondem 403 quando aplicável):
+  - `class_member_required`, `class_teacher_required`, `class_student_required`
+- Aplicação atual:
+  - `diary`: usa helpers para acesso/moderação; rota extra `diary/archived/` para listar sessões.
+  - `classes`: cálculo de `can_view_class`, `can_create_post`, `can_add_student` via helpers.
+  - `projects`: `class_member_required` (listar/detalhe), `class_teacher_required` (criar).
+  - `council`: `decision_list` (member), `decision_create` (teacher), `proposal_create` (member).
+  - `infantinho_feedback`: `is_admin` para vista admin.
+  - `blog`: mantém decorators próprios (`turma_member_required`, `turma_post_create_required`, etc.) por requisitos de testes (inclui regra especial: encarregados podem ler mas não criar/editar).
+
 ### Pontos em falta/ajustes prioritários
 - Autenticação/SSO
   - Definir `ALLOWED_EMAIL_DOMAINS` no `.env` e documentar; pipeline `social-auth` está configurado nos settings mas biblioteca não está nas dependências (vestigial). Decidir: manter apenas MSAL (atual) ou integrar `social-auth-app-django` e alinhar.
@@ -52,7 +67,7 @@
   - Função de notificação usa categoria "DIARIO", mas essa opção já não existe nas `CATEGORIA_CHOICES`. Ajustar para notificar encarregados apenas em "AVISO" (ou reintroduzir categoria de Diário, se desejado).
 
 - Permissões
-  - Consolidar decorators de permissão (algumas views usam checks inline); garantir consistência para aluno/professor/admin/encarregado em todas as apps.
+  - Restantes apps já usam helpers; blog mantém decorators específicos. Próxima evolução: expandir helpers para contemplar encarregados (leitura) e cenários comuns (redirect vs 403) e substituir checks inline remanescentes.
 
 - PIT
   - Falta UI de autoavaliação/avaliação final e notificações (submissão/aprovação/avaliação).
@@ -76,7 +91,10 @@
    - Remover/arquivar configuração `social-auth` não usada OU adicionar dependência e integrar de facto.
 
 3) Permissões unificadas
-   - Criar `permissions.py` por app (ou comum) com decorators reutilizáveis; aplicar nas views que hoje fazem checks inline.
+   - Expandir `users/permissions.py` com:
+     - `is_guardian_of_any_student_in_class`, `can_view_as_guardian`
+     - `class_member_or_guardian_required` (leitura incluindo encarregados)
+   - Aplicar gradualmente em apps que precisem de leitura por encarregados.
 
 4) PIT — avaliação e notificações
    - Formulários de autoavaliação/avaliação; emails (aluno/professor) ao submeter/aprovar/avaliar.
