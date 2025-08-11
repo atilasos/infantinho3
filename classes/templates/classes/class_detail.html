@@ -24,6 +24,12 @@
             <a href="{% url 'class_blog:post_list' class_id=turma.id %}" class="btn btn-outline-primary">
                 <i class="bi bi-card-text me-1"></i> {% trans "Class Blog" %}
             </a>
+            <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-outline-secondary">
+                <i class="bi bi-kanban me-1"></i> {% trans "Projects" %}
+            </a>
+            <a href="{% url 'council:decision_list' class_id=turma.id %}" class="btn btn-outline-secondary">
+                <i class="bi bi-people me-1"></i> {% trans "Council" %}
+            </a>
             {% if checklist_app_enabled %}
                 {# Se houver checklists associadas à turma, mostrar dropdown para as visões de professor #}
                 {% if turma.checklist_templates.all %}
@@ -41,6 +47,9 @@
                         <li><a class="dropdown-item" href="{% url 'classes:add_checklist_to_class' turma.pk %}"><i class="bi bi-plus-circle me-1"></i> {% trans "Assign Checklist" %}</a></li>
                     </ul>
                 </div>
+                <a href="{% url 'pit:teacher_plan_list' class_id=turma.id %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-journal-check me-1"></i> {% trans "PITs" %}
+                </a>
                 {% else %}
                     <a href="{% url 'classes:add_checklist_to_class' turma.pk %}" class="btn btn-outline-success">
                         <i class="bi bi-list-check me-1"></i> {% trans "Assign Checklist" %}
@@ -77,9 +86,12 @@
                         <i class="bi bi-list-check me-1"></i> {% trans "Assign Checklist" %}
                     </a>
                              {% endif %}
-                             {% if checklist_app_enabled %}
-                             <a href="{% url 'checklists:my_checklists' %}" class="btn btn-sm btn-outline-success ms-2" title="{% trans 'View My Checklists' %}"><i class="bi bi-list-check"></i></a>
-                             {% endif %}
+                              {% if checklist_app_enabled %}
+                              <a href="{% url 'checklists:my_checklists' %}" class="btn btn-sm btn-outline-success ms-2" title="{% trans 'View My Checklists' %}"><i class="bi bi-list-check"></i></a>
+                              {% endif %}
+                              <a href="{% url 'pit:plan_create' class_id=turma.id %}" class="btn btn-sm btn-primary ms-2" title="{% trans 'O meu PIT' %}"><i class="bi bi-journal-plus"></i></a>
+                              <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-sm btn-outline-secondary ms-2" title="{% trans 'Projetos da Turma' %}"><i class="bi bi-kanban"></i></a>
+                              <a href="{% url 'council:decision_list' class_id=turma.id %}" class="btn btn-sm btn-outline-secondary ms-2" title="{% trans 'Conselho de Turma' %}"><i class="bi bi-people"></i></a>
             {% endif %}
         </div>
     </div>

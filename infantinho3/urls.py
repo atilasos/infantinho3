@@ -51,6 +51,12 @@ urlpatterns = [
     
     # Checklists URLs
     path('checklists/', include('checklists.urls', namespace='checklists')),
+    # PIT URLs
+    path('pit/', include('pit.urls', namespace='pit')),
+    # Projects URLs
+    path('', include('projects.urls', namespace='projects')),
+    # Council URLs
+    path('', include('council.urls', namespace='council')),
     
     # CKEditor URLs (Only needed if using django-ckeditor-uploader)
     # path('ckeditor/', include('ckeditor_uploader.urls')), # Commented out as uploader is not used

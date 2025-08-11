@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-3">
+  <h1 class="h4">{% trans "PITs da Turma" %} — {{ turma.name }}</h1>
+
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th>{% trans "Aluno" %}</th>
+        <th>{% trans "Período" %}</th>
+        <th>{% trans "Estado" %}</th>
+        <th>{% trans "Ações" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for plan in plans %}
+      <tr>
+        <td>{{ plan.student.get_full_name|default:plan.student.username }}</td>
+        <td>{{ plan.period_label }}</td>
+        <td>{{ plan.get_status_display }}</td>
+        <td>
+          <form method="post" action="{% url 'pit:teacher_plan_approve' class_id=turma.id plan_id=plan.id %}">
+            {% csrf_token %}
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-success" name="action" value="approve" {% if plan.status != 'submitted' %}disabled{% endif %}>{% trans "Aprovar" %}</button>
+              <button class="btn btn-outline-secondary" name="action" value="return" {% if plan.status != 'submitted' %}disabled{% endif %}>{% trans "Devolver" %}</button>
+            </div>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-muted">{% trans "Sem PITs registados." %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-secondary btn-sm">{% trans "Voltar à turma" %}</a>
+</div>
+{% endblock %}
+
+
