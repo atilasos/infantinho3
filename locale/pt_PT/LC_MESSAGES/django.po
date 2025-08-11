@@ -8,228 +8,260 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-30 01:04+0100\n"
+"POT-Creation-Date: 2025-08-12 00:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: pt_PT\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blog/forms.py:16 blog/forms.py:30 classes/models.py:46
+#: ai_core/models.py:12
+msgid "Rubric"
+msgstr ""
+
+#: ai_core/models.py:13
+msgid "Rubrics"
+msgstr ""
+
+#: ai_core/models.py:25
+#, fuzzy
+#| msgid "description"
+msgid "Descriptor"
+msgstr "descrição"
+
+#: ai_core/models.py:26
+#, fuzzy
+#| msgid "description"
+msgid "Descriptors"
+msgstr "descrição"
+
+#: blog/forms.py:17 blog/forms.py:33 blog/templates/blog/post_detail.html:189
+#: classes/models.py:48
 msgid "Class"
 msgstr "Turma"
 
-#: blog/forms.py:17 blog/forms.py:39
-msgid "Select the class this post relates to."
+#: blog/forms.py:18
+#, fuzzy
+#| msgid "Select the class this post relates to."
+msgid ""
+"Select the class this post relates to, or leave blank for a general "
+"announcement."
 msgstr "Selecione a turma a que esta publicação se refere."
 
-#: blog/forms.py:31
+#: blog/forms.py:21
+msgid "--- Geral (Toda a Escola) ---"
+msgstr ""
+
+#: blog/forms.py:34
 msgid "Title"
 msgstr "Título"
 
-#: blog/forms.py:32
+#: blog/forms.py:35
 msgid "Content"
 msgstr "Conteúdo"
 
-#: blog/forms.py:33
+#: blog/forms.py:36
 msgid "Category"
 msgstr "Categoria"
 
-#: blog/forms.py:35
+#: blog/forms.py:38
+#: venv/lib/python3.10/site-packages/django/db/models/fields/files.py:420
 msgid "Image"
 msgstr "Imagem"
 
-#: blog/forms.py:36
+#: blog/forms.py:39
 msgid "Attachment (PDF, etc.)"
 msgstr "Anexo (PDF, etc.)"
 
-#: blog/forms.py:40
+#: blog/forms.py:42
 msgid "(Optional)"
 msgstr "(Opcional)"
 
-#: blog/forms.py:75
+#: blog/forms.py:77
 msgid "Write a comment..."
 msgstr "Escreva um comentário..."
 
-#: blog/forms.py:79
+#: blog/forms.py:81
 msgid "Your Comment"
 msgstr "O seu Comentário"
 
-#: blog/models.py:21 checklists/models.py:151 diary/models.py:16
+#: blog/models.py:20 checklists/models.py:157 diary/models.py:16
 msgid "class"
 msgstr "turma"
 
-#: blog/models.py:28 blog/models.py:275
+#: blog/models.py:29 blog/models.py:276
 msgid "author"
 msgstr "autor"
 
-#: blog/models.py:32
+#: blog/models.py:33
 msgid "title"
 msgstr "título"
 
-#: blog/models.py:35
+#: blog/models.py:36
 msgid "Optional title for the post."
 msgstr "Título opcional para a publicação."
 
-#: blog/models.py:39 blog/models.py:279 diary/models.py:46
+#: blog/models.py:40 blog/models.py:280 diary/models.py:46
 msgid "content"
 msgstr "conteúdo"
 
-#: blog/models.py:43
+#: blog/models.py:44
 msgid "image"
 msgstr "imagem"
 
-#: blog/models.py:47
+#: blog/models.py:48
 msgid "Optional image associated with the post."
 msgstr "Imagem opcional associada à publicação."
 
-#: blog/models.py:50
+#: blog/models.py:51
 msgid "attachment"
 msgstr "anexo"
 
-#: blog/models.py:54
+#: blog/models.py:55
 msgid "Optional file attachment (e.g., PDF)."
 msgstr "Anexo de ficheiro opcional (ex: PDF)."
 
-#: blog/models.py:60 blog/models.py:283
+#: blog/models.py:61 blog/models.py:284
 msgid "published at"
 msgstr "publicado em"
 
-#: blog/models.py:66 blog/templates/blog/post_detail.html:13
+#: blog/models.py:67 blog/templates/blog/post_detail.html:25
 msgid "Pending Approval"
 msgstr "Pendente de Aprovação"
 
-#: blog/models.py:67
+#: blog/models.py:68
 msgid "Published"
 msgstr "Publicado"
 
-#: blog/models.py:71 checklists/models.py:66 diary/models.py:20
-#: users/models.py:48
+#: blog/models.py:72 checklists/models.py:72 diary/models.py:20
+#: users/models.py:51
 msgid "status"
 msgstr "estado"
 
-#: blog/models.py:75
+#: blog/models.py:76
 msgid "Publication status of the post."
 msgstr "Estado de publicação do post."
 
-#: blog/models.py:83
+#: blog/models.py:84
 msgid "approved by"
 msgstr "aprovado por"
 
-#: blog/models.py:84
+#: blog/models.py:85
 msgid "User who approved the post for publication."
 msgstr "Utilizador que aprovou a publicação."
 
-#: blog/models.py:87
+#: blog/models.py:88
 msgid "approved at"
 msgstr "aprovado em"
 
-#: blog/models.py:90
+#: blog/models.py:91
 msgid "Timestamp when the post was approved."
 msgstr "Data e hora em que a publicação foi aprovada."
 
-#: blog/models.py:97
+#: blog/models.py:98
 msgid "Announcement"
 msgstr "Anúncio"
 
-#: blog/models.py:98
+#: blog/models.py:99
 msgid "Project Update"
 msgstr "Atualização de Projeto"
 
-#: blog/models.py:99
+#: blog/models.py:100
 msgid "Student Work"
 msgstr "Trabalho de Aluno"
 
-#: blog/models.py:100
+#: blog/models.py:101
 msgid "Other"
 msgstr "Outro"
 
-#: blog/models.py:107
+#: blog/models.py:108
 msgid "category"
 msgstr "categoria"
 
-#: blog/models.py:111
+#: blog/models.py:112
 msgid "The main category of the post."
 msgstr "A categoria principal da publicação."
 
-#: blog/models.py:118 blog/models.py:289
+#: blog/models.py:119 blog/models.py:290
 msgid "removed"
 msgstr "removido"
 
-#: blog/models.py:120
+#: blog/models.py:121
 msgid "Indicates if the post has been removed by moderation."
 msgstr "Indica se a publicação foi removida pela moderação."
 
-#: blog/models.py:128 blog/models.py:299
+#: blog/models.py:129 blog/models.py:300
 msgid "removed by"
 msgstr "removido por"
 
-#: blog/models.py:129
+#: blog/models.py:130
 msgid "User who removed the post."
 msgstr "Utilizador que removeu a publicação."
 
-#: blog/models.py:132 blog/models.py:303
+#: blog/models.py:133 blog/models.py:304
 msgid "removed at"
 msgstr "removido em"
 
-#: blog/models.py:135
+#: blog/models.py:136
 msgid "Timestamp when the post was removed."
 msgstr "Data e hora em que a publicação foi removida."
 
-#: blog/models.py:138 blog/models.py:309
+#: blog/models.py:139 blog/models.py:310
 msgid "reason for removal"
 msgstr "motivo da remoção"
 
-#: blog/models.py:141
+#: blog/models.py:142
 msgid "Reason provided for removing the post."
 msgstr "Motivo indicado para remover a publicação."
 
-#: blog/models.py:146 blog/templates/blog/moderation_logs.html:42
+#: blog/models.py:147 blog/templates/blog/moderation_logs.html:42
+#: blog/templates/blog/post_detail.html:17
 #: blog/templates/blog/post_form_global.html:6
 msgid "Post"
 msgstr "Publicação"
 
-#: blog/models.py:147
+#: blog/models.py:148
 msgid "Posts"
 msgstr "Publicações"
 
-#: blog/models.py:268 blog/models.py:406
+#: blog/models.py:269 blog/models.py:407
 msgid "post"
 msgstr "publicação"
 
-#: blog/models.py:291
+#: blog/models.py:292
 msgid "Indicates if the comment has been removed by moderation."
 msgstr "Indica se o comentário foi removido pela moderação."
 
-#: blog/models.py:300
+#: blog/models.py:301
 msgid "User who removed the comment."
 msgstr "Utilizador que removeu o comentário."
 
-#: blog/models.py:306
+#: blog/models.py:307
 msgid "Timestamp when the comment was removed."
 msgstr "Data e hora em que o comentário foi removido."
 
-#: blog/models.py:312
+#: blog/models.py:313
 msgid "Reason provided for removing the comment."
 msgstr "Motivo indicado para remover o comentário."
 
-#: blog/models.py:317 blog/templates/blog/moderation_logs.html:46
+#: blog/models.py:318 blog/templates/blog/moderation_logs.html:46
 #: blog/templates/blog/moderation_logs.html:48
 #: checklists/templates/checklists/checklist_detail.html:106
 msgid "Comment"
 msgstr "Comentário"
 
-#: blog/models.py:318 blog/templates/blog/post_detail.html:110
+#: blog/models.py:319 blog/templates/blog/post_detail.html:122
 msgid "Comments"
 msgstr "Comentários"
 
-#: blog/models.py:323
+#: blog/models.py:324
 msgid "Comment removed by moderation"
 msgstr "Comentário removido pela moderação"
 
-#: blog/models.py:326
+#: blog/models.py:327
 #, python-brace-format
 msgid ""
 "Comment by {self.autor.username} on Post {self.post_id}: "
@@ -238,67 +270,73 @@ msgstr ""
 "Comentário de {self.autor.username} na Publicação {self.post_id}: "
 "'{truncated_content}'"
 
-#: blog/models.py:378 blog/templates/blog/post_confirm_remove.html:8
-msgid "Remove Post"
+#: blog/models.py:379
+#, fuzzy
+#| msgid "Remove Post"
+msgid "Remover Post"
 msgstr "Remover Publicação"
 
-#: blog/models.py:380 blog/templates/blog/post_detail.html:59
-msgid "Restore Post"
+#: blog/models.py:381
+#, fuzzy
+#| msgid "Restore Post"
+msgid "Restaurar Post"
 msgstr "Restaurar Publicação"
 
-#: blog/models.py:381 blog/templates/blog/comment_confirm_remove.html:9
-msgid "Remove Comment"
+#: blog/models.py:382
+#, fuzzy
+#| msgid "Remove Comment"
+msgid "Remover Comentário"
 msgstr "Remover Comentário"
 
-#: blog/models.py:386
+#: blog/models.py:387
 msgid "action"
 msgstr "ação"
 
-#: blog/models.py:389
+#: blog/models.py:390
 msgid "The type of moderation action performed."
 msgstr "O tipo de ação de moderação realizada."
 
-#: blog/models.py:397
+#: blog/models.py:398
 msgid "moderator"
 msgstr "moderador"
 
-#: blog/models.py:398
+#: blog/models.py:399
 msgid "The user who performed the moderation action."
 msgstr "O utilizador que realizou a ação de moderação."
 
-#: blog/models.py:414 checklists/models.py:80
+#: blog/models.py:415 checklists/models.py:86
 msgid "comment"
 msgstr "comentário"
 
-#: blog/models.py:418
+#: blog/models.py:419
 msgid "timestamp"
 msgstr "data/hora"
 
-#: blog/models.py:423
+#: blog/models.py:424
 msgid "reason"
 msgstr "motivo"
 
-#: blog/models.py:426
+#: blog/models.py:427
 msgid "Optional reason provided by the moderator."
 msgstr "Motivo opcional fornecido pelo moderador."
 
-#: blog/models.py:430
+#: blog/models.py:431
 msgid "content snapshot"
 msgstr "snapshot do conteúdo"
 
-#: blog/models.py:432
+#: blog/models.py:433
 msgid "A snapshot of the content at the time of the action."
 msgstr "Um snapshot do conteúdo no momento da ação."
 
-#: blog/models.py:437
+#: blog/models.py:438
 msgid "Moderation Log Entry"
 msgstr "Entrada do Registo de Moderação"
 
-#: blog/models.py:438
+#: blog/models.py:439
 msgid "Moderation Log Entries"
 msgstr "Entradas do Registo de Moderação"
 
-#: blog/models.py:447
+#: blog/models.py:448
 msgid "System"
 msgstr "Sistema"
 
@@ -307,7 +345,7 @@ msgstr "Sistema"
 msgid "Authentication is required."
 msgstr "Autenticação necessária."
 
-#: blog/permissions.py:53
+#: blog/permissions.py:53 users/permissions.py:72
 msgid "Access restricted to members of this class."
 msgstr "Acesso restrito a membros desta turma."
 
@@ -315,20 +353,20 @@ msgstr "Acesso restrito a membros desta turma."
 msgid "Only teachers and students of this class can create posts."
 msgstr "Apenas professores e alunos desta turma podem criar publicações."
 
-#: blog/permissions.py:117 blog/views.py:195
+#: blog/permissions.py:117 blog/views.py:202
 msgid "You do not have permission to edit this post."
 msgstr "Não tem permissão para editar esta publicação."
 
-#: blog/permissions.py:144 blog/views.py:240
+#: blog/permissions.py:144 blog/views.py:247
 msgid "You do not have permission to remove this post."
 msgstr "Não tem permissão para remover esta publicação."
 
-#: blog/permissions.py:173 blog/views.py:304
+#: blog/permissions.py:173 blog/views.py:311
 msgid "You do not have permission to remove this comment."
 msgstr "Não tem permissão para remover este comentário."
 
-#: blog/templates/blog/base.html:4 blog/templates/blog/post_list.html:5
-#: blog/templates/blog/post_list.html:13
+#: blog/templates/blog/base.html:4 blog/templates/blog/post_list.html:6
+#: blog/templates/blog/post_list.html:25
 msgid "Blog/Diary"
 msgstr "Blog/Diário"
 
@@ -347,7 +385,7 @@ msgstr "Voltar ao Blog"
 
 #: blog/templates/blog/blog_help.html:11 blog/templates/blog/blog_help.html:67
 #: blog/templates/blog/moderation_logs.html:67
-#: blog/templates/blog/post_detail.html:175
+#: blog/templates/blog/post_detail.html:187
 msgid "Back to Blog"
 msgstr "Voltar ao Blog"
 
@@ -383,9 +421,10 @@ msgid ""
 "accessible only to its members (students, teachers) and associated guardians."
 msgstr ""
 "O Blog/Diário da Turma é um espaço digital onde alunos e professores podem "
-"registar atividades, reflexões, projetos e anúncios, promovendo a "
-"partilha e a memória coletiva da turma. Cada turma tem o seu próprio blog, "
-"acessível apenas aos seus membros (alunos, professores) e encarregados de educação associados."
+"registar atividades, reflexões, projetos e anúncios, promovendo a partilha e "
+"a memória coletiva da turma. Cada turma tem o seu próprio blog, acessível "
+"apenas aos seus membros (alunos, professores) e encarregados de educação "
+"associados."
 
 #: blog/templates/blog/blog_help.html:34
 msgid "Create a post:"
@@ -396,8 +435,8 @@ msgid ""
 "Click 'New Post', fill out the form, and publish. Both teachers and students "
 "can create posts."
 msgstr ""
-"Clique em 'Nova Publicação', preencha o formulário e publique. Tanto professores como alunos "
-"podem criar publicações."
+"Clique em 'Nova Publicação', preencha o formulário e publique. Tanto "
+"professores como alunos podem criar publicações."
 
 #: blog/templates/blog/blog_help.html:35
 msgid "Edit a post:"
@@ -408,8 +447,8 @@ msgid ""
 "You can edit your own posts using the 'Edit' button on the post page (if you "
 "are the author)."
 msgstr ""
-"Pode editar as suas próprias publicações usando o botão 'Editar' na página da publicação (se "
-"for o autor)."
+"Pode editar as suas próprias publicações usando o botão 'Editar' na página "
+"da publicação (se for o autor)."
 
 #: blog/templates/blog/blog_help.html:36
 msgid "Remove a post:"
@@ -421,9 +460,9 @@ msgid ""
 "'Remove' button (a reason can be provided). Removed posts are hidden but can "
 "be restored."
 msgstr ""
-"Professores e administradores podem remover qualquer publicação na turma usando o "
-"botão 'Remover' (um motivo pode ser fornecido). As publicações removidas ficam ocultas mas podem "
-"ser restauradas."
+"Professores e administradores podem remover qualquer publicação na turma "
+"usando o botão 'Remover' (um motivo pode ser fornecido). As publicações "
+"removidas ficam ocultas mas podem ser restauradas."
 
 #: blog/templates/blog/blog_help.html:37
 msgid "Restore a post:"
@@ -434,11 +473,11 @@ msgid ""
 "If a post was removed, teachers/admins will see a 'Restore Post' button on "
 "its page."
 msgstr ""
-"Se uma publicação foi removida, professores/administradores verão um botão 'Restaurar Publicação' na "
-"sua página."
+"Se uma publicação foi removida, professores/administradores verão um botão "
+"'Restaurar Publicação' na sua página."
 
 #: blog/templates/blog/blog_help.html:38
-#: checklists/templates/checklists/checklist_turma.html:120
+#: checklists/templates/checklists/checklist_turma.html:144
 msgid "Comment:"
 msgstr "Comentar:"
 
@@ -447,8 +486,8 @@ msgid ""
 "Use comments to provide feedback, ask questions, or share ideas. Teachers "
 "and admins can remove inappropriate comments."
 msgstr ""
-"Use os comentários para dar feedback, fazer perguntas ou partilhar ideias. Professores "
-"e administradores podem remover comentários inapropriados."
+"Use os comentários para dar feedback, fazer perguntas ou partilhar ideias. "
+"Professores e administradores podem remover comentários inapropriados."
 
 #: blog/templates/blog/blog_help.html:39
 msgid "Filter posts:"
@@ -472,7 +511,9 @@ msgstr "Alunos:"
 
 #: blog/templates/blog/blog_help.html:46
 msgid "Can create posts, edit their own posts, and comment on posts."
-msgstr "Podem criar publicações, editar as suas próprias publicações e comentar em publicações."
+msgstr ""
+"Podem criar publicações, editar as suas próprias publicações e comentar em "
+"publicações."
 
 #: blog/templates/blog/blog_help.html:47
 msgid "Teachers:"
@@ -483,8 +524,9 @@ msgid ""
 "Can create posts, edit their own posts, remove any post or comment in their "
 "class, restore posts, and view moderation logs."
 msgstr ""
-"Podem criar publicações, editar as suas próprias publicações, remover qualquer publicação ou comentário na sua "
-"turma, restaurar publicações e ver os registos de moderação."
+"Podem criar publicações, editar as suas próprias publicações, remover "
+"qualquer publicação ou comentário na sua turma, restaurar publicações e ver "
+"os registos de moderação."
 
 #: blog/templates/blog/blog_help.html:48
 msgid "Guardians:"
@@ -492,7 +534,9 @@ msgstr "Encarregados de Educação:"
 
 #: blog/templates/blog/blog_help.html:48
 msgid "Can read posts in their child's class blog and add comments."
-msgstr "Podem ler publicações no blog da turma do seu educando e adicionar comentários."
+msgstr ""
+"Podem ler publicações no blog da turma do seu educando e adicionar "
+"comentários."
 
 #: blog/templates/blog/blog_help.html:49
 msgid "Administrators:"
@@ -512,27 +556,35 @@ msgstr "Moderação e Segurança"
 
 #: blog/templates/blog/blog_help.html:56
 msgid "All removal and restoration actions are logged to ensure transparency."
-msgstr "Todas as ações de remoção e restauro são registadas para garantir transparência."
+msgstr ""
+"Todas as ações de remoção e restauro são registadas para garantir "
+"transparência."
 
 #: blog/templates/blog/blog_help.html:57
+#, fuzzy
+#| msgid ""
+#| "Teachers and admins can view the moderation history via the 'View "
+#| "Moderation 'Log' link (visible on removed posts or potentially elsewhere)."
 msgid ""
 "Teachers and admins can view the moderation history via the 'View Moderation "
-"'Log' link (visible on removed posts or potentially elsewhere)."
+"Log' link (visible on removed posts or potentially elsewhere)."
 msgstr ""
-"Professores e administradores podem ver o histórico de moderação através do link 'Ver Registo de Moderação' "
-"(visível em publicações removidas ou potencialmente noutro local)."
+"Professores e administradores podem ver o histórico de moderação através do "
+"link 'Ver Registo de Moderação' (visível em publicações removidas ou "
+"potencialmente noutro local)."
 
 #: blog/templates/blog/blog_help.html:58
 msgid "Reasons for removal can (and should) be provided for future reference."
-msgstr "Motivos para remoção podem (e devem) ser fornecidos para referência futura."
+msgstr ""
+"Motivos para remoção podem (e devem) ser fornecidos para referência futura."
 
 #: blog/templates/blog/blog_help.html:59
 msgid ""
 "Removed posts/comments are initially hidden from regular view but can be "
 "restored by moderators."
 msgstr ""
-"Publicações/comentários removidos ficam inicialmente ocultos da vista normal mas podem ser "
-"restaurados pelos moderadores."
+"Publicações/comentários removidos ficam inicialmente ocultos da vista normal "
+"mas podem ser restaurados pelos moderadores."
 
 #: blog/templates/blog/comment_confirm_remove.html:4
 msgid "Confirm Comment Removal"
@@ -541,6 +593,10 @@ msgstr "Confirmar Remoção de Comentário"
 #: blog/templates/blog/comment_confirm_remove.html:7
 msgid "Confirm comment removal"
 msgstr "Confirmar remoção de comentário"
+
+#: blog/templates/blog/comment_confirm_remove.html:9
+msgid "Remove Comment"
+msgstr "Remover Comentário"
 
 #: blog/templates/blog/comment_confirm_remove.html:10
 msgid ""
@@ -558,7 +614,7 @@ msgstr "Formulário de remoção de comentário"
 
 #: blog/templates/blog/comment_confirm_remove.html:29
 #: blog/templates/blog/post_confirm_remove.html:15
-#: blog/templates/blog/post_detail.html:196
+#: blog/templates/blog/post_detail.html:212
 msgid "Reason (optional):"
 msgstr "Motivo (opcional):"
 
@@ -578,8 +634,8 @@ msgstr "Confirmar remoção deste comentário"
 
 #: blog/templates/blog/comment_confirm_remove.html:34
 #: blog/templates/blog/post_confirm_remove.html:20
-#: blog/templates/blog/post_detail.html:190
-#: blog/templates/blog/post_detail.html:202
+#: blog/templates/blog/post_detail.html:206
+#: blog/templates/blog/post_detail.html:218
 msgid "Confirm Removal"
 msgstr "Confirmar Remoção"
 
@@ -590,9 +646,11 @@ msgstr "Cancelar e voltar à publicação"
 
 #: blog/templates/blog/comment_confirm_remove.html:36
 #: blog/templates/blog/post_confirm_remove.html:22
-#: blog/templates/blog/post_detail.html:201
-#: blog/templates/blog/post_form.html:79 blog/templates/blog/post_form.html:81
+#: blog/templates/blog/post_detail.html:217
+#: blog/templates/blog/post_form.html:52 blog/templates/blog/post_form.html:55
+#: blog/templates/blog/post_form.html:57
 #: blog/templates/blog/post_form_global.html:77
+#: classes/templates/classes/add_checklist_to_class.html:29
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -618,9 +676,9 @@ msgid ""
 "on posts and comments within this class blog. Only administrators and "
 "assigned teachers can view this log."
 msgstr ""
-"Este registo grava todas as ações de moderação (remoções, restauros) realizadas "
-"em publicações e comentários dentro deste blog da turma. Apenas administradores e "
-"professores associados podem ver este registo."
+"Este registo grava todas as ações de moderação (remoções, restauros) "
+"realizadas em publicações e comentários dentro deste blog da turma. Apenas "
+"administradores e professores associados podem ver este registo."
 
 #: blog/templates/blog/moderation_logs.html:16
 msgid ""
@@ -671,7 +729,7 @@ msgid "(Post Unknown)"
 msgstr "(Publicação Desconhecida)"
 
 #: blog/templates/blog/moderation_logs.html:51
-#: classes/templates/classes/class_detail.html:122
+#: classes/templates/classes/class_detail.html:199
 msgid "N/A"
 msgstr "N/D"
 
@@ -687,6 +745,10 @@ msgstr "Confirmar Remoção da Publicação"
 msgid "Confirm post removal"
 msgstr "Confirmar remoção da publicação"
 
+#: blog/templates/blog/post_confirm_remove.html:8
+msgid "Remove Post"
+msgstr "Remover Publicação"
+
 #: blog/templates/blog/post_confirm_remove.html:9
 msgid "Are you sure you want to remove this post? This action might be logged."
 msgstr ""
@@ -701,126 +763,165 @@ msgid "Confirm removal of this post"
 msgstr "Confirmar remoção desta publicação"
 
 #: blog/templates/blog/post_detail.html:4
-#: blog/templates/blog/post_detail.html:15
-#: blog/templates/blog/post_list_public.html:24
-#: blog/templates/blog/post_pending_list.html:15
+#: blog/templates/blog/post_detail.html:27
+#: blog/templates/blog/post_list_public.html:52
+#: blog/templates/blog/post_pending_list.html:21
 msgid "(No Title)"
 msgstr "(Sem Título)"
 
 #: blog/templates/blog/post_detail.html:4
+#: blog/templates/blog/post_detail.html:11
+#: blog/templates/blog/post_list.html:11
 #: blog/templates/blog/post_list_public.html:4
+#: blog/templates/blog/post_list_public.html:10
+#: blog/templates/blog/post_pending_list.html:10
+#: classes/templates/classes/class_list.html:27
 msgid "Blog"
 msgstr "Blog"
 
-#: blog/templates/blog/post_detail.html:36
+#: blog/templates/blog/post_detail.html:13
+#: blog/templates/blog/post_list.html:12
+#: checklists/templates/checklists/checklist_turma.html:9
+#: checklists/templates/checklists/help.html:9
+#: checklists/templates/checklists/my_checklists.html:9 classes/apps.py:8
+#: classes/models.py:49 classes/templates/classes/class_detail.html:4
+#: templates/base.html:66 templates/base.html:190
+msgid "Classes"
+msgstr "Turmas"
+
+#: blog/templates/blog/post_detail.html:15
+#: blog/templates/blog/post_detail.html:190
+#: blog/templates/blog/post_list.html:14
+#: classes/templates/classes/class_detail.html:25
+#, fuzzy
+#| msgid "Class"
+msgid "Class Blog"
+msgstr "Turma"
+
+#: blog/templates/blog/post_detail.html:48
 msgid "Approve this post for publication"
 msgstr "Aprovar esta publicação"
 
-#: blog/templates/blog/post_detail.html:37
+#: blog/templates/blog/post_detail.html:49
 msgid "Approve"
 msgstr "Aprovar"
 
-#: blog/templates/blog/post_detail.html:44
+#: blog/templates/blog/post_detail.html:56
 msgid "Edit this post"
 msgstr "Editar esta publicação"
 
-#: blog/templates/blog/post_detail.html:45
+#: blog/templates/blog/post_detail.html:57
 msgid "Edit"
 msgstr "Editar"
 
-#: blog/templates/blog/post_detail.html:51
+#: blog/templates/blog/post_detail.html:63
 msgid "Remove this post"
 msgstr "Remover esta publicação"
 
-#: blog/templates/blog/post_detail.html:52
+#: blog/templates/blog/post_detail.html:64
 msgid "Remove"
 msgstr "Remover"
 
-#: blog/templates/blog/post_detail.html:58
+#: blog/templates/blog/post_detail.html:70
 msgid "Restore this post"
 msgstr "Restaurar esta publicação"
 
 #: blog/templates/blog/post_detail.html:71
+msgid "Restore Post"
+msgstr "Restaurar Publicação"
+
+#: blog/templates/blog/post_detail.html:83
 msgid "Post Removed"
 msgstr "Publicação Removida"
 
-#: blog/templates/blog/post_detail.html:72
+#: blog/templates/blog/post_detail.html:84
 msgid "This post was removed by moderation."
 msgstr "Esta publicação foi removida pela moderação."
 
-#: blog/templates/blog/post_detail.html:75
+#: blog/templates/blog/post_detail.html:87
 msgid "Reason:"
 msgstr "Motivo:"
 
-#: blog/templates/blog/post_detail.html:78
+#: blog/templates/blog/post_detail.html:90
 msgid "Removed by:"
 msgstr "Removido por:"
 
-#: blog/templates/blog/post_detail.html:86
-#: blog/templates/blog/post_list_public.html:18
+#: blog/templates/blog/post_detail.html:98
+#: blog/templates/blog/post_list_public.html:46
 msgid "(Post Image)"
 msgstr "(Imagem da Publicação)"
 
-#: blog/templates/blog/post_detail.html:92
+#: blog/templates/blog/post_detail.html:104
 msgid "Attachment:"
 msgstr "Anexo:"
 
-#: blog/templates/blog/post_detail.html:123
+#: blog/templates/blog/post_detail.html:135
 msgid "Are you sure you want to remove this comment?"
 msgstr "Tem a certeza que quer remover este comentário?"
 
-#: blog/templates/blog/post_detail.html:126
+#: blog/templates/blog/post_detail.html:138
 msgid "Remove this comment?"
 msgstr "Remover este comentário?"
 
-#: blog/templates/blog/post_detail.html:142
+#: blog/templates/blog/post_detail.html:154
 msgid "No comments yet."
 msgstr "Ainda não há comentários."
 
-#: blog/templates/blog/post_detail.html:149
+#: blog/templates/blog/post_detail.html:161
 msgid "Add your comment"
 msgstr "Adicione o seu comentário"
 
-#: blog/templates/blog/post_detail.html:150
+#: blog/templates/blog/post_detail.html:162
 msgid "Comment form"
 msgstr "Formulário de comentário"
 
-#: blog/templates/blog/post_detail.html:154
+#: blog/templates/blog/post_detail.html:166
 msgid "Write your comment here..."
 msgstr "Escreva o seu comentário aqui..."
 
-#: blog/templates/blog/post_detail.html:160
+#: blog/templates/blog/post_detail.html:172
 msgid "Publish comment"
 msgstr "Publicar comentário"
 
-#: blog/templates/blog/post_detail.html:160
+#: blog/templates/blog/post_detail.html:172
 msgid "Post Comment"
 msgstr "Publicar Comentário"
 
-#: blog/templates/blog/post_detail.html:164
+#: blog/templates/blog/post_detail.html:176
 msgid "Log in"
 msgstr "Iniciar sessão"
 
-#: blog/templates/blog/post_detail.html:164
+#: blog/templates/blog/post_detail.html:176
 msgid "to add a comment."
 msgstr "para adicionar um comentário."
 
-#: blog/templates/blog/post_detail.html:169
+#: blog/templates/blog/post_detail.html:181
 msgid "Comments can be added after the post is approved."
-msgstr "Os comentários podem ser adicionados depois da publicação ser aprovada."
+msgstr ""
+"Os comentários podem ser adicionados depois da publicação ser aprovada."
 
-#: blog/templates/blog/post_detail.html:175
+#: blog/templates/blog/post_detail.html:187
 msgid "Return to blog list"
 msgstr "Voltar à lista do blog"
 
-#: blog/templates/blog/post_detail.html:191
+#: blog/templates/blog/post_detail.html:189
+#, fuzzy
+#| msgid "Back to Class"
+msgid "Go to class"
+msgstr "Voltar à Turma"
+
+#: blog/templates/blog/post_detail.html:190
+msgid "Go to class blog"
+msgstr ""
+
+#: blog/templates/blog/post_detail.html:207
 #: checklists/templates/checklists/checklist_detail.html:14
-#: checklists/templates/checklists/checklist_turma.html:31
-#: templates/base.html:195
+#: checklists/templates/checklists/checklist_turma.html:44
+#: templates/base.html:263
 msgid "Close"
 msgstr "Fechar"
 
-#: blog/templates/blog/post_detail.html:194
+#: blog/templates/blog/post_detail.html:210
 #, python-format
 msgid "Are you sure you want to remove the post \"%(title)s\"?"
 msgstr "Tem a certeza que quer remover a publicação \"%(title)s\"?"
@@ -846,46 +947,30 @@ msgstr "Formulário de nova publicação"
 msgid "Post submission form"
 msgstr "Formulário de submissão de publicação"
 
-#: blog/templates/blog/post_form.html:39
-msgid "Select only if category is Class Diary."
-msgstr "Selecione apenas se a categoria for Diário de Turma."
-
-#: blog/templates/blog/post_form.html:40
-msgid "Help on subcategory"
-msgstr "Ajuda sobre subcategoria"
-
-#: blog/templates/blog/post_form.html:45
-msgid "Only applicable for 'Class Diary' category."
-msgstr "Aplicável apenas para a categoria 'Diário de Turma'."
-
-#: blog/templates/blog/post_form.html:60
-msgid "Currently only Internal visibility is supported."
-msgstr "Atualmente apenas a visibilidade Interna é suportada."
-
-#: blog/templates/blog/post_form.html:61
-msgid "Help on visibility"
-msgstr "Ajuda sobre visibilidade"
-
-#: blog/templates/blog/post_form.html:74 blog/templates/blog/post_form.html:75
+#: blog/templates/blog/post_form.html:50
 #: blog/templates/blog/post_form_global.html:75
 msgid "Save Changes"
 msgstr "Guardar Alterações"
 
-#: blog/templates/blog/post_form.html:74
-msgid "Publish Post"
-msgstr "Publicar"
+#: blog/templates/blog/post_form.html:50
+msgid "Create Post"
+msgstr "Criar Publicação"
 
-#: blog/templates/blog/post_form.html:75
-msgid "Publish"
-msgstr "Publicar"
-
-#: blog/templates/blog/post_form.html:79
+#: blog/templates/blog/post_form.html:52
 msgid "Cancel editing and return to post"
 msgstr "Cancelar edição e voltar à publicação"
 
-#: blog/templates/blog/post_form.html:81
-msgid "Cancel and return to list"
+#: blog/templates/blog/post_form.html:55
+#, fuzzy
+#| msgid "Cancel and return to list"
+msgid "Cancel and return to class blog"
 msgstr "Cancelar e voltar à lista"
+
+#: blog/templates/blog/post_form.html:57
+#, fuzzy
+#| msgid "Cancel and return to post"
+msgid "Cancel and return"
+msgstr "Cancelar e voltar à publicação"
 
 #: blog/templates/blog/post_form_global.html:6
 #, python-format
@@ -894,7 +979,7 @@ msgstr "Editar Publicação: %(title)s"
 
 #: blog/templates/blog/post_form_global.html:8
 #: blog/templates/blog/post_form_global.html:17
-#: blog/templates/blog/post_list.html:20
+#: blog/templates/blog/post_list.html:33
 msgid "Create New Post"
 msgstr "Criar Nova Publicação"
 
@@ -902,114 +987,124 @@ msgstr "Criar Nova Publicação"
 msgid "Submit Post"
 msgstr "Submeter Publicação"
 
-#: blog/templates/blog/post_list.html:25
+#: blog/templates/blog/post_list.html:27
+#: classes/templates/classes/add_student.html:20
+#: council/templates/council/decision_list.html:9
+#: council/templates/council/decision_list.html:106
+#: diary/templates/diary/view_diary.html:14 pit/templates/pit/plan_form.html:9
+#: pit/templates/pit/plan_form.html:83
+#: pit/templates/pit/plan_list_teacher.html:9
+#: pit/templates/pit/plan_list_teacher.html:103
+#: projects/templates/projects/project_list.html:8
+#: projects/templates/projects/project_list.html:81
+msgid "Voltar à turma"
+msgstr "Voltar à turma"
+
+#: blog/templates/blog/post_list.html:38
 msgid "Help for Blog/Diary"
 msgstr "Ajuda para Blog/Diário"
 
-#: blog/templates/blog/post_list.html:26 templates/base.html:177
+#: blog/templates/blog/post_list.html:39 templates/base.html:122
+#: templates/base.html:245
 msgid "Help"
 msgstr "Ajuda"
 
-#: blog/templates/blog/post_list.html:32
+#: blog/templates/blog/post_list.html:45
+#: blog/templates/blog/post_list_public.html:15
 msgid "Blog Filters"
 msgstr "Filtros do Blog"
 
-#: blog/templates/blog/post_list.html:35
+#: blog/templates/blog/post_list.html:48
+#: blog/templates/blog/post_list_public.html:18
 msgid "Category:"
 msgstr "Categoria:"
 
-#: blog/templates/blog/post_list.html:36
+#: blog/templates/blog/post_list.html:49
 msgid "Filter by category"
 msgstr "Filtrar por categoria"
 
-#: blog/templates/blog/post_list.html:37
+#: blog/templates/blog/post_list.html:50
+#: blog/templates/blog/post_list_public.html:20
 msgid "All"
 msgstr "Todas"
 
-#: blog/templates/blog/post_list.html:45
+#: blog/templates/blog/post_list.html:58
+#: blog/templates/blog/post_list_public.html:27
 msgid "Date:"
 msgstr "Data:"
 
-#: blog/templates/blog/post_list.html:47
+#: blog/templates/blog/post_list.html:60
 msgid "Filter by date"
 msgstr "Filtrar por data"
 
-#: blog/templates/blog/post_list.html:50
+#: blog/templates/blog/post_list.html:63
 msgid "Apply Filters"
 msgstr "Aplicar Filtros"
 
-#: blog/templates/blog/post_list.html:50
+#: blog/templates/blog/post_list.html:63
+#: blog/templates/blog/post_list_public.html:31
 msgid "Filter"
 msgstr "Filtrar"
 
-#: blog/templates/blog/post_list.html:53
+#: blog/templates/blog/post_list.html:66
+#: blog/templates/blog/post_list_public.html:33
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py:527
 msgid "Clear"
 msgstr "Limpar"
 
-#: blog/templates/blog/post_list.html:70
-#, python-format
-msgid "View details of post: %(title)s"
-msgstr "Ver detalhes da publicação: %(title)s"
-
-#: blog/templates/blog/post_list.html:79
-#, python-format
-msgid ""
-"\n"
-"                  by %(author)s | %(category)s\n"
-"                "
-msgstr ""
-"\n"
-"                  por %(author)s | %(category)s\n"
-"                "
-
 #: blog/templates/blog/post_list.html:94
+#: blog/templates/blog/post_pending_list.html:40
+msgid "Pending"
+msgstr "Pendente"
+
+#: blog/templates/blog/post_list.html:96
+#, fuzzy
+#| msgid "Remove"
+msgid "Removed"
+msgstr "Remover"
+
+#: blog/templates/blog/post_list.html:123
 msgid "No posts found matching your filters."
 msgstr "Nenhuma publicação encontrada com os seus filtros."
 
-#: blog/templates/blog/post_list.html:99
+#: blog/templates/blog/post_list.html:128
 msgid "No posts have been created in this blog yet."
 msgstr "Nenhuma publicação foi criada neste blog ainda."
 
-#: blog/templates/blog/post_list.html:105
+#: blog/templates/blog/post_list.html:134
 msgid "Post navigation"
 msgstr "Navegação de publicações"
 
-#: blog/templates/blog/post_list.html:109
-#: blog/templates/blog/post_list_public.html:68
+#: blog/templates/blog/post_list.html:138
+#: blog/templates/blog/post_list_public.html:96
 msgid "First"
 msgstr "Primeira"
 
-#: blog/templates/blog/post_list.html:113
-#: blog/templates/blog/post_list_public.html:73
+#: blog/templates/blog/post_list.html:142
+#: blog/templates/blog/post_list_public.html:101
 msgid "Previous"
 msgstr "Anterior"
 
-#: blog/templates/blog/post_list.html:129
-#: blog/templates/blog/post_list_public.html:97
+#: blog/templates/blog/post_list.html:158
+#: blog/templates/blog/post_list_public.html:123
 msgid "Next"
 msgstr "Próxima"
 
-#: blog/templates/blog/post_list.html:133
-#: blog/templates/blog/post_list_public.html:102
+#: blog/templates/blog/post_list.html:162
+#: blog/templates/blog/post_list_public.html:128
 msgid "Last"
 msgstr "Última"
 
-#: blog/templates/blog/post_list_public.html:48
+#: blog/templates/blog/post_list_public.html:76
 msgid "Download Attachment"
 msgstr "Descarregar Anexo"
 
-#: blog/templates/blog/post_list_public.html:89
+#: blog/templates/blog/post_list_public.html:117
 #, python-format
-msgid ""
-"\n"
-"                            Page %(current_page)s of %(total_pages)s\n"
-"                            "
+msgid "Page %(current_page)s of %(total_pages)s"
 msgstr ""
-"\n"
-"                            Página %(current_page)s de %(total_pages)s\n"
-"                            "
 
-#: blog/templates/blog/post_list_public.html:120
+#: blog/templates/blog/post_list_public.html:146
 msgid "No blog posts have been published yet."
 msgstr "Nenhuma publicação foi publicada ainda."
 
@@ -1017,99 +1112,105 @@ msgstr "Nenhuma publicação foi publicada ainda."
 msgid "Pending Blog Posts"
 msgstr "Publicações Pendentes"
 
-#: blog/templates/blog/post_pending_list.html:8
+#: blog/templates/blog/post_pending_list.html:11 templates/base.html:98
+#: templates/base.html:222
+msgid "Pending Posts"
+msgstr "Publicações Pendentes"
+
+#: blog/templates/blog/post_pending_list.html:14
 msgid "Posts Pending Approval"
 msgstr "Publicações Pendentes de Aprovação"
 
-#: blog/templates/blog/post_pending_list.html:34
-msgid "Pending"
-msgstr "Pendente"
-
-#: blog/templates/blog/post_pending_list.html:40
+#: blog/templates/blog/post_pending_list.html:46
 msgid "There are no posts pending approval at this time."
 msgstr "Não há publicações pendentes de aprovação neste momento."
 
-#: blog/views.py:52
+#: blog/views.py:59 blog/views.py:535
 msgid "Invalid date format for filtering."
 msgstr "Formato de data inválido para filtragem."
 
-#: blog/views.py:93
+#: blog/views.py:100
 msgid "You do not have permission to view this post."
 msgstr "Não tem permissão para ver esta publicação."
 
-#: blog/views.py:164 blog/views.py:616
+#: blog/views.py:171 blog/views.py:639
 msgid "Post published successfully."
 msgstr "Publicação publicada com sucesso."
 
-#: blog/views.py:167 blog/views.py:619
+#: blog/views.py:174 blog/views.py:642
 msgid "Post submitted for approval."
 msgstr "Publicação submetida para aprovação."
 
-#: blog/views.py:174 blog/views.py:212 blog/views.py:624 classes/views.py:248
+#: blog/views.py:181 blog/views.py:219 blog/views.py:647 classes/views.py:289
+#: classes/views.py:581
 msgid "Please correct the errors below."
 msgstr "Por favor corrija os erros abaixo."
 
-#: blog/views.py:200
-msgid "Cannot edit a removed post. Please restore it first."
-msgstr "Não é possível editar uma publicação removida. Por favor, restaure-a primeiro."
-
 #: blog/views.py:207
+msgid "Cannot edit a removed post. Please restore it first."
+msgstr ""
+"Não é possível editar uma publicação removida. Por favor, restaure-a "
+"primeiro."
+
+#: blog/views.py:214
 msgid "Post updated successfully."
 msgstr "Publicação atualizada com sucesso."
 
-#: blog/views.py:246
+#: blog/views.py:253
 msgid "Post removed successfully."
 msgstr "Publicação removida com sucesso."
 
-#: blog/views.py:262
+#: blog/views.py:269
 msgid "You cannot comment on this post."
 msgstr "Não pode comentar nesta publicação."
 
-#: blog/views.py:271
+#: blog/views.py:278
 msgid "Comment added successfully."
 msgstr "Comentário adicionado com sucesso."
 
-#: blog/views.py:278
+#: blog/views.py:285
 msgid "Could not add comment. Please check your input."
-msgstr "Não foi possível adicionar o comentário. Por favor, verifique os dados inseridos."
+msgstr ""
+"Não foi possível adicionar o comentário. Por favor, verifique os dados "
+"inseridos."
 
-#: blog/views.py:309
+#: blog/views.py:316
 msgid "Comment removed successfully."
 msgstr "Comentário removido com sucesso."
 
-#: blog/views.py:327
+#: blog/views.py:334 users/permissions.py:85
 msgid "Access restricted to class moderators."
 msgstr "Acesso restrito a moderadores da turma."
 
-#: blog/views.py:358
+#: blog/views.py:365
 msgid "You do not have permission to restore this post."
 msgstr "Não tem permissão para restaurar esta publicação."
 
-#: blog/views.py:362
+#: blog/views.py:369
 msgid "This post is already active."
 msgstr "Esta publicação já está ativa."
 
-#: blog/views.py:392
+#: blog/views.py:399
 msgid "Restored by moderation"
 msgstr "Restaurado pela moderação"
 
-#: blog/views.py:395
+#: blog/views.py:402
 msgid "Post restored successfully."
 msgstr "Publicação restaurada com sucesso."
 
-#: blog/views.py:545
+#: blog/views.py:568
 msgid "You do not have permission to approve this post."
 msgstr "Não tem permissão para aprovar esta publicação."
 
-#: blog/views.py:551
+#: blog/views.py:574
 msgid "Post approved and published."
 msgstr "Publicação aprovada e publicada."
 
-#: blog/views.py:554
+#: blog/views.py:577
 msgid "This post is not pending approval."
 msgstr "Esta publicação não está pendente de aprovação."
 
-#: blog/views.py:568
+#: blog/views.py:591
 msgid "Access restricted to teachers and administrators."
 msgstr "Acesso restrito a professores e administradores."
 
@@ -1121,116 +1222,127 @@ msgstr "nome"
 msgid "description"
 msgstr "descrição"
 
-#: checklists/models.py:23
+#: checklists/models.py:24
+#, fuzzy
+#| msgid "Manage Classes"
+msgid "Associated Classes"
+msgstr "Gerir Turmas"
+
+#: checklists/models.py:29
 msgid "Checklist Template"
 msgstr "Modelo de Checklist"
 
-#: checklists/models.py:24 classes/templates/classes/class_detail.html:75
+#: checklists/models.py:30 classes/templates/classes/class_detail.html:125
 msgid "Checklist Templates"
 msgstr "Modelos de Checklist"
 
-#: checklists/models.py:32
+#: checklists/models.py:38
 msgid "code"
 msgstr "código"
 
-#: checklists/models.py:33
+#: checklists/models.py:39
 msgid "text"
 msgstr "texto"
 
-#: checklists/models.py:34
+#: checklists/models.py:40
 msgid "order"
 msgstr "ordem"
 
-#: checklists/models.py:39
+#: checklists/models.py:45
 msgid "Checklist Item"
 msgstr "Item de Checklist"
 
-#: checklists/models.py:40
+#: checklists/models.py:46
 msgid "Checklist Items"
 msgstr "Itens de Checklist"
 
-#: checklists/models.py:48
+#: checklists/models.py:54
 #: checklists/templates/checklists/checklist_detail.html:47
 #: checklists/templates/checklists/checklist_detail.html:76
-#: checklists/templates/checklists/checklist_turma.html:84
-#: checklists/templates/checklists/checklist_turma.html:139
+#: checklists/templates/checklists/checklist_turma.html:71
+#: checklists/templates/checklists/checklist_turma.html:108
+#: checklists/templates/checklists/checklist_turma.html:163
 #: classes/templates/classes/student_detail.html:93
 msgid "Not Started"
 msgstr "Não Iniciado"
 
-#: checklists/models.py:49
+#: checklists/models.py:55
 #: checklists/templates/checklists/checklist_detail.html:48
 #: checklists/templates/checklists/checklist_detail.html:74
-#: checklists/templates/checklists/checklist_turma.html:82
-#: checklists/templates/checklists/checklist_turma.html:140
+#: checklists/templates/checklists/checklist_turma.html:70
+#: checklists/templates/checklists/checklist_turma.html:106
+#: checklists/templates/checklists/checklist_turma.html:164
 msgid "In Progress"
 msgstr "Em Progresso"
 
-#: checklists/models.py:50
+#: checklists/models.py:56
 #: checklists/templates/checklists/checklist_detail.html:49
 #: checklists/templates/checklists/checklist_detail.html:71
-#: checklists/templates/checklists/checklist_turma.html:79
-#: checklists/templates/checklists/checklist_turma.html:141
-#: checklists/templates/checklists/my_checklists.html:43
+#: checklists/templates/checklists/checklist_turma.html:69
+#: checklists/templates/checklists/checklist_turma.html:103
+#: checklists/templates/checklists/checklist_turma.html:165
+#: checklists/templates/checklists/my_checklists.html:52
 msgid "Completed"
 msgstr "Concluído"
 
-#: checklists/models.py:51
+#: checklists/models.py:57
 #: checklists/templates/checklists/checklist_detail.html:50
-#: checklists/templates/checklists/checklist_turma.html:142
+#: checklists/templates/checklists/checklist_turma.html:68
+#: checklists/templates/checklists/checklist_turma.html:166
 msgid "Validated"
 msgstr "Validado"
 
-#: checklists/models.py:59
+#: checklists/models.py:65
 msgid "checklist status"
 msgstr "estado da checklist"
 
-#: checklists/models.py:78
+#: checklists/models.py:84
 msgid "marked at"
 msgstr "marcado em"
 
-#: checklists/models.py:79
+#: checklists/models.py:85
 msgid "teacher validated"
 msgstr "validado pelo professor"
 
-#: checklists/models.py:86
+#: checklists/models.py:92
 msgid "Checklist Mark"
 msgstr "Marcação de Checklist"
 
-#: checklists/models.py:87
+#: checklists/models.py:93
 msgid "Checklist Marks"
 msgstr "Marcações de Checklist"
 
-#: checklists/models.py:137
+#: checklists/models.py:143
 msgid "template"
 msgstr "modelo"
 
-#: checklists/models.py:144 users/models.py:113
+#: checklists/models.py:150 users/models.py:116
 msgid "student"
 msgstr "aluno"
 
-#: checklists/models.py:154
+#: checklists/models.py:160
 msgid "percentage complete"
 msgstr "percentagem completa"
 
-#: checklists/models.py:156
+#: checklists/models.py:162
 msgid "Automatically calculated percentage of completed items."
 msgstr "Percentagem calculada automaticamente de itens concluídos."
 
-#: checklists/models.py:158
+#: checklists/models.py:164
 msgid "last updated"
 msgstr "última atualização"
 
-#: checklists/models.py:161
+#: checklists/models.py:167
 msgid "Student Checklist Status"
 msgstr "Estado da Checklist do Aluno"
 
-#: checklists/models.py:162
+#: checklists/models.py:168
 msgid "Student Checklist Statuses"
 msgstr "Estados das Checklists dos Alunos"
 
 #: checklists/templates/checklists/base.html:4
-#: classes/templates/classes/class_detail.html:27
+#: checklists/templates/checklists/checklist_turma.html:11
+#: classes/templates/classes/class_detail.html:38
 msgid "Checklists"
 msgstr "Checklists"
 
@@ -1241,14 +1353,13 @@ msgstr "Detalhe da Checklist"
 #: checklists/templates/checklists/checklist_detail.html:23
 #: checklists/templates/checklists/my_checklists.html:4
 #: checklists/templates/checklists/my_checklists.html:10
-#: templates/base.html:134
+#: checklists/templates/checklists/my_checklists.html:19 templates/base.html:73
+#: templates/base.html:197
 msgid "My Checklists"
 msgstr "Minhas Checklists"
 
 #: checklists/templates/checklists/checklist_detail.html:24
 #: checklists/templates/checklists/checklist_detail.html:30
-#: checklists/templates/checklists/my_checklists.html:27
-#: checklists/templates/checklists/my_checklists.html:53
 msgid "Grade"
 msgstr "Ano"
 
@@ -1258,19 +1369,19 @@ msgstr "Progresso da checklist"
 
 #: checklists/templates/checklists/checklist_detail.html:51
 #: checklists/templates/checklists/checklist_detail.html:82
-#: checklists/templates/checklists/checklist_turma.html:143
+#: checklists/templates/checklists/checklist_turma.html:167
 msgid "Council Focus"
 msgstr "Foco do Conselho"
 
 #: checklists/templates/checklists/checklist_detail.html:69
-#: checklists/templates/checklists/checklist_turma.html:77
+#: checklists/templates/checklists/checklist_turma.html:101
 #: classes/templates/classes/student_detail.html:77
 #: classes/templates/classes/student_detail.html:90
 msgid "Validated by Teacher"
 msgstr "Validado pelo Professor"
 
 #: checklists/templates/checklists/checklist_detail.html:82
-#: checklists/templates/checklists/checklist_turma.html:47
+#: checklists/templates/checklists/checklist_turma.html:62
 msgid "Agreed in Council"
 msgstr "Acordado em Conselho"
 
@@ -1279,7 +1390,7 @@ msgid "Criteria:"
 msgstr "Critérios:"
 
 #: checklists/templates/checklists/checklist_detail.html:105
-#: checklists/templates/checklists/checklist_turma.html:122
+#: checklists/templates/checklists/checklist_turma.html:146
 msgid "Comment (optional)"
 msgstr "Comentário (opcional)"
 
@@ -1288,7 +1399,7 @@ msgid "Save changes for this item"
 msgstr "Guardar alterações para este item"
 
 #: checklists/templates/checklists/checklist_detail.html:110
-#: checklists/templates/checklists/checklist_turma.html:123
+#: checklists/templates/checklists/checklist_turma.html:147
 msgid "Save"
 msgstr "Guardar"
 
@@ -1301,58 +1412,66 @@ msgid "Congratulations, you have completed all objectives in this list!"
 msgstr "Parabéns, completou todos os objetivos desta lista!"
 
 #: checklists/templates/checklists/checklist_turma.html:4
-#: classes/templates/classes/class_detail.html:58
+#: classes/templates/classes/class_detail.html:101
 msgid "Class Overview"
 msgstr "Visão Geral da Turma"
 
-#: checklists/templates/checklists/checklist_turma.html:10
+#: checklists/templates/checklists/checklist_turma.html:20
 #, python-format
 msgid "Class Overview: %(name)s"
 msgstr "Visão Geral da Turma: %(name)s"
 
-#: checklists/templates/checklists/checklist_turma.html:11
+#: checklists/templates/checklists/checklist_turma.html:22
+#: classes/templates/classes/add_checklist_to_class.html:35
 #: classes/templates/classes/student_detail.html:19
+#: diary/templates/diary/list_diary_sessions.html:12
 msgid "Back to Class"
 msgstr "Voltar à Turma"
 
-#: checklists/templates/checklists/checklist_turma.html:13
+#: checklists/templates/checklists/checklist_turma.html:23
+#, fuzzy
+#| msgid "Checklists"
+msgid "Help for Checklists"
+msgstr "Checklists"
+
+#: checklists/templates/checklists/checklist_turma.html:26
 #, python-format
 msgid "Class: %(name)s (%(year)s)"
 msgstr "Turma: %(name)s (%(year)s)"
 
-#: checklists/templates/checklists/checklist_turma.html:17
+#: checklists/templates/checklists/checklist_turma.html:30
 msgid "Overall Class Progress:"
 msgstr "Progresso Geral da Turma:"
 
-#: checklists/templates/checklists/checklist_turma.html:19
+#: checklists/templates/checklists/checklist_turma.html:32
 msgid "Overall class progress"
 msgstr "Progresso geral da turma"
 
-#: checklists/templates/checklists/checklist_turma.html:39
+#: checklists/templates/checklists/checklist_turma.html:52
 msgid "Class checklist progress table"
 msgstr "Tabela de progresso da checklist da turma"
 
-#: checklists/templates/checklists/checklist_turma.html:42
+#: checklists/templates/checklists/checklist_turma.html:55
 msgid "Student"
 msgstr "Aluno"
 
-#: checklists/templates/checklists/checklist_turma.html:63
+#: checklists/templates/checklists/checklist_turma.html:87
 msgid "Student progress"
 msgstr "Progresso do aluno"
 
-#: checklists/templates/checklists/checklist_turma.html:103
+#: checklists/templates/checklists/checklist_turma.html:127
 msgid "Validate this completion"
 msgstr "Validar esta conclusão"
 
-#: checklists/templates/checklists/checklist_turma.html:109
+#: checklists/templates/checklists/checklist_turma.html:133
 msgid "Change status or add comment"
 msgstr "Alterar estado ou adicionar comentário"
 
-#: checklists/templates/checklists/checklist_turma.html:114
+#: checklists/templates/checklists/checklist_turma.html:138
 msgid "Status:"
 msgstr "Estado:"
 
-#: checklists/templates/checklists/checklist_turma.html:131
+#: checklists/templates/checklists/checklist_turma.html:155
 msgid "No students in this class."
 msgstr "Nenhum aluno nesta turma."
 
@@ -1360,105 +1479,116 @@ msgstr "Nenhum aluno nesta turma."
 msgid "Checklists Documentation"
 msgstr "Documentação das Checklists"
 
-#: checklists/templates/checklists/help.html:9
+#: checklists/templates/checklists/help.html:10
+#, fuzzy
+#| msgid "Checklists"
+msgid "Checklists Help"
+msgstr "Checklists"
+
+#: checklists/templates/checklists/help.html:19
 msgid "Checklists Module - Technical Overview"
 msgstr "Módulo de Checklists - Visão Técnica"
 
-#: checklists/templates/checklists/help.html:10
+#: checklists/templates/checklists/help.html:20
 msgid "Brief documentation for developers regarding the Checklists module."
 msgstr "Documentação breve para programadores sobre o módulo Checklists."
 
-#: checklists/templates/checklists/help.html:13
+#: checklists/templates/checklists/help.html:23
 msgid "Core Models"
 msgstr "Modelos Principais"
 
-#: checklists/templates/checklists/help.html:30
+#: checklists/templates/checklists/help.html:40
 msgid "Admin Interface"
 msgstr "Interface de Administração"
 
-#: checklists/templates/checklists/help.html:31
+#: checklists/templates/checklists/help.html:41
 msgid ""
 "Checklist Templates and their Items can be managed via the Django Admin "
 "interface (/admin/). Items are managed inline within their respective "
 "Template."
 msgstr ""
 "Modelos de Checklist e os seus Itens podem ser geridos através da interface "
-"de Administração do Django (/admin/). Os itens são geridos inline dentro do seu "
-"respetivo Modelo."
+"de Administração do Django (/admin/). Os itens são geridos inline dentro do "
+"seu respetivo Modelo."
 
-#: checklists/templates/checklists/help.html:35
+#: checklists/templates/checklists/help.html:45
 msgid "URL Endpoints (under /checklists/)"
 msgstr "Endpoints URL (em /checklists/)"
 
-#: checklists/templates/checklists/help.html:37
+#: checklists/templates/checklists/help.html:47
 msgid "(my_checklists)"
 msgstr "(minhas_checklists)"
 
-#: checklists/templates/checklists/help.html:37
+#: checklists/templates/checklists/help.html:47
 msgid "Lists checklists for the logged-in student."
 msgstr "Lista as checklists para o aluno autenticado."
 
-#: checklists/templates/checklists/help.html:38
+#: checklists/templates/checklists/help.html:48
 msgid "(checklist_detail)"
 msgstr "(detalhe_checklist)"
 
-#: checklists/templates/checklists/help.html:38
+#: checklists/templates/checklists/help.html:48
 msgid "Detail and marking page for a student."
 msgstr "Página de detalhe e marcação para um aluno."
 
-#: checklists/templates/checklists/help.html:39
+#: checklists/templates/checklists/help.html:49
 msgid "(checklist_turma)"
 msgstr "(checklist_turma)"
 
-#: checklists/templates/checklists/help.html:39
+#: checklists/templates/checklists/help.html:49
 msgid "Class overview grid for teachers/admins."
 msgstr "Grelha de visão geral da turma para professores/admins."
 
-#: checklists/templates/checklists/help.html:46
+#: checklists/templates/checklists/help.html:56
 msgid "Basic Usage Summary"
 msgstr "Resumo de Utilização Básica"
 
-#: checklists/templates/checklists/help.html:48
+#: checklists/templates/checklists/help.html:58
 msgid "Student:"
 msgstr "Aluno:"
 
-#: checklists/templates/checklists/help.html:48
+#: checklists/templates/checklists/help.html:58
 msgid "Marks objectives, adds comments, tracks progress via 'My Checklists'."
-msgstr "Marca objetivos, adiciona comentários, acompanha o progresso via 'Minhas Checklists'."
+msgstr ""
+"Marca objetivos, adiciona comentários, acompanha o progresso via 'Minhas "
+"Checklists'."
 
-#: checklists/templates/checklists/help.html:49
+#: checklists/templates/checklists/help.html:59
 msgid "Teacher:"
 msgstr "Professor:"
 
-#: checklists/templates/checklists/help.html:49
+#: checklists/templates/checklists/help.html:59
 msgid ""
 "Views class overview, validates/rectifies marks, tracks collective and "
 "individual progress."
 msgstr ""
-"Vê a visão geral da turma, valida/retifica marcas, acompanha o progresso coletivo e "
-"individual."
+"Vê a visão geral da turma, valida/retifica marcas, acompanha o progresso "
+"coletivo e individual."
 
-#: checklists/templates/checklists/help.html:50
+#: checklists/templates/checklists/help.html:60
 msgid "Admin/Teacher:"
 msgstr "Admin/Professor:"
 
-#: checklists/templates/checklists/help.html:50
+#: checklists/templates/checklists/help.html:60
 msgid "Manages Checklist Templates and Items via the Admin interface."
-msgstr "Gere Modelos de Checklist e Itens através da interface de Administração."
+msgstr ""
+"Gere Modelos de Checklist e Itens através da interface de Administração."
 
-#: checklists/templates/checklists/help.html:55
+#: checklists/templates/checklists/help.html:65
 msgid "Automated Tests"
 msgstr "Testes Automatizados"
 
-#: checklists/templates/checklists/help.html:58
+#: checklists/templates/checklists/help.html:68
 msgid "Tests cover model logic, view permissions, and basic interactions."
-msgstr "Os testes cobrem lógica de modelos, permissões de vistas e interações básicas."
+msgstr ""
+"Os testes cobrem lógica de modelos, permissões de vistas e interações "
+"básicas."
 
-#: checklists/templates/checklists/help.html:59
+#: checklists/templates/checklists/help.html:69
 msgid "Run with:"
 msgstr "Executar com:"
 
-#: checklists/templates/checklists/help.html:64
+#: checklists/templates/checklists/help.html:74
 msgid ""
 "For more technical details, refer to the README.md file or contact the "
 "development team."
@@ -1466,67 +1596,77 @@ msgstr ""
 "Para mais detalhes técnicos, consulte o ficheiro README.md ou contacte a "
 "equipa de desenvolvimento."
 
-#: checklists/templates/checklists/my_checklists.html:17 diary/models.py:12
-#: diary/templates/diary/view_diary.html:32
+#: checklists/templates/checklists/my_checklists.html:26 diary/models.py:12
+#: diary/templates/diary/view_diary.html:36
 msgid "Active"
 msgstr "Ativo"
 
-#: checklists/templates/checklists/my_checklists.html:24
+#: checklists/templates/checklists/my_checklists.html:33
 #, python-format
 msgid "View checklist %(name)s"
 msgstr "Ver checklist %(name)s"
 
-#: checklists/templates/checklists/my_checklists.html:36
+#: checklists/templates/checklists/my_checklists.html:45
 msgid "You have no active checklists assigned."
 msgstr "Não tem checklists ativas atribuídas."
 
-#: checklists/templates/checklists/my_checklists.html:50
+#: checklists/templates/checklists/my_checklists.html:59
 #, python-format
 msgid "Review completed checklist %(name)s"
 msgstr "Rever checklist concluída %(name)s"
 
-#: checklists/templates/checklists/my_checklists.html:61
+#: checklists/templates/checklists/my_checklists.html:70
 msgid "You have no completed checklists."
 msgstr "Não tem checklists concluídas."
 
-#: checklists/views.py:111 checklists/views.py:237 classes/views.py:308
+#: checklists/views.py:112 checklists/views.py:258 classes/views.py:349
 msgid "Invalid status provided."
 msgstr "Estado inválido fornecido."
 
-#: checklists/views.py:146
+#: checklists/views.py:147
 msgid "Objective updated successfully!"
 msgstr "Objetivo atualizado com sucesso!"
 
-#: checklists/views.py:167
+#: checklists/views.py:166
 msgid "You do not have permission to view this class checklist."
 msgstr "Não tem permissão para ver esta checklist da turma."
 
-#: checklists/views.py:220
+#: checklists/views.py:241
 msgid "You do not have permission to modify this class checklist."
 msgstr "Não tem permissão para modificar esta checklist da turma."
 
-#: checklists/views.py:233
+#: checklists/views.py:254
 msgid "Insufficient data to validate/rectify."
 msgstr "Dados insuficientes para validar/retificar."
 
-#: checklists/views.py:275
+#: checklists/views.py:296
 #, python-brace-format
 msgid "Mark validated/rectified for {student_name}."
 msgstr "Marcar validado/retificado para {student_name}."
 
-#: classes/models.py:11
+#: classes/forms.py:100
+#, fuzzy
+#| msgid "Checklist Templates"
+msgid "Checklist Template to Assign"
+msgstr "Modelos de Checklist"
+
+#: classes/forms.py:101
+msgid "Select a template..."
+msgstr ""
+
+#: classes/models.py:13
 msgid "class name"
 msgstr "nome da turma"
 
-#: classes/models.py:13
+#: classes/models.py:15
 msgid "Name of the class, e.g., \"5º A\", \"Turma Azul\"."
 msgstr "Nome da turma, ex: \"5º A\", \"Turma Azul\"."
 
-#: classes/models.py:16
+#: classes/models.py:18
 msgid "academic year"
 msgstr "ano escolar"
 
-#: classes/models.py:17
+#: classes/models.py:19
 msgid ""
 "Starting year of the academic year (e.g., 2024 for 2024/2025) or the grade "
 "level (e.g., 5 for 5th grade)."
@@ -1534,18 +1674,52 @@ msgstr ""
 "Ano de início do ano letivo (ex: 2024 para 2024/2025) ou o nível de ensino "
 "(ex: 5 para 5º ano)."
 
-#: classes/models.py:24
+#: classes/models.py:26
 msgid "students"
 msgstr "alunos"
 
-#: classes/models.py:31
+#: classes/models.py:33
 msgid "teachers"
 msgstr "professores"
 
-#: classes/models.py:47 classes/templates/classes/class_detail.html:4
-#: templates/base.html:127
-msgid "Classes"
-msgstr "Turmas"
+#: classes/templates/classes/add_checklist_to_class.html:6
+#, fuzzy
+#| msgid "Checklist Item"
+msgid "Assign Checklist to"
+msgstr "Item de Checklist"
+
+#: classes/templates/classes/add_checklist_to_class.html:10
+#, fuzzy
+#| msgid "Checklist Templates"
+msgid "Assign Checklist Template to Class"
+msgstr "Modelos de Checklist"
+
+#: classes/templates/classes/add_checklist_to_class.html:25
+#, fuzzy
+#| msgid "Select one or more teachers for this class."
+msgid "Select a checklist template to make available for this class."
+msgstr "Selecione um ou mais professores para esta turma."
+
+#: classes/templates/classes/add_checklist_to_class.html:28
+#, fuzzy
+#| msgid "template"
+msgid "Assign Template"
+msgstr "modelo"
+
+#: classes/templates/classes/add_checklist_to_class.html:33
+msgid ""
+"There are no more available checklist templates to assign to this class."
+msgstr ""
+
+#: classes/templates/classes/add_checklist_to_class.html:38
+msgid "Checklists Already Assigned to This Class"
+msgstr ""
+
+#: classes/templates/classes/add_checklist_to_class.html:46
+#, fuzzy
+#| msgid "This checklist template currently has no items."
+msgid "No checklist templates are currently assigned to this class."
+msgstr "Este modelo de checklist não tem itens."
 
 #: classes/templates/classes/add_student.html:4
 #, python-format
@@ -1564,10 +1738,6 @@ msgstr "Promover e adicionar"
 msgid "Não há convidados disponíveis para adicionar."
 msgstr "Não há convidados disponíveis para adicionar."
 
-#: classes/templates/classes/add_student.html:20
-msgid "Voltar à turma"
-msgstr "Voltar à turma"
-
 #: classes/templates/classes/base.html:5
 msgid "Turmas | Infantinho 3.0"
 msgstr "Turmas | Infantinho 3.0"
@@ -1581,90 +1751,160 @@ msgstr "Turma: %(class_name)s (%(year)s)"
 msgid "View Class Diary"
 msgstr "Ver Diário da Turma"
 
-#: classes/templates/classes/class_detail.html:38
+#: classes/templates/classes/class_detail.html:28
+#: classes/templates/classes/student_detail.html:133
+msgid "Projects"
+msgstr "Projetos"
+
+#: classes/templates/classes/class_detail.html:31
+#, fuzzy
+#| msgid "Council Focus"
+msgid "Council"
+msgstr "Foco do Conselho"
+
+#: classes/templates/classes/class_detail.html:44
+#, fuzzy
+#| msgid "No teachers assigned."
+msgid "No templates assigned"
+msgstr "Não há professores atribuídos."
+
+#: classes/templates/classes/class_detail.html:47
+#: classes/templates/classes/class_detail.html:55
+#: classes/templates/classes/class_detail.html:86
+#, fuzzy
+#| msgid "Checklists"
+msgid "Assign Checklist"
+msgstr "Checklists"
+
+#: classes/templates/classes/class_detail.html:51
+msgid "PITs"
+msgstr ""
+
+#: classes/templates/classes/class_detail.html:67
 msgid "Teachers"
 msgstr "Professores"
 
-#: classes/templates/classes/class_detail.html:43
+#: classes/templates/classes/class_detail.html:72
 msgid "No teachers assigned."
 msgstr "Não há professores atribuídos."
 
-#: classes/templates/classes/class_detail.html:50
+#: classes/templates/classes/class_detail.html:79
 msgid "Add Student"
 msgstr "Adicionar Aluno"
 
-#: classes/templates/classes/class_detail.html:60
-msgid "General Statistics"
-msgstr "Estatísticas Gerais"
+#: classes/templates/classes/class_detail.html:82
+msgid "Manage Pre-approved Emails"
+msgstr ""
 
-#: classes/templates/classes/class_detail.html:64
-#: classes/templates/classes/class_detail.html:89
+#: classes/templates/classes/class_detail.html:90
+#, fuzzy
+#| msgid "My Checklists"
+msgid "View My Checklists"
+msgstr "Minhas Checklists"
+
+#: classes/templates/classes/class_detail.html:92
+msgid "O meu PIT"
+msgstr ""
+
+#: classes/templates/classes/class_detail.html:93
+#: projects/templates/projects/project_list.html:7
+#, fuzzy
+#| msgid "Gestão de Turmas"
+msgid "Projetos da Turma"
+msgstr "Gestão de Turmas"
+
+#: classes/templates/classes/class_detail.html:94
+#: council/templates/council/decision_list.html:7
+#, fuzzy
+#| msgid "Gestão de Turmas"
+msgid "Conselho de Turma"
+msgstr "Gestão de Turmas"
+
+#: classes/templates/classes/class_detail.html:106
+#: classes/templates/classes/class_detail.html:166
 msgid "Students"
 msgstr "Alunos"
 
-#: classes/templates/classes/class_detail.html:69
+#: classes/templates/classes/class_detail.html:115
 #: classes/templates/classes/student_detail.html:161
 msgid "Recent Diary Posts"
 msgstr "Publicações Recentes do Diário"
 
-#: classes/templates/classes/class_detail.html:70
-msgid "last 7 days"
-msgstr "últimos 7 dias"
+#: classes/templates/classes/class_detail.html:135
+#, fuzzy
+#| msgid "Project Update"
+msgid "Projects (active)"
+msgstr "Atualização de Projeto"
 
-#: classes/templates/classes/class_detail.html:76
-msgid "applicable"
-msgstr "aplicável"
+#: classes/templates/classes/class_detail.html:145
+msgid "Council (pending/in progress)"
+msgstr ""
 
-#: classes/templates/classes/class_detail.html:79
-msgid "Overall progress chart coming soon."
-msgstr "Gráfico de progresso geral em breve."
+#: classes/templates/classes/class_detail.html:155
+msgid "PITs (submitted)"
+msgstr ""
 
-#: classes/templates/classes/class_detail.html:89
+#: classes/templates/classes/class_detail.html:166
 msgid "Progress Summary"
 msgstr "Resumo de Progresso"
 
-#: classes/templates/classes/class_detail.html:95
+#: classes/templates/classes/class_detail.html:172
 msgid "Student Name"
 msgstr "Nome do Aluno"
 
-#: classes/templates/classes/class_detail.html:97
+#: classes/templates/classes/class_detail.html:174
 msgid "Checklist Progress"
 msgstr "Progresso da Checklist"
 
-#: classes/templates/classes/class_detail.html:100
+#: classes/templates/classes/class_detail.html:177
 msgid "Last Diary Post"
 msgstr "Última Publicação do Diário"
 
-#: classes/templates/classes/class_detail.html:102
+#: classes/templates/classes/class_detail.html:179
 msgid "Actions"
 msgstr "Ações"
 
-#: classes/templates/classes/class_detail.html:116
+#: classes/templates/classes/class_detail.html:193
 #: classes/templates/classes/student_detail.html:39
 msgid "completed"
 msgstr "concluído"
 
-#: classes/templates/classes/class_detail.html:137
+#: classes/templates/classes/class_detail.html:214
 msgid "View Details"
 msgstr "Ver Detalhes"
 
-#: classes/templates/classes/class_detail.html:150
+#: classes/templates/classes/class_detail.html:227
 msgid "No students assigned yet."
 msgstr "Ainda não há alunos atribuídos."
 
 #: classes/templates/classes/class_list.html:4
-#: classes/templates/classes/class_list.html:8
+#: classes/templates/classes/class_list.html:9
 msgid "My Classes"
 msgstr "Minhas Turmas"
 
-#: classes/templates/classes/class_list.html:16
-#: classes/templates/classes/class_list.html:20
+#: classes/templates/classes/class_list.html:12
+#, fuzzy
+#| msgid "Manage Classes"
+msgid "Manage/Add Class"
+msgstr "Gerir Turmas"
+
+#: classes/templates/classes/class_list.html:24
+msgid "Year"
+msgstr ""
+
+#: classes/templates/classes/class_list.html:26
+msgid "Open"
+msgstr ""
+
+#: classes/templates/classes/class_list.html:28
+#, fuzzy
+#| msgid "Blog/Diary"
+msgid "Diary"
+msgstr "Blog/Diário"
+
+#: classes/templates/classes/class_list.html:36
 msgid "You are not assigned to any classes."
 msgstr "Não está atribuído a nenhuma turma."
-
-#: classes/templates/classes/class_list.html:25 templates/base.html:154
-msgid "Manage Classes"
-msgstr "Gerir Turmas"
 
 #: classes/templates/classes/landing.html:4
 msgid "Welcome"
@@ -1682,11 +1922,12 @@ msgstr "Minhas Turmas"
 msgid "Gestão de Turmas (Admin)"
 msgstr "Gestão de Turmas (Admin)"
 
-#: classes/templates/classes/landing.html:20 templates/base.html:149
+#: classes/templates/classes/landing.html:20 templates/base.html:88
+#: templates/base.html:212
 msgid "Django Admin"
 msgstr "Admin do Django"
 
-#: classes/templates/classes/landing.html:27 templates/base.html:86
+#: classes/templates/classes/landing.html:27 templates/base.html:156
 msgid "Logout"
 msgstr "Logout"
 
@@ -1744,6 +1985,89 @@ msgstr "Professores"
 msgid "Nenhuma turma criada ainda."
 msgstr "Não há turmas criadas ainda."
 
+#: classes/templates/classes/preapprove_students_form.html:5
+msgid "Pré-Aprovar Alunos para"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:9
+msgid "Pré-Aprovar Alunos para a Turma:"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:10
+msgid ""
+"Adicione os endereços de email Microsoft dos alunos que pertencem a esta "
+"turma. Quando um aluno com um destes emails fizer login pela primeira vez, "
+"será automaticamente adicionado a esta turma com o papel 'Aluno'."
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:27
+msgid "Adicionar Novos Emails"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:65
+msgid "Adicionar Emails"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:73
+msgid "Emails Pré-Aprovados para Esta Turma"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:80
+#: classes/templates/classes/student_detail.html:152
+#: users/templates/users/password_reset.html:13
+msgid "Email"
+msgstr "Email"
+
+#: classes/templates/classes/preapprove_students_form.html:81
+#: council/templates/council/decision_form.html:20
+#: council/templates/council/decision_list.html:18
+#: pit/templates/pit/plan_form.html:61
+#: pit/templates/pit/plan_list_teacher.html:16
+#: pit/templates/pit/plan_list_teacher.html:44
+#: projects/templates/projects/project_detail.html:14
+#: projects/templates/projects/project_form.html:67
+#: projects/templates/projects/project_list.html:16
+msgid "Estado"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:82
+msgid "Adicionado Por"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:83
+msgid "Data Adição"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:84
+msgid "Reivindicado Por"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:85
+msgid "Data Reivindicação"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:94
+#: council/models.py:15 council/models.py:46
+#: council/templates/council/decision_list.html:21 pit/models.py:63
+#, fuzzy
+#| msgid "Pending"
+msgid "Pendente"
+msgstr "Pendente"
+
+#: classes/templates/classes/preapprove_students_form.html:96
+msgid "Reivindicado"
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:110
+msgid "Ainda não foram adicionados emails pré-aprovados para esta turma."
+msgstr ""
+
+#: classes/templates/classes/preapprove_students_form.html:116
+#, fuzzy
+#| msgid "Voltar à turma"
+msgid "Voltar à Turma"
+msgstr "Voltar à turma"
+
 #: classes/templates/classes/student_detail.html:5
 msgid "Student Details"
 msgstr "Detalhes do Aluno"
@@ -1775,7 +2099,8 @@ msgstr "Este modelo de checklist não tem itens."
 
 #: classes/templates/classes/student_detail.html:111
 msgid "No checklists assigned or started for this student in this class yet."
-msgstr "Não há checklists atribuídas ou iniciadas para este aluno nesta turma ainda."
+msgstr ""
+"Não há checklists atribuídas ou iniciadas para este aluno nesta turma ainda."
 
 #: classes/templates/classes/student_detail.html:121
 msgid "Individual Plan (PIT)"
@@ -1785,90 +2110,359 @@ msgstr "Plano Individual (PIT)"
 msgid "PIT details will appear here when implemented."
 msgstr "Detalhes do PIT aparecerão aqui quando implementado."
 
-#: classes/templates/classes/student_detail.html:133
-msgid "Projects"
-msgstr "Projetos"
-
 #: classes/templates/classes/student_detail.html:136
 msgid "Project involvement details will appear here when implemented."
-msgstr "Detalhes de envolvimento no projeto aparecerão aqui quando implementado."
+msgstr ""
+"Detalhes de envolvimento no projeto aparecerão aqui quando implementado."
 
 #: classes/templates/classes/student_detail.html:149
 msgid "Student Info"
 msgstr "Informações do Aluno"
-
-#: classes/templates/classes/student_detail.html:152
-#: users/templates/users/password_reset.html:13
-msgid "Email"
-msgstr "Email"
 
 #: classes/templates/classes/student_detail.html:173
 #: classes/templates/classes/student_detail.html:179
 msgid "No diary posts found for this student in this class."
 msgstr "Não há publicações no diário deste aluno nesta turma."
 
-#: classes/views.py:64
+#: classes/views.py:73
 msgid "You do not have permission to view this class page."
 msgstr "Não tem permissão para ver esta página da turma."
 
-#: classes/views.py:188
+#: classes/views.py:218
 msgid "Only teachers of this class or administrators can add students."
-msgstr "Apenas professores desta turma ou administradores podem adicionar alunos."
+msgstr ""
+"Apenas professores desta turma ou administradores podem adicionar alunos."
 
-#: classes/views.py:198
+#: classes/views.py:228
 msgid "No user selected."
 msgstr "Nenhum usuário selecionado."
 
-#: classes/views.py:216
-#, python-brace-format
-msgid "{user_name} promoted to student and added to the class."
-msgstr "{user_name} promovido para aluno e adicionado à turma."
+#: classes/views.py:245
+msgid ""
+"Erro ao atribuir o papel de aluno. Verifique se o grupo 'aluno' existe no "
+"sistema."
+msgstr ""
 
-#: classes/views.py:227
+#: classes/views.py:250
+msgid "Ocorreu um erro inesperado ao promover o utilizador."
+msgstr ""
+
+#: classes/views.py:257
+#, python-brace-format
+msgid "{user_name} promovido a aluno e adicionado à turma."
+msgstr ""
+
+#: classes/views.py:268
 msgid "Select Teachers"
 msgstr "Selecionar Professores"
 
-#: classes/views.py:230
+#: classes/views.py:271
 msgid "Select one or more teachers for this class."
 msgstr "Selecione um ou mais professores para esta turma."
 
-#: classes/views.py:245
+#: classes/views.py:286
 #, python-brace-format
 msgid "Class \"{class_name}\" created successfully!"
 msgstr "Turma \"{class_name}\" criada com sucesso!"
 
-#: classes/views.py:270
+#: classes/views.py:311
 msgid "The requested user is not a student."
 msgstr "O usuário solicitado não é um aluno."
 
-#: classes/views.py:273
+#: classes/views.py:314
 msgid "This student is not enrolled in this class."
 msgstr "Este aluno não está inscrito nesta turma."
 
-#: classes/views.py:283
+#: classes/views.py:324
 msgid "You do not have permission to view this student's details."
 msgstr "Não tem permissão para ver os detalhes deste aluno."
 
-#: classes/views.py:289
+#: classes/views.py:330
 msgid "You do not have permission to mark checklist items."
 msgstr "Não tem permissão para marcar itens da checklist."
 
-#: classes/views.py:298
+#: classes/views.py:339
 msgid "Missing data to update checklist status."
 msgstr "Dados ausentes para atualizar o estado da checklist."
 
-#: classes/views.py:334
+#: classes/views.py:375
 #, python-brace-format
 msgid "Checklist item '{item_code}' updated to '{status}'."
 msgstr "Item da checklist '{item_code}' atualizado para '{status}'."
 
-#: classes/views.py:339
+#: classes/views.py:380
 msgid "Error updating checklist item: {}"
 msgstr "Erro ao atualizar item da checklist: {}"
 
-#: classes/views.py:342
+#: classes/views.py:383
 msgid "An unexpected error occurred: {}"
 msgstr "Um erro inesperado ocorreu: {}"
+
+#: classes/views.py:544
+#, fuzzy
+#| msgid "You do not have permission to mark checklist items."
+msgid "You do not have permission to assign checklists to this class."
+msgstr "Não tem permissão para marcar itens da checklist."
+
+#: classes/views.py:549
+msgid "Checklist functionality is currently disabled."
+msgstr ""
+
+#: classes/views.py:573
+#, fuzzy, python-brace-format
+#| msgid "Checklist item '{item_code}' updated to '{status}'."
+msgid "Checklist template '{template_name}' assigned to class '{class_name}'."
+msgstr "Item da checklist '{item_code}' atualizado para '{status}'."
+
+#: classes/views.py:577
+#, python-brace-format
+msgid "{count} student checklist status records were created."
+msgstr ""
+
+#: council/models.py:9 council/templates/council/decision_list.html:30
+msgid "Regra"
+msgstr ""
+
+#: council/models.py:10
+msgid "Objetivo de Aprendizagem"
+msgstr ""
+
+#: council/models.py:11
+msgid "Atividade/Evento"
+msgstr ""
+
+#: council/models.py:12 council/templates/council/decision_list.html:33
+msgid "Outro"
+msgstr ""
+
+#: council/models.py:16 council/templates/council/decision_list.html:22
+msgid "Em curso"
+msgstr ""
+
+#: council/models.py:17
+msgid "Cumprido"
+msgstr ""
+
+#: council/models.py:19 council/models.py:51 pit/models.py:25
+#: projects/models.py:17
+#, fuzzy
+#| msgid "Criar turma"
+msgid "turma"
+msgstr "Criar turma"
+
+#: council/models.py:20
+msgid "data"
+msgstr ""
+
+#: council/models.py:21 pit/models.py:74 projects/models.py:50
+#, fuzzy
+#| msgid "description"
+msgid "descrição"
+msgstr "descrição"
+
+#: council/models.py:22 infantinho_feedback/models.py:32
+#, fuzzy
+#| msgid "category"
+msgid "categoria"
+msgstr "categoria"
+
+#: council/models.py:23 council/models.py:55 infantinho_feedback/models.py:54
+#: pit/models.py:35 pit/models.py:77 projects/models.py:27
+#: projects/models.py:60
+msgid "estado"
+msgstr ""
+
+#: council/models.py:30 projects/models.py:57
+msgid "responsável"
+msgstr ""
+
+#: council/models.py:36
+msgid "Decisão de Conselho"
+msgstr ""
+
+#: council/models.py:37
+msgid "Decisões de Conselho"
+msgstr ""
+
+#: council/models.py:47
+msgid "Levado a Conselho"
+msgstr ""
+
+#: council/models.py:48 pit/models.py:11
+#: pit/templates/pit/plan_list_teacher.html:21
+#, fuzzy
+#| msgid "Approve"
+msgid "Aprovado"
+msgstr "Aprovar"
+
+#: council/models.py:49 infantinho_feedback/models.py:20
+msgid "Rejeitado"
+msgstr ""
+
+#: council/models.py:52 infantinho_feedback/models.py:29
+msgid "autor"
+msgstr ""
+
+#: council/models.py:53
+#, fuzzy
+#| msgid "text"
+msgid "texto"
+msgstr "texto"
+
+#: council/models.py:54
+msgid "data de submissão"
+msgstr ""
+
+#: council/models.py:58
+msgid "Proposta de Aluno"
+msgstr ""
+
+#: council/models.py:59
+msgid "Propostas de Alunos"
+msgstr ""
+
+#: council/templates/council/decision_form.html:7
+#: council/templates/council/decision_list.html:10
+msgid "Nova decisão"
+msgstr ""
+
+#: council/templates/council/decision_form.html:9
+#: council/templates/council/proposal_form.html:9
+#: projects/templates/projects/project_detail.html:9
+#: projects/templates/projects/project_form.html:9
+#, fuzzy
+#| msgid "Voltar à turma"
+msgid "Voltar à lista"
+msgstr "Voltar à turma"
+
+#: council/templates/council/decision_form.html:10
+#: council/templates/council/proposal_form.html:10
+#: infantinho_feedback/admin.py:50
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:95
+#: projects/templates/projects/project_detail.html:10
+#: projects/templates/projects/project_form.html:10
+msgid "Turma"
+msgstr ""
+
+#: council/templates/council/decision_form.html:18
+#: projects/templates/projects/project_detail.html:23
+msgid "Data"
+msgstr ""
+
+#: council/templates/council/decision_form.html:19
+#: council/templates/council/decision_list.html:27
+#, fuzzy
+#| msgid "Category"
+msgid "Categoria"
+msgstr "Categoria"
+
+#: council/templates/council/decision_form.html:21
+#: projects/templates/projects/project_detail.html:23
+#: projects/templates/projects/project_form.html:59
+msgid "Responsável"
+msgstr ""
+
+#: council/templates/council/decision_form.html:23
+#: pit/templates/pit/plan_form.html:53
+#: projects/templates/projects/project_form.html:55
+msgid "Descrição"
+msgstr ""
+
+#: council/templates/council/decision_form.html:27
+#: pit/templates/pit/plan_form.html:79
+#: projects/templates/projects/project_form.html:81
+#, fuzzy
+#| msgid "Guardians:"
+msgid "Guardar"
+msgstr "Encarregados de Educação:"
+
+#: council/templates/council/decision_form.html:28
+#: council/templates/council/proposal_form.html:23
+#: projects/templates/projects/project_form.html:82
+#, fuzzy
+#| msgid "Cancel"
+msgid "Cancelar"
+msgstr "Cancelar"
+
+#: council/templates/council/decision_list.html:11
+#: council/templates/council/proposal_form.html:7
+msgid "Nova proposta (aluno)"
+msgstr ""
+
+#: council/templates/council/decision_list.html:20
+#: pit/templates/pit/plan_list_teacher.html:18
+#: projects/templates/projects/project_list.html:18
+msgid "Todos"
+msgstr ""
+
+#: council/templates/council/decision_list.html:23
+msgid "Concluída"
+msgstr ""
+
+#: council/templates/council/decision_list.html:29
+msgid "Todas"
+msgstr ""
+
+#: council/templates/council/decision_list.html:31
+msgid "Objetivo de aprendizagem"
+msgstr ""
+
+#: council/templates/council/decision_list.html:32
+msgid "Atividade"
+msgstr ""
+
+#: council/templates/council/decision_list.html:37
+#: pit/templates/pit/plan_list_teacher.html:31
+#: projects/templates/projects/project_list.html:29
+#, fuzzy
+#| msgid "Filter"
+msgid "Filtrar"
+msgstr "Filtrar"
+
+#: council/templates/council/decision_list.html:39
+#: pit/templates/pit/plan_list_teacher.html:33
+#: projects/templates/projects/project_list.html:31
+msgid "Limpar"
+msgstr ""
+
+#: council/templates/council/decision_list.html:45
+msgid "Decisões"
+msgstr ""
+
+#: council/templates/council/decision_list.html:64
+msgid "Sem decisões."
+msgstr ""
+
+#: council/templates/council/decision_list.html:70
+#: pit/templates/pit/plan_list_teacher.html:84
+#: projects/templates/projects/project_list.html:62
+msgid "Paginação"
+msgstr ""
+
+#: council/templates/council/decision_list.html:89
+msgid "Propostas recentes"
+msgstr ""
+
+#: council/templates/council/decision_list.html:102
+msgid "Sem propostas."
+msgstr ""
+
+#: council/templates/council/proposal_form.html:17
+msgid "Texto"
+msgstr ""
+
+#: council/templates/council/proposal_form.html:22
+#: pit/templates/pit/plan_form.html:81
+msgid "Submeter"
+msgstr ""
+
+#: council/views.py:54
+msgid "Decisão registada."
+msgstr ""
+
+#: council/views.py:72
+msgid "Proposta submetida."
+msgstr ""
 
 #: diary/models.py:13
 msgid "Archived"
@@ -1886,7 +2480,7 @@ msgstr "data de término"
 msgid "Diary Session"
 msgstr "Sessão do Diário"
 
-#: diary/models.py:30
+#: diary/models.py:30 diary/templates/diary/list_diary_sessions.html:4
 msgid "Diary Sessions"
 msgstr "Sessões do Diário"
 
@@ -1922,6 +2516,22 @@ msgstr "Entrada do Diário"
 msgid "Diary Entries"
 msgstr "Entradas do Diário"
 
+#: diary/templates/diary/list_diary_sessions.html:9
+#, fuzzy, python-format
+#| msgid "in Class %(class_name)s"
+msgid "Diary Sessions — %(class_name)s"
+msgstr "na turma %(class_name)s"
+
+#: diary/templates/diary/list_diary_sessions.html:11
+msgid "View Active Session"
+msgstr ""
+
+#: diary/templates/diary/list_diary_sessions.html:30
+#, fuzzy
+#| msgid "New diary session started."
+msgid "No diary sessions found."
+msgstr "Nova sessão de diário iniciada."
+
 #: diary/templates/diary/no_active_diary.html:4
 #: diary/templates/diary/no_active_diary.html:10
 #: diary/templates/diary/view_diary.html:10
@@ -1945,11 +2555,17 @@ msgstr "Clique no botão acima para iniciar um novo."
 msgid "Diary: %(class_name)s (%(date)s)"
 msgstr "Diário: %(class_name)s (%(date)s)"
 
-#: diary/templates/diary/view_diary.html:18
+#: diary/templates/diary/view_diary.html:15
+#, fuzzy
+#| msgid "Gestão de Turmas"
+msgid "Blog da Turma"
+msgstr "Gestão de Turmas"
+
+#: diary/templates/diary/view_diary.html:21
 msgid "Archive & Start New Period"
 msgstr "Arquivar e Iniciar Novo Período"
 
-#: diary/templates/diary/view_diary.html:26
+#: diary/templates/diary/view_diary.html:30
 #, python-format
 msgid ""
 "\n"
@@ -1960,65 +2576,705 @@ msgstr ""
 "        Início do período: <strong>%(start_date)s</strong>\n"
 "        "
 
-#: diary/templates/diary/view_diary.html:30
+#: diary/templates/diary/view_diary.html:34
 msgid "Archived on"
 msgstr "Arquivado em"
 
-#: diary/templates/diary/view_diary.html:65
+#: diary/templates/diary/view_diary.html:69
 msgid "Entry added at"
 msgstr "Entrada adicionada em"
 
-#: diary/templates/diary/view_diary.html:69
+#: diary/templates/diary/view_diary.html:73
 msgid "Unknown author"
 msgstr "Autor desconhecido"
 
-#: diary/templates/diary/view_diary.html:78
+#: diary/templates/diary/view_diary.html:82
 msgid "No entries yet."
 msgstr "Ainda não há entradas."
 
-#: diary/templates/diary/view_diary.html:90
+#: diary/templates/diary/view_diary.html:94
 msgid "Add new entry..."
 msgstr "Adicionar nova entrada..."
 
-#: diary/templates/diary/view_diary.html:91
+#: diary/templates/diary/view_diary.html:95
 msgid "Add Entry"
 msgstr "Adicionar Entrada"
 
-#: diary/views.py:42
+#: diary/views.py:31 diary/views.py:67
 msgid "You do not have permission to view this diary."
 msgstr "Não tem permissão para ver este diário."
 
-#: diary/views.py:81
+#: diary/views.py:80
 msgid "You do not have permission to add entries to this diary."
 msgstr "Não tem permissão para adicionar entradas a este diário."
 
-#: diary/views.py:87
+#: diary/views.py:86
 msgid "Cannot add entries to an archived diary session."
 msgstr "Não é possível adicionar entradas a uma sessão de diário arquivada."
 
-#: diary/views.py:95
+#: diary/views.py:94
 msgid "Invalid column specified."
 msgstr "Coluna inválida especificada."
 
-#: diary/views.py:98
+#: diary/views.py:97
 msgid "Content cannot be empty."
 msgstr "Conteúdo não pode estar vazio."
 
-#: diary/views.py:107
+#: diary/views.py:106
 msgid "Diary entry added successfully."
 msgstr "Entrada do diário adicionada com sucesso."
 
-#: diary/views.py:119
+#: diary/views.py:118
 msgid "Only teachers or admins can start/archive diary sessions."
-msgstr "Apenas professores ou administradores podem iniciar/arquivar sessões de diário."
+msgstr ""
+"Apenas professores ou administradores podem iniciar/arquivar sessões de "
+"diário."
 
-#: diary/views.py:129
+#: diary/views.py:128
 msgid "Previous diary session archived."
 msgstr "Sessão anterior do diário arquivada."
 
-#: diary/views.py:133
+#: diary/views.py:132
 msgid "New diary session started."
 msgstr "Nova sessão de diário iniciada."
+
+#: infantinho_feedback/admin.py:26
+msgid "Contexto do Autor (Não editável aqui)"
+msgstr ""
+
+#: infantinho_feedback/admin.py:30
+#, fuzzy
+#| msgid "Gestão de Turmas"
+msgid "Gestão Interna"
+msgstr "Gestão de Turmas"
+
+#: infantinho_feedback/admin.py:37
+#, fuzzy
+#| msgid "Content"
+msgid "Conteúdo"
+msgstr "Conteúdo"
+
+#: infantinho_feedback/admin.py:42 infantinho_feedback/models.py:68
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:92
+msgid "Anónimo"
+msgstr ""
+
+#: infantinho_feedback/admin.py:43
+msgid "Autor"
+msgstr ""
+
+#: infantinho_feedback/forms.py:11
+msgid "Descreva detalhadamente o seu feedback aqui..."
+msgstr ""
+
+#: infantinho_feedback/forms.py:12
+msgid "Ex: /diario/turma/1/"
+msgstr ""
+
+#: infantinho_feedback/forms.py:15
+msgid "Tipo de Feedback"
+msgstr ""
+
+#: infantinho_feedback/forms.py:16
+msgid "O seu Feedback"
+msgstr ""
+
+#: infantinho_feedback/forms.py:17
+msgid "Página Específica (Opcional)"
+msgstr ""
+
+#: infantinho_feedback/forms.py:18
+msgid "Turma Associada (Opcional)"
+msgstr ""
+
+#: infantinho_feedback/forms.py:21
+msgid ""
+"Se o seu feedback se refere a uma página específica, por favor, copie o URL "
+"(endereço da página) aqui."
+msgstr ""
+
+#: infantinho_feedback/forms.py:22
+msgid ""
+"Se o seu feedback é específico para uma das suas turmas, selecione-a aqui."
+msgstr ""
+
+#: infantinho_feedback/forms.py:30
+#, fuzzy
+#| msgid "Selecionar convidado:"
+msgid "Selecione uma categoria"
+msgstr "Selecionar convidado:"
+
+#: infantinho_feedback/forms.py:34
+msgid "Nenhuma (feedback geral)"
+msgstr ""
+
+#: infantinho_feedback/models.py:11
+msgid "Gostei"
+msgstr ""
+
+#: infantinho_feedback/models.py:12
+msgid "Encontrei um erro"
+msgstr ""
+
+#: infantinho_feedback/models.py:13
+msgid "Sugiro"
+msgstr ""
+
+#: infantinho_feedback/models.py:17
+msgid "Novo"
+msgstr ""
+
+#: infantinho_feedback/models.py:18
+msgid "Em Análise"
+msgstr ""
+
+#: infantinho_feedback/models.py:19 pit/models.py:12
+#: pit/templates/pit/plan_list_teacher.html:22 projects/models.py:10
+#: projects/templates/projects/project_list.html:20
+msgid "Concluído"
+msgstr ""
+
+#: infantinho_feedback/models.py:37
+#, fuzzy
+#| msgid "content"
+msgid "conteúdo"
+msgstr "conteúdo"
+
+#: infantinho_feedback/models.py:39
+#, fuzzy
+#| msgid "Reason (optional):"
+msgid "URL da página (opcional)"
+msgstr "Motivo (opcional):"
+
+#: infantinho_feedback/models.py:43
+msgid ""
+"Se aplicável, a página onde o erro ocorreu ou a que a sugestão se refere."
+msgstr ""
+
+#: infantinho_feedback/models.py:51
+#, fuzzy
+#| msgid "Reason (optional):"
+msgid "turma (opcional)"
+msgstr "Motivo (opcional):"
+
+#: infantinho_feedback/models.py:59
+#, fuzzy
+#| msgid "Encarregado de Educação"
+msgid "data de criação"
+msgstr "Encarregado de Educação"
+
+#: infantinho_feedback/models.py:60
+msgid "data de atualização"
+msgstr ""
+
+#: infantinho_feedback/models.py:64
+msgid "Item de Feedback (Infantinho)"
+msgstr ""
+
+#: infantinho_feedback/models.py:65
+msgid "Itens de Feedback (Infantinho)"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:4
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:206
+#: templates/base.html:117 templates/base.html:240
+msgid "Enviar Feedback"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:54
+msgid "Feedbacks Enviados Anteriormente"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:87
+msgid "Por"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:98
+msgid "Página"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:98
+msgid "Link"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:114
+#, python-format
+msgid "Marcar como %(status_name)s"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:121
+msgid "Editar no painel de administração"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:122
+#, fuzzy
+#| msgid "Administrador"
+msgid "Admin Edit"
+msgstr "Administrador"
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:126
+msgid "Tem a certeza que quer apagar este item de feedback?"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:128
+msgid "Apagar feedback"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:129
+msgid "Apagar"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:129
+msgid "Apagar Meu Pedido"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:140
+msgid "Sem feedbacks nesta categoria."
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:149
+msgid ""
+"Ainda não enviou nenhum feedback ou os seus feedbacks já foram processados."
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:151
+msgid "Deverá iniciar sessão para ver ou submeter feedback."
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:157
+msgid "Partilhe o seu Feedback"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:159
+msgid ""
+"A sua opinião é importante para nós! Se encontrou um erro, tem uma sugestão "
+"de melhoria, ou simplesmente algo que gostou, por favor, partilhe connosco."
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:164
+msgid "Por favor, corrija os erros abaixo:"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_form.html:179
+#: infantinho_feedback/templates/infantinho_feedback/feedback_thank_you.html:16
+msgid "Fechar"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_thank_you.html:4
+msgid "Feedback Enviado"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_thank_you.html:22
+msgid "Obrigado!"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_thank_you.html:23
+msgid "O seu feedback foi enviado com sucesso."
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_thank_you.html:32
+msgid "Agradecemos a sua contribuição para melhorar a plataforma."
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_thank_you.html:37
+msgid "Voltar ao Início"
+msgstr ""
+
+#: infantinho_feedback/templates/infantinho_feedback/feedback_thank_you.html:41
+msgid "Enviar Novo Feedback"
+msgstr ""
+
+#: infantinho_feedback/views.py:26
+msgid "O seu feedback foi enviado com sucesso. Obrigado!"
+msgstr ""
+
+#: infantinho_feedback/views.py:29
+msgid "Por favor, corrija os erros abaixo."
+msgstr ""
+
+#: infantinho_feedback/views.py:66 infantinho_feedback/views.py:85
+msgid "Não tem permissão para realizar esta ação."
+msgstr ""
+
+#: infantinho_feedback/views.py:75
+msgid "Status do feedback atualizado com sucesso."
+msgstr ""
+
+#: infantinho_feedback/views.py:77
+msgid "Status inválido fornecido."
+msgstr ""
+
+#: infantinho_feedback/views.py:90
+msgid "Item de feedback apagado com sucesso."
+msgstr ""
+
+#: pit/models.py:9 pit/templates/pit/plan_list_teacher.html:19
+msgid "Rascunho"
+msgstr ""
+
+#: pit/models.py:10 pit/templates/pit/plan_list_teacher.html:20
+#, fuzzy
+#| msgid "Submit Post"
+msgid "Submetido"
+msgstr "Submeter Publicação"
+
+#: pit/models.py:13 pit/templates/pit/plan_list_teacher.html:23
+msgid "Avaliado"
+msgstr ""
+
+#: pit/models.py:19
+#, fuzzy
+#| msgid "Aluno"
+msgid "aluno"
+msgstr "Aluno"
+
+#: pit/models.py:28
+msgid "período"
+msgstr ""
+
+#: pit/models.py:30
+msgid "Identificador do período (ex.: \"Semana 5 - Out 2025\")."
+msgstr ""
+
+#: pit/models.py:32
+msgid "data de início"
+msgstr ""
+
+#: pit/models.py:33
+msgid "data de fim"
+msgstr ""
+
+#: pit/models.py:40
+msgid "objetivos gerais"
+msgstr ""
+
+#: pit/models.py:41
+msgid "autoavaliação do aluno"
+msgstr ""
+
+#: pit/models.py:42
+msgid "avaliação do professor"
+msgstr ""
+
+#: pit/models.py:47
+msgid "Plano Individual de Trabalho"
+msgstr ""
+
+#: pit/models.py:48
+msgid "Planos Individuais de Trabalho"
+msgstr ""
+
+#: pit/models.py:64
+msgid "Em andamento"
+msgstr ""
+
+#: pit/models.py:65 projects/models.py:47
+msgid "Feito"
+msgstr ""
+
+#: pit/models.py:66
+#, fuzzy
+#| msgid "Validated"
+msgid "Validado"
+msgstr "Validado"
+
+#: pit/models.py:72
+msgid "plano"
+msgstr ""
+
+#: pit/models.py:75
+msgid "disciplina/área"
+msgstr ""
+
+#: pit/models.py:82
+msgid "ligação para evidência"
+msgstr ""
+
+#: pit/models.py:83
+msgid "feedback do professor"
+msgstr ""
+
+#: pit/models.py:84 projects/models.py:61
+#, fuzzy
+#| msgid "order"
+msgid "ordem"
+msgstr "ordem"
+
+#: pit/models.py:89
+msgid "Tarefa do Plano"
+msgstr ""
+
+#: pit/models.py:90
+msgid "Tarefas do Plano"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:7
+msgid "Novo PIT"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:7
+#, fuzzy
+#| msgid "Edit Post"
+msgid "Editar PIT"
+msgstr "Editar Publicação"
+
+#: pit/templates/pit/plan_form.html:10
+#: pit/templates/pit/plan_list_teacher.html:7
+#, fuzzy
+#| msgid "Gestão de Turmas"
+msgid "PITs da Turma"
+msgstr "Gestão de Turmas"
+
+#: pit/templates/pit/plan_form.html:21
+#: pit/templates/pit/plan_list_teacher.html:43
+msgid "Período"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:25
+#: projects/templates/projects/project_form.html:29
+msgid "Início"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:29
+msgid "Fim"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:34
+msgid "Objetivos gerais"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:39
+msgid "Autoavaliação do aluno"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:46
+#: projects/templates/projects/project_detail.html:17
+#: projects/templates/projects/project_form.html:48
+msgid "Tarefas"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:57
+msgid "Disciplina/Área"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:65
+#: projects/templates/projects/project_form.html:71
+msgid "Ordem"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:70
+msgid "Ligação para evidência"
+msgstr ""
+
+#: pit/templates/pit/plan_form.html:73
+#: projects/templates/projects/project_form.html:75
+#, fuzzy
+#| msgid "Remove"
+msgid "Remover"
+msgstr "Remover"
+
+#: pit/templates/pit/plan_list_teacher.html:27
+#: projects/templates/projects/project_list.html:25
+msgid "Pesquisa"
+msgstr ""
+
+#: pit/templates/pit/plan_list_teacher.html:28
+msgid "Aluno ou período…"
+msgstr ""
+
+#: pit/templates/pit/plan_list_teacher.html:42 users/models.py:21
+msgid "Aluno"
+msgstr "Aluno"
+
+#: pit/templates/pit/plan_list_teacher.html:45
+msgid "Ações"
+msgstr ""
+
+#: pit/templates/pit/plan_list_teacher.html:60
+#, fuzzy
+#| msgid "Approve"
+msgid "Aprovar"
+msgstr "Aprovar"
+
+#: pit/templates/pit/plan_list_teacher.html:61
+msgid "Devolver"
+msgstr ""
+
+#: pit/templates/pit/plan_list_teacher.html:68
+msgid "Avaliação do professor"
+msgstr ""
+
+#: pit/templates/pit/plan_list_teacher.html:70
+msgid "Guardar avaliação"
+msgstr ""
+
+#: pit/templates/pit/plan_list_teacher.html:78
+msgid "Sem PITs registados."
+msgstr ""
+
+#: pit/views.py:22
+msgid "É necessária uma turma."
+msgstr ""
+
+#: pit/views.py:50
+msgid "PIT guardado."
+msgstr ""
+
+#: pit/views.py:76
+msgid "PIT atualizado."
+msgstr ""
+
+#: pit/views.py:80
+#, fuzzy
+#| msgid "Post submitted for approval."
+msgid "PIT submetido para aprovação."
+msgstr "Publicação submetida para aprovação."
+
+#: pit/views.py:149
+msgid "PIT aprovado."
+msgstr ""
+
+#: pit/views.py:166
+msgid "PIT devolvido para revisão."
+msgstr ""
+
+#: pit/views.py:185
+msgid "Avaliação do professor guardada."
+msgstr ""
+
+#: projects/models.py:9 projects/templates/projects/project_list.html:19
+msgid "Ativo"
+msgstr ""
+
+#: projects/models.py:11 projects/templates/projects/project_list.html:21
+#, fuzzy
+#| msgid "Cancel"
+msgid "Cancelado"
+msgstr "Cancelar"
+
+#: projects/models.py:19
+msgid "título"
+msgstr ""
+
+#: projects/models.py:20
+msgid "descrição/tema"
+msgstr ""
+
+#: projects/models.py:24 projects/templates/projects/project_list.html:48
+msgid "membros"
+msgstr ""
+
+#: projects/models.py:28
+msgid "data início"
+msgstr ""
+
+#: projects/models.py:29
+msgid "data fim prevista"
+msgstr ""
+
+#: projects/models.py:30
+msgid "produto final previsto"
+msgstr ""
+
+#: projects/models.py:35
+#, fuzzy
+#| msgid "Projects"
+msgid "Projeto"
+msgstr "Projetos"
+
+#: projects/models.py:36
+#, fuzzy
+#| msgid "Projects"
+msgid "Projetos"
+msgstr "Projetos"
+
+#: projects/models.py:45
+msgid "Por fazer"
+msgstr ""
+
+#: projects/models.py:46
+#, fuzzy
+#| msgid "In Progress"
+msgid "Em progresso"
+msgstr "Em Progresso"
+
+#: projects/models.py:49
+#, fuzzy
+#| msgid "Projects"
+msgid "projeto"
+msgstr "Projetos"
+
+#: projects/models.py:59
+msgid "data limite"
+msgstr ""
+
+#: projects/models.py:66
+msgid "Tarefa de Projeto"
+msgstr ""
+
+#: projects/models.py:67
+msgid "Tarefas de Projeto"
+msgstr ""
+
+#: projects/templates/projects/project_detail.html:13
+msgid "Sem descrição."
+msgstr ""
+
+#: projects/templates/projects/project_detail.html:15
+#: projects/templates/projects/project_form.html:23
+msgid "Membros"
+msgstr ""
+
+#: projects/templates/projects/project_detail.html:28
+msgid "Sem tarefas."
+msgstr ""
+
+#: projects/templates/projects/project_detail.html:32
+msgid "Voltar"
+msgstr ""
+
+#: projects/templates/projects/project_form.html:7
+#: projects/templates/projects/project_list.html:10
+#, fuzzy
+#| msgid "Projects"
+msgid "Novo Projeto"
+msgstr "Projetos"
+
+#: projects/templates/projects/project_form.html:19
+msgid "Título"
+msgstr ""
+
+#: projects/templates/projects/project_form.html:33
+msgid "Fim previsto"
+msgstr ""
+
+#: projects/templates/projects/project_form.html:37
+msgid "Produto final"
+msgstr ""
+
+#: projects/templates/projects/project_form.html:42
+msgid "Descrição/tema"
+msgstr ""
+
+#: projects/templates/projects/project_form.html:63
+msgid "Data limite"
+msgstr ""
+
+#: projects/templates/projects/project_list.html:26
+msgid "Título contém…"
+msgstr ""
+
+#: projects/templates/projects/project_list.html:45
+msgid "(Sem descrição)"
+msgstr ""
+
+#: projects/templates/projects/project_list.html:56
+msgid "Sem projetos."
+msgstr ""
+
+#: projects/views.py:59
+msgid "Projeto criado."
+msgstr ""
 
 #: templates/base.html:32
 #, python-format
@@ -2029,11 +3285,11 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"          Está atualmente ligado como <strong>%(impersonated_name)s</"
-"strong> (Impersonador: %(impersonator_name)s).\n"
+"          Está atualmente ligado como <strong>%(impersonated_name)s</strong> "
+"(Impersonador: %(impersonator_name)s).\n"
 "          "
 
-#: templates/base.html:35 templates/base.html:82
+#: templates/base.html:35 templates/base.html:152
 msgid "Stop Impersonating"
 msgstr "Terminar representação"
 
@@ -2045,93 +3301,97 @@ msgstr "Infantinho 3.0"
 msgid "Toggle navigation"
 msgstr "Alternar navegação"
 
-#: templates/base.html:66
-msgid "Impersonating"
-msgstr "A representar"
-
-#: templates/base.html:114
+#: templates/base.html:60 templates/base.html:184
 msgid "Blog Home"
 msgstr "Início do Blog"
 
-#: templates/base.html:121
-msgid "Create Post"
-msgstr "Criar Publicação"
-
-#: templates/base.html:144
+#: templates/base.html:83 templates/base.html:207
 msgid "Admin Tools"
 msgstr "Ferramentas de Admin"
 
-#: templates/base.html:159
-msgid "Pending Posts"
-msgstr "Publicações Pendentes"
+#: templates/base.html:93 templates/base.html:217
+msgid "Manage Classes"
+msgstr "Gerir Turmas"
 
-#: users/models.py:15
+#: templates/base.html:136
+msgid "Impersonating"
+msgstr "A representar"
+
+#: users/models.py:18
 msgid "email address"
 msgstr "endereço de email"
 
-#: users/models.py:18
-msgid "Aluno"
-msgstr "Aluno"
-
-#: users/models.py:19
+#: users/models.py:22
 msgid "Professor"
 msgstr "Professor"
 
-#: users/models.py:20
+#: users/models.py:23
 msgid "Administrador"
 msgstr "Administrador"
 
-#: users/models.py:21
+#: users/models.py:24
 msgid "Encarregado de Educação"
 msgstr "Encarregado de Educação"
 
-#: users/models.py:28
+#: users/models.py:31
 msgid "role"
 msgstr "função"
 
-#: users/models.py:34
+#: users/models.py:37
 msgid "The primary role of the user within the system."
 msgstr "A função principal do utilizador no sistema."
 
-#: users/models.py:39
+#: users/models.py:42
 msgid "profile photo"
 msgstr "foto de perfil"
 
-#: users/models.py:43
+#: users/models.py:46
 msgid "Optional user profile picture."
 msgstr "Foto de perfil opcional do utilizador."
 
-#: users/models.py:52
+#: users/models.py:55
 msgid "User status, e.g., 'convidado' (guest) or 'ativo' (active)."
 msgstr "Estado do utilizador, ex: 'convidado' ou 'ativo'."
 
-#: users/models.py:61
+#: users/models.py:64
 msgid "Guests cannot have an assigned role."
 msgstr "Convidados não podem ter uma função atribuída."
 
-#: users/models.py:77
+#: users/models.py:80
 msgid "Invalid role specified."
 msgstr "Função inválida especificada."
 
-#: users/models.py:122
+#: users/models.py:125
 msgid "guardian"
 msgstr "encarregado de educação"
 
-#: users/models.py:127
+#: users/models.py:130
 msgid "relationship"
 msgstr "relação"
 
-#: users/models.py:130
+#: users/models.py:133
 msgid "e.g., Father, Mother, Legal Tutor"
 msgstr "ex: Pai, Mãe, Tutor Legal"
 
-#: users/models.py:136
+#: users/models.py:139
 msgid "Guardian Relationship"
 msgstr "Relação com Encarregado"
 
-#: users/models.py:137
+#: users/models.py:140
 msgid "Guardian Relationships"
 msgstr "Relações com Encarregados"
+
+#: users/permissions.py:57
+#, fuzzy
+#| msgid "Access restricted to members of this class."
+msgid "Access restricted to members/guardians of this class."
+msgstr "Acesso restrito a membros desta turma."
+
+#: users/permissions.py:98
+#, fuzzy
+#| msgid "Access restricted to members of this class."
+msgid "Access restricted to students of this class."
+msgstr "Acesso restrito a membros desta turma."
 
 #: users/templates/users/login.html:4
 msgid "Login | Infantinho 3.0"
@@ -2225,3 +3485,1333 @@ msgstr ""
 #: users/templates/users/password_reset_done.html:10
 msgid "Voltar à página inicial"
 msgstr "Voltar à página inicial"
+
+#: venv/lib/python3.10/site-packages/django/contrib/messages/apps.py:16
+msgid "Messages"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/contrib/sitemaps/apps.py:8
+msgid "Site Maps"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/contrib/staticfiles/apps.py:9
+msgid "Static Files"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/contrib/syndication/apps.py:7
+msgid "Syndication"
+msgstr ""
+
+#. Translators: String used to replace omitted page numbers in elided page
+#. range generated by paginators, e.g. [1, 2, '…', 5, 6, 7, '…', 9, 10].
+#: venv/lib/python3.10/site-packages/django/core/paginator.py:30
+msgid "…"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/paginator.py:32
+msgid "That page number is not an integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/paginator.py:33
+msgid "That page number is less than 1"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/paginator.py:34
+msgid "That page contains no results"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:22
+msgid "Enter a valid value."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:70
+msgid "Enter a valid domain name."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:153
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:775
+msgid "Enter a valid URL."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:200
+msgid "Enter a valid integer."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:211
+#, fuzzy
+#| msgid "email address"
+msgid "Enter a valid email address."
+msgstr "endereço de email"
+
+#. Translators: "letters" means latin letters: a-z and A-Z.
+#: venv/lib/python3.10/site-packages/django/core/validators.py:289
+msgid ""
+"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:297
+msgid ""
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
+"hyphens."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:309
+#: venv/lib/python3.10/site-packages/django/core/validators.py:318
+#: venv/lib/python3.10/site-packages/django/core/validators.py:332
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2220
+#, python-format
+msgid "Enter a valid %(protocol)s address."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:311
+msgid "IPv4"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:320
+#: venv/lib/python3.10/site-packages/django/utils/ipv6.py:43
+msgid "IPv6"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:334
+msgid "IPv4 or IPv6"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:375
+msgid "Enter only digits separated by commas."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:381
+#, python-format
+msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:416
+#, python-format
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:425
+#, python-format
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:434
+#, python-format
+msgid "Ensure this value is a multiple of step size %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:441
+#, python-format
+msgid ""
+"Ensure this value is a multiple of step size %(limit_value)s, starting from "
+"%(offset)s, e.g. %(offset)s, %(valid_value1)s, %(valid_value2)s, and so on."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:473
+#, python-format
+msgid ""
+"Ensure this value has at least %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:491
+#, python-format
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:514
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:366
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:405
+msgid "Enter a number."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:516
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit in total."
+msgid_plural "Ensure that there are no more than %(max)s digits in total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:521
+#, python-format
+msgid "Ensure that there are no more than %(max)s decimal place."
+msgid_plural "Ensure that there are no more than %(max)s decimal places."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:526
+#, python-format
+msgid ""
+"Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural ""
+"Ensure that there are no more than %(max)s digits before the decimal point."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:597
+#, python-format
+msgid ""
+"File extension “%(extension)s” is not allowed. Allowed extensions are: "
+"%(allowed_extensions)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py:659
+msgid "Null characters are not allowed."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/base.py:1600
+#: venv/lib/python3.10/site-packages/django/forms/models.py:908
+msgid "and"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/base.py:1602
+#, python-format
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/constraints.py:22
+#, python-format
+msgid "Constraint “%(name)s” is violated."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:134
+#, python-format
+msgid "Value %(value)r is not a valid choice."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:135
+msgid "This field cannot be null."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:136
+msgid "This field cannot be blank."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:137
+#, python-format
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr ""
+
+#. Translators: The 'lookup_type' is one of 'date', 'year' or
+#. 'month'. Eg: "Title must be unique for pub_date year"
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:141
+#, python-format
+msgid ""
+"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:180
+#, python-format
+msgid "Field of type: %(field_type)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1162
+#, python-format
+msgid "“%(value)s” value must be either True or False."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1163
+#, python-format
+msgid "“%(value)s” value must be either True, False, or None."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1165
+msgid "Boolean (Either True or False)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1215
+#, python-format
+msgid "String (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1217
+msgid "String (unlimited)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1326
+msgid "Comma-separated integers"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1427
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
+"format."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1431
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1566
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
+"date."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1435
+msgid "Date (without time)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1562
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[."
+"uuuuuu]][TZ] format."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1570
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+"[TZ]) but it is an invalid date/time."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1575
+msgid "Date (with time)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1702
+#, python-format
+msgid "“%(value)s” value must be a decimal number."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1704
+msgid "Decimal number"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1864
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[."
+"uuuuuu] format."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1868
+#, fuzzy
+#| msgid "action"
+msgid "Duration"
+msgstr "ação"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1920
+#, fuzzy
+#| msgid "email address"
+msgid "Email address"
+msgstr "endereço de email"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1945
+msgid "File path"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2023
+#, python-format
+msgid "“%(value)s” value must be a float."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2025
+msgid "Floating point number"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2065
+#, python-format
+msgid "“%(value)s” value must be an integer."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2067
+msgid "Integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2163
+msgid "Big (8 byte) integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2180
+msgid "Small integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2188
+#, fuzzy
+#| msgid "email address"
+msgid "IPv4 address"
+msgstr "endereço de email"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2219
+#, fuzzy
+#| msgid "email address"
+msgid "IP address"
+msgstr "endereço de email"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2310
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2311
+#, python-format
+msgid "“%(value)s” value must be either None, True or False."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2313
+msgid "Boolean (Either True, False or None)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2364
+msgid "Positive big integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2379
+msgid "Positive integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2394
+msgid "Positive small integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2410
+#, python-format
+msgid "Slug (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2446
+msgid "Text"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2526
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
+"format."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2530
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
+"invalid time."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2534
+#, fuzzy
+#| msgid "Date/Time"
+msgid "Time"
+msgstr "Data/Hora"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2642
+msgid "URL"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2666
+msgid "Raw binary data"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2731
+#, python-format
+msgid "“%(value)s” is not a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2733
+msgid "Universally unique identifier"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/files.py:244
+msgid "File"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/json.py:24
+msgid "A JSON object"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/json.py:26
+msgid "Value must be valid JSON."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py:978
+#, python-format
+msgid "%(model)s instance with %(field)s %(value)r is not a valid choice."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py:981
+msgid "Foreign Key (type determined by related field)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py:1275
+#, fuzzy
+#| msgid "relationship"
+msgid "One-to-one relationship"
+msgstr "relação"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py:1332
+#, fuzzy, python-format
+#| msgid "relationship"
+msgid "%(from)s-%(to)s relationship"
+msgstr "relação"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py:1334
+#, python-format
+msgid "%(from)s-%(to)s relationships"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py:1382
+#, fuzzy
+#| msgid "Guardian Relationship"
+msgid "Many-to-many relationship"
+msgstr "Relação com Encarregado"
+
+#. Translators: If found as last label character, these punctuation
+#. characters will prevent the default label_suffix to be appended to the label
+#: venv/lib/python3.10/site-packages/django/forms/boundfield.py:185
+msgid ":?.!"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:95
+#, fuzzy
+#| msgid "Authentication is required."
+msgid "This field is required."
+msgstr "Autenticação necessária."
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:315
+msgid "Enter a whole number."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:486
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:1267
+#, fuzzy
+#| msgid "teacher validated"
+msgid "Enter a valid date."
+msgstr "validado pelo professor"
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:509
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:1268
+#, fuzzy
+#| msgid "teacher validated"
+msgid "Enter a valid time."
+msgstr "validado pelo professor"
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:536
+msgid "Enter a valid date/time."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:570
+msgid "Enter a valid duration."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:571
+#, python-brace-format
+msgid "The number of days must be between {min_days} and {max_days}."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:640
+msgid "No file was submitted. Check the encoding type on the form."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:641
+msgid "No file was submitted."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:642
+msgid "The submitted file is empty."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:644
+#, python-format
+msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid_plural ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:649
+msgid "Please either submit a file or check the clear checkbox, not both."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:717
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:889
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:975
+#: venv/lib/python3.10/site-packages/django/forms/models.py:1592
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:977
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:1096
+#: venv/lib/python3.10/site-packages/django/forms/models.py:1590
+msgid "Enter a list of values."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:1097
+msgid "Enter a complete value."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:1339
+msgid "Enter a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py:1369
+msgid "Enter a valid JSON."
+msgstr ""
+
+#. Translators: This is the default suffix added to form field labels
+#: venv/lib/python3.10/site-packages/django/forms/forms.py:97
+msgid ":"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/forms.py:239
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py:61
+#, python-format
+msgid ""
+"ManagementForm data is missing or has been tampered with. Missing fields: "
+"%(field_names)s. You may need to file a bug report if the issue persists."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py:65
+#, python-format
+msgid "Please submit at most %(num)d form."
+msgid_plural "Please submit at most %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py:70
+#, python-format
+msgid "Please submit at least %(num)d form."
+msgid_plural "Please submit at least %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py:484
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py:491
+#, fuzzy
+#| msgid "order"
+msgid "Order"
+msgstr "ordem"
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py:499
+msgid "Delete"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py:901
+#, fuzzy, python-format
+#| msgid "Please correct the errors below."
+msgid "Please correct the duplicate data for %(field)s."
+msgstr "Por favor corrija os erros abaixo."
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py:906
+#, python-format
+msgid "Please correct the duplicate data for %(field)s, which must be unique."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py:913
+#, python-format
+msgid ""
+"Please correct the duplicate data for %(field_name)s which must be unique "
+"for the %(lookup)s in %(date_field)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py:922
+#, fuzzy
+#| msgid "Please correct the errors below."
+msgid "Please correct the duplicate values below."
+msgstr "Por favor corrija os erros abaixo."
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py:1359
+msgid "The inline value did not match the parent instance."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py:1450
+msgid "Select a valid choice. That choice is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py:1594
+#, python-format
+msgid "“%(pk)s” is not a valid value."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/utils.py:229
+#, python-format
+msgid ""
+"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
+"may be ambiguous or it may not exist."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py:528
+msgid "Currently"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py:529
+#, fuzzy
+#| msgid "Save Changes"
+msgid "Change"
+msgstr "Guardar Alterações"
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py:866
+#, fuzzy
+#| msgid "(Post Unknown)"
+msgid "Unknown"
+msgstr "(Publicação Desconhecida)"
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py:867
+msgid "Yes"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py:868
+#, fuzzy
+#| msgid "Nome"
+msgid "No"
+msgstr "Nome"
+
+#. Translators: Please do not add spaces around commas.
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py:873
+msgid "yes,no,maybe"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py:903
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py:920
+#, python-format
+msgid "%(size)d byte"
+msgid_plural "%(size)d bytes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py:922
+#, python-format
+msgid "%s KB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py:924
+#, python-format
+msgid "%s MB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py:926
+#, python-format
+msgid "%s GB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py:928
+#, python-format
+msgid "%s TB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py:930
+#, python-format
+msgid "%s PB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py:74
+msgid "p.m."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py:75
+msgid "a.m."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py:80
+msgid "PM"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py:81
+msgid "AM"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py:153
+msgid "midnight"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py:155
+msgid "noon"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:7
+msgid "Monday"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:8
+msgid "Tuesday"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:9
+msgid "Wednesday"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:10
+msgid "Thursday"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:11
+msgid "Friday"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:12
+msgid "Saturday"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:13
+msgid "Sunday"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:16
+msgid "Mon"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:17
+msgid "Tue"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:18
+#, fuzzy
+#| msgid "We Did"
+msgid "Wed"
+msgstr "Fizemos"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:19
+msgid "Thu"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:20
+msgid "Fri"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:21
+#, fuzzy
+#| msgid "Status:"
+msgid "Sat"
+msgstr "Estado:"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:22
+#, fuzzy
+#| msgid "Student"
+msgid "Sun"
+msgstr "Aluno"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:25
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:26
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:27
+msgid "March"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:28
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:29
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:30
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:31
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:32
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:33
+msgid "September"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:34
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:35
+msgid "November"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:36
+msgid "December"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:39
+msgid "jan"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:40
+msgid "feb"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:41
+msgid "mar"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:42
+msgid "apr"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:43
+msgid "may"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:44
+msgid "jun"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:45
+msgid "jul"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:46
+msgid "aug"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:47
+msgid "sep"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:48
+msgid "oct"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:49
+#, fuzzy
+#| msgid "Ano"
+msgid "nov"
+msgstr "Ano"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:50
+msgid "dec"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:53
+msgctxt "abbrev. month"
+msgid "Jan."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:54
+msgctxt "abbrev. month"
+msgid "Feb."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:55
+msgctxt "abbrev. month"
+msgid "March"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:56
+msgctxt "abbrev. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:57
+msgctxt "abbrev. month"
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:58
+msgctxt "abbrev. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:59
+msgctxt "abbrev. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:60
+msgctxt "abbrev. month"
+msgid "Aug."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:61
+msgctxt "abbrev. month"
+msgid "Sept."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:62
+msgctxt "abbrev. month"
+msgid "Oct."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:63
+msgctxt "abbrev. month"
+msgid "Nov."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:64
+msgctxt "abbrev. month"
+msgid "Dec."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:67
+msgctxt "alt. month"
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:68
+msgctxt "alt. month"
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:69
+msgctxt "alt. month"
+msgid "March"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:70
+msgctxt "alt. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:71
+msgctxt "alt. month"
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:72
+msgctxt "alt. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:73
+msgctxt "alt. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:74
+msgctxt "alt. month"
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:75
+msgctxt "alt. month"
+msgid "September"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:76
+msgctxt "alt. month"
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:77
+msgctxt "alt. month"
+msgid "November"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py:78
+msgctxt "alt. month"
+msgid "December"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/ipv6.py:20
+msgid "This is not a valid IPv6 address."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/text.py:67
+#, python-format
+msgctxt "String to return when truncating text"
+msgid "%(truncated_text)s…"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/text.py:278
+msgid "or"
+msgstr ""
+
+#. Translators: This string is used as a separator between list elements
+#: venv/lib/python3.10/site-packages/django/utils/text.py:297
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py:135
+msgid ", "
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py:8
+#, python-format
+msgid "%(num)d year"
+msgid_plural "%(num)d years"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py:9
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py:10
+#, python-format
+msgid "%(num)d week"
+msgid_plural "%(num)d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py:11
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py:12
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py:13
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py:29
+msgid "Forbidden"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py:30
+msgid "CSRF verification failed. Request aborted."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py:34
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py:40
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please re-"
+"enable them, at least for this site, or for HTTPS connections, or for “same-"
+"origin” requests."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py:45
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
+"including the “Referrer-Policy: no-referrer” header, please remove them. The "
+"CSRF protection requires the “Referer” header to do strict referer checking. "
+"If you’re concerned about privacy, use alternatives like <a "
+"rel=\"noreferrer\" …> for links to third-party sites."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py:54
+msgid ""
+"You are seeing this message because this site requires a CSRF cookie when "
+"submitting forms. This cookie is required for security reasons, to ensure "
+"that your browser is not being hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py:60
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py:66
+msgid "More information is available with DEBUG=True."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:44
+#, fuzzy
+#| msgid "Invalid role specified."
+msgid "No year specified"
+msgstr "Função inválida especificada."
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:64
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:115
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:214
+msgid "Date out of range"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:94
+#, fuzzy
+#| msgid "Invalid column specified."
+msgid "No month specified"
+msgstr "Coluna inválida especificada."
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:147
+msgid "No day specified"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:194
+#, fuzzy
+#| msgid "Invalid role specified."
+msgid "No week specified"
+msgstr "Função inválida especificada."
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:353
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:384
+#, python-format
+msgid "No %(verbose_name_plural)s available"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:680
+#, python-format
+msgid ""
+"Future %(verbose_name_plural)s not available because %(class_name)s."
+"allow_future is False."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py:720
+#, python-format
+msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/detail.py:56
+#, fuzzy, python-format
+#| msgid "No posts found matching your filters."
+msgid "No %(verbose_name)s found matching the query"
+msgstr "Nenhuma publicação encontrada com os seus filtros."
+
+#: venv/lib/python3.10/site-packages/django/views/generic/list.py:70
+msgid "Page is not “last”, nor can it be converted to an int."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/list.py:77
+#, python-format
+msgid "Invalid page (%(page_number)s): %(message)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/list.py:173
+#, python-format
+msgid "Empty list and “%(class_name)s.allow_empty” is False."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/static.py:49
+msgid "Directory indexes are not allowed here."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/static.py:51
+#, python-format
+msgid "“%(path)s” does not exist"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/static.py:68
+#: venv/lib/python3.10/site-packages/django/views/templates/directory_index.html:8
+#: venv/lib/python3.10/site-packages/django/views/templates/directory_index.html:11
+#, python-format
+msgid "Index of %(directory)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:7
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:204
+msgid "The install worked successfully! Congratulations!"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:206
+#, python-format
+msgid ""
+"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
+"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:208
+#, python-format
+msgid ""
+"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
+"%(version)s/ref/settings/#debug\" target=\"_blank\" "
+"rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not "
+"configured any URLs."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:217
+#, fuzzy
+#| msgid "Checklists Documentation"
+msgid "Django Documentation"
+msgstr "Documentação das Checklists"
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:218
+msgid "Topics, references, &amp; how-to’s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:226
+msgid "Tutorial: A Polling App"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:227
+msgid "Get started with Django"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:235
+#, fuzzy
+#| msgid "Django Admin"
+msgid "Django Community"
+msgstr "Admin do Django"
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:236
+msgid "Connect, get help, or contribute"
+msgstr ""
+
+#~ msgid "Select only if category is Class Diary."
+#~ msgstr "Selecione apenas se a categoria for Diário de Turma."
+
+#~ msgid "Help on subcategory"
+#~ msgstr "Ajuda sobre subcategoria"
+
+#~ msgid "Only applicable for 'Class Diary' category."
+#~ msgstr "Aplicável apenas para a categoria 'Diário de Turma'."
+
+#~ msgid "Currently only Internal visibility is supported."
+#~ msgstr "Atualmente apenas a visibilidade Interna é suportada."
+
+#~ msgid "Help on visibility"
+#~ msgstr "Ajuda sobre visibilidade"
+
+#~ msgid "Publish Post"
+#~ msgstr "Publicar"
+
+#~ msgid "Publish"
+#~ msgstr "Publicar"
+
+#, python-format
+#~ msgid "View details of post: %(title)s"
+#~ msgstr "Ver detalhes da publicação: %(title)s"
+
+#, python-format
+#~ msgid ""
+#~ "\n"
+#~ "                  by %(author)s | %(category)s\n"
+#~ "                "
+#~ msgstr ""
+#~ "\n"
+#~ "                  por %(author)s | %(category)s\n"
+#~ "                "
+
+#, python-format
+#~ msgid ""
+#~ "\n"
+#~ "                            Page %(current_page)s of %(total_pages)s\n"
+#~ "                            "
+#~ msgstr ""
+#~ "\n"
+#~ "                            Página %(current_page)s de %(total_pages)s\n"
+#~ "                            "
+
+#~ msgid "General Statistics"
+#~ msgstr "Estatísticas Gerais"
+
+#~ msgid "last 7 days"
+#~ msgstr "últimos 7 dias"
+
+#~ msgid "applicable"
+#~ msgstr "aplicável"
+
+#~ msgid "Overall progress chart coming soon."
+#~ msgstr "Gráfico de progresso geral em breve."
+
+#, python-brace-format
+#~ msgid "{user_name} promoted to student and added to the class."
+#~ msgstr "{user_name} promovido para aluno e adicionado à turma."
