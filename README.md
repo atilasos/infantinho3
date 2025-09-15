@@ -105,3 +105,40 @@ python manage.py compilemessages
 - Gunicorn: `deploy/gunicorn.service.example`
 - Nginx: `deploy/nginx.conf.example`
 - .env: `deploy/.env.example`
+
+## Fluxo rápido de desenvolvimento
+
+```sh
+# 1) Ativar virtualenv
+source venv/bin/activate
+
+# 2) Instalar/atualizar dependências
+pip install -r requirements.txt
+
+# 3) Migrar base de dados e (opcional) criar superuser
+python manage.py migrate
+# python manage.py createsuperuser
+
+# 4) (Opcional) compilar traduções se editar ficheiros .po/.mo
+python manage.py compilemessages
+
+# 5) Iniciar servidor
+python manage.py runserver
+```
+
+## Dicas rápidas de Git
+
+```sh
+# Ver estado e branch atual
+git status -sb
+
+# Trazer alterações remotas
+git pull --rebase
+
+# Adicionar e commitar
+git add -A
+git commit -m "Mensagem descritiva"
+
+# Enviar para a branch remota atual
+git push
+```

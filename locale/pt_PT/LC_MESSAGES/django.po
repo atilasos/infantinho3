@@ -2490,11 +2490,11 @@ msgstr " (Ativo)"
 
 #: diary/models.py:39
 msgid "Liked"
-msgstr "Gosto"
+msgstr "Gostei"
 
 #: diary/models.py:40
 msgid "Disliked"
-msgstr "Não Gosto"
+msgstr "Não Gostei"
 
 #: diary/models.py:41
 msgid "We Did"
