@@ -77,6 +77,32 @@
             </div>
         </header>
 
+        {% if request.user.is_authenticated %}
+          <div class="mb-4">
+            {% include "ai/assistant_button.html" with origin_app="blog" class_id=post.turma.id|default_if_none:'' context_descriptor=post.titulo prefill=_('Preciso de ajuda para registar aprendizagens deste post...') %}
+          </div>
+        {% endif %}
+
+        {% if category_guidance %}
+          <section class="mb-4">
+            <div class="card shadow-sm">
+              <div class="card-header bg-primary text-white">
+                <i class="bi bi-people-fill me-2"></i>{% trans "Enquadramento MEM" %}
+              </div>
+              <div class="card-body">
+                <h2 class="h5 mb-2">{{ category_guidance.title }}</h2>
+                <p class="text-muted">{{ category_guidance.description }}</p>
+                <p class="fw-semibold mb-1">{% trans "Perguntas orientadoras" %}</p>
+                <ul class="ps-3 mb-0">
+                  {% for prompt in category_guidance.prompts %}
+                    <li>{{ prompt }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </section>
+        {% endif %}
+
         {# --- Removed Post Notice --- #}
         {% if post.removido %}
             <div class="alert alert-warning shadow-sm mb-3" role="alert">

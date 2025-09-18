@@ -55,8 +55,8 @@
         <th scope="col" class="text-start student-col">{% trans "Student" %}</th>
         {# Checklist Items as Columns #}
         {% for item in items %}
-          <th scope="col" class="item-col" title="{{ item.text }}">
-            {% if item.council_agreed %}
+          <th scope="col" class="item-col {% if item.contracted_in_council %}council-item-header{% endif %}" title="{{ item.text }}" data-council="{{ item.contracted_in_council|yesno:'true,false' }}">
+            {% if item.contracted_in_council %}
                 <i class="bi bi-star-fill text-warning me-1" title="{% trans 'Agreed in Council' %}"></i>
             {% endif %}
             <span class="item-header-text">{{ item.text|truncatechars:40 }}</span>
@@ -82,7 +82,7 @@
           {% for item in items %}
             {# Use custom tag with two keys for marks #}
             {% get_item marks_by_student_item student_user.id item.id as mark %}
-            <td class="text-center item-cell">
+            <td class="text-center item-cell {% if item.contracted_in_council %}council-item-cell{% endif %}" data-council="{{ item.contracted_in_council|yesno:'true,false' }}">
               <div class="mark-display mb-1">
                   {# Display Status Icon based on mark_status #}
                   {% if mark and mark.mark_status == 'COMPLETED' %}
@@ -155,6 +155,26 @@
   <span><i class="bi bi-patch-check-fill text-success"></i> {% trans "Validated" %}</span>
   <span><i class="bi bi-star-fill text-warning"></i> {% trans "Council Focus" %}</span>
 </div>
+
+<style>
+.council-item-header {
+    background-color: rgba(255, 193, 7, 0.12);
+    border-top: 2px solid rgba(255, 193, 7, 0.6);
+}
+.council-item-cell {
+    background-color: rgba(255, 193, 7, 0.08);
+    position: relative;
+}
+.council-item-cell::before {
+    content: "\f586"; /* star-fill icon */
+    font-family: "Bootstrap Icons";
+    color: #ffc107;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 0.85rem;
+}
+</style>
 
 {# Add some custom CSS (ideally move to infantinho3.css) #}
 {# <style>

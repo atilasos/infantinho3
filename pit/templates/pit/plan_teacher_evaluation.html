@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n widget_tweaks %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="h4 mb-3">{% trans "Avaliação do Professor" %} — {{ turma.name }}</h1>
+
+  {% if request.user.is_authenticated %}
+    <div class="mb-3">
+      {% include "ai/assistant_button.html" with origin_app="pit" class_id=turma.id context_descriptor=plan.period_label prefill=_('Sugere feedback MEM para este aluno, valorizando progresso e próximos desafios.') %}
+    </div>
+  {% endif %}
+
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h2 class="h5">{{ plan.period_label }}</h2>
+      <p class="text-muted mb-1"><strong>{% trans "Aluno" %}:</strong> {{ plan.student.get_full_name|default:plan.student.username }}</p>
+      <p class="text-muted mb-1"><strong>{% trans "Objetivos gerais" %}:</strong></p>
+      <p class="mb-0">{{ plan.general_objectives|default:_("Sem objetivos registados.")|linebreaksbr }}</p>
+      {% if plan.self_evaluation %}
+        <hr>
+        <p class="text-muted mb-1"><strong>{% trans "Autoavaliação do aluno" %}</strong></p>
+        <p class="mb-0">{{ plan.self_evaluation|linebreaksbr }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <form method="post" class="card shadow-sm">
+    {% csrf_token %}
+    <div class="card-body">
+      {{ form.non_field_errors }}
+      <div class="mb-3">
+        <label class="form-label" for="id_teacher_evaluation">{% trans "Feedback para o aluno" %}</label>
+        {% trans "Regista apreciações, conquistas e próximos passos combinados em conselho ou tutorias." as teacher_placeholder %}
+        {% render_field form.teacher_evaluation rows="6" class="form-control" placeholder=teacher_placeholder %}
+        {% if form.teacher_evaluation.errors %}
+          <div class="invalid-feedback d-block">{{ form.teacher_evaluation.errors }}</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="card-footer d-flex gap-2">
+      <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {% trans "Guardar avaliação" %}</button>
+      <a href="{% url 'pit:teacher_plan_list' class_id=turma.id %}" class="btn btn-secondary">{% trans "Voltar à lista" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

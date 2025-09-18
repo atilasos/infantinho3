@@ -7,7 +7,7 @@ class ChecklistItemInline(admin.TabularInline):
     """Allows editing ChecklistItems directly within the ChecklistTemplate admin page."""
     model = ChecklistItem
     # Fields to display in the inline form
-    fields = ('order', 'code', 'text') 
+    fields = ('order', 'code', 'text', 'contracted_in_council') 
     # Extra forms to display for adding new items
     extra = 1 
     # Add ordering if needed, e.g., based on the 'order' field
@@ -32,8 +32,8 @@ class ChecklistTemplateAdmin(admin.ModelAdmin):
 class ChecklistItemAdmin(admin.ModelAdmin):
     """Admin configuration for ChecklistItem model (basic)."""
     # Useful for viewing all items across templates, though primarily edited via inline
-    list_display = ('code', 'text', 'template', 'order')
-    list_filter = ('template',)
+    list_display = ('code', 'text', 'template', 'order', 'contracted_in_council')
+    list_filter = ('template', 'contracted_in_council')
     search_fields = ('code', 'text', 'template__name')
     list_editable = ('order',) # Allow editing order directly in the list view
     ordering = ('template', 'order')

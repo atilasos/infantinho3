@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n widget_tweaks %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="h4 mb-3">{% trans "Autoavaliação do PIT" %} — {{ turma.name }}</h1>
+
+  {% if request.user.is_authenticated %}
+    <div class="mb-3">
+      {% include "ai/assistant_button.html" with origin_app="pit" class_id=turma.id context_descriptor=plan.period_label prefill=_('Ajuda-me a refletir sobre este PIT e próximos passos.') %}
+    </div>
+  {% endif %}
+
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h2 class="h5">{{ plan.period_label }}</h2>
+      <p class="text-muted mb-1"><strong>{% trans "Objetivos gerais" %}:</strong></p>
+      <p class="mb-0">{{ plan.general_objectives|default:_("Sem objetivos registados.")|linebreaksbr }}</p>
+    </div>
+  </div>
+
+  <form method="post" class="card shadow-sm">
+    {% csrf_token %}
+    <div class="card-body">
+      {{ form.non_field_errors }}
+      <div class="mb-3">
+        <label class="form-label" for="id_self_evaluation">{% trans "Como correu o teu plano?" %}</label>
+        {% trans "Partilha o que conseguiste, o que ficou por fazer, de que forma te organizaste..." as self_placeholder %}
+        {% render_field form.self_evaluation rows="6" class="form-control" placeholder=self_placeholder %}
+        {% if form.self_evaluation.errors %}
+          <div class="invalid-feedback d-block">{{ form.self_evaluation.errors }}</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="card-footer d-flex gap-2">
+      <button type="submit" class="btn btn-success"><i class="bi bi-send"></i> {% trans "Submeter autoavaliação" %}</button>
+      <a href="{% url 'pit:plan_edit' class_id=turma.id plan_id=plan.id %}" class="btn btn-secondary">{% trans "Voltar ao PIT" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

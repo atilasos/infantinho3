@@ -21,6 +21,12 @@
   {# <a href="{% url 'checklists:help' %}" class="btn btn-outline-info btn-sm"><i class="bi bi-question-circle"></i> Help</a> #}
 </div>
 
+{% if request.user.is_authenticated %}
+  <div class="mb-4">
+    {% include "ai/assistant_button.html" with origin_app="checklists" class_id=active_checklists.0.student_class.id|default_if_none:'' context_descriptor=_('Acompanhamento das minhas aprendizagens') prefill=_('Ajuda-me a decidir o próximo objetivo a trabalhar.') %}
+  </div>
+{% endif %}
+
 <!-- Active Checklists Section -->
 <section class="mb-4" aria-labelledby="active-checklists-heading">
   <h2 id="active-checklists-heading" class="h4">{% trans "Active" %}</h2>

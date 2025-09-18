@@ -16,6 +16,24 @@ class PlanTaskForm(forms.ModelForm):
         fields = ['description', 'subject', 'state', 'evidence_link', 'order']
 
 
+class StudentEvaluationForm(forms.ModelForm):
+    class Meta:
+        model = IndividualPlan
+        fields = ['self_evaluation']
+        widgets = {
+            'self_evaluation': forms.Textarea(attrs={'rows': 5, 'class': 'form-control'}),
+        }
+
+
+class TeacherEvaluationForm(forms.ModelForm):
+    class Meta:
+        model = IndividualPlan
+        fields = ['teacher_evaluation']
+        widgets = {
+            'teacher_evaluation': forms.Textarea(attrs={'rows': 6, 'class': 'form-control'}),
+        }
+
+
 PlanTaskFormSet = forms.inlineformset_factory(
     parent_model=IndividualPlan,
     model=PlanTask,
@@ -23,5 +41,4 @@ PlanTaskFormSet = forms.inlineformset_factory(
     extra=3,
     can_delete=True,
 )
-
 

@@ -3,6 +3,7 @@ from django.test import TestCase, Client # Removed override_settings for now
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from unittest.mock import patch
 from django.contrib.auth.models import Group # Import Group
 
@@ -41,6 +42,7 @@ class ChecklistModelTests(TestCase):
     def test_item_creation(self):
         # __str__ shows code or first part of text
         self.assertIn('Addition', str(self.item1))
+        self.assertFalse(self.item1.contracted_in_council)
 
     def test_status_creation(self):
         self.assertEqual(
@@ -190,7 +192,7 @@ class ChecklistViewTests(TestCase):
             'comment': 'Finished it!' 
         }, follow=True) 
         self.assertEqual(response_post.status_code, 200) 
-        self.assertContains(response_post, "Objective updated successfully!")
+        self.assertContains(response_post, _('Objective updated successfully!'))
         self.assertEqual(response_post.request['PATH_INFO'], detail_url)
         
         mark = ChecklistMark.objects.filter(item=self.item1, status_record=self.status).latest('marked_at')
@@ -198,6 +200,24 @@ class ChecklistViewTests(TestCase):
         self.assertEqual(mark.comment, 'Finished it!')
         self.assertFalse(mark.teacher_validated)
         self.assertEqual(mark.marked_by, self.student)
+
+    def test_teacher_view_highlights_council_items(self):
+        self.item1.contracted_in_council = True
+        self.item1.save(update_fields=['contracted_in_council'])
+        turma_url = reverse('checklists:checklist_turma', args=[self.turma.id, self.template.id])
+        self.client.force_login(self.teacher)
+        response = self.client.get(turma_url)
+        self.assertContains(response, 'council-item-header')
+        self.assertContains(response, 'data-council="true"')
+
+    def test_student_detail_highlights_council_items(self):
+        self.item1.contracted_in_council = True
+        self.item1.save(update_fields=['contracted_in_council'])
+        detail_url = reverse('checklists:checklist_detail', args=[self.template.id])
+        self.client.force_login(self.student)
+        response = self.client.get(detail_url)
+        self.assertContains(response, 'council-badge')
+        self.assertContains(response, 'data-council="true"')
 
     def test_teacher_can_view_turma_and_validate(self):
         """Test teacher accesses class view and validates/rectifies a mark via POST."""
@@ -221,7 +241,10 @@ class ChecklistViewTests(TestCase):
             'comment': 'Validated by teacher' 
         }, follow=True)
         self.assertEqual(response_post.status_code, 200) 
-        self.assertContains(response_post, "Mark validated/rectified")
+        success_msg = _('Mark validated/rectified for {student_name}.').format(
+            student_name=self.student.get_full_name() or self.student.username
+        )
+        self.assertContains(response_post, success_msg)
         self.assertEqual(response_post.request['PATH_INFO'], turma_url)
 
         mark = ChecklistMark.objects.filter(item=self.item1, status_record=self.status).latest('marked_at')

@@ -5,7 +5,11 @@
 <div class="container mt-3">
   <h1 class="h4">{% trans "Projetos da Turma" %} — {{ turma.name }}</h1>
   <div class="d-flex justify-content-end mb-2">
-    <a href="{% url 'projects:project_create' class_id=turma.id %}" class="btn btn-primary btn-sm">{% trans "Novo Projeto" %}</a>
+    {% if can_create_project %}
+      <a href="{% url 'projects:project_create' class_id=turma.id %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-circle"></i> {% trans "Novo Projeto" %}
+      </a>
+    {% endif %}
   </div>
   <div class="list-group">
     {% for p in projects %}
@@ -15,14 +19,12 @@
           <small class="text-muted">{{ p.get_state_display }}</small>
         </div>
         <p class="mb-1 text-muted">{{ p.description|truncatechars:140 }}</p>
+        <small class="text-muted">{% trans "Membros" %}: {% for m in p.members.all %}{{ m.get_full_name|default:m.username }}{% if not forloop.last %}, {% endif %}{% empty %}-{% endfor %}</small>
       </a>
     {% empty %}
       <div class="list-group-item text-muted">{% trans "Sem projetos." %}</div>
     {% endfor %}
   </div>
   <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-secondary btn-sm mt-3">{% trans "Voltar à turma" %}</a>
-  
 </div>
 {% endblock %}
-
-

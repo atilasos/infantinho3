@@ -5,6 +5,12 @@
 <div class="container mt-3">
   <h1 class="h4">{% if is_create %}{% trans "Novo PIT" %}{% else %}{% trans "Editar PIT" %}{% endif %} — {{ turma.name }}</h1>
 
+  {% if request.user.is_authenticated %}
+    <div class="mb-3">
+      {% include "ai/assistant_button.html" with origin_app="pit" class_id=turma.id context_descriptor=form.instance.period_label|default:_('PIT em construção') prefill=_('Sugere objetivos MEM para este PIT...') %}
+    </div>
+  {% endif %}
+
   <form method="post">
     {% csrf_token %}
     <div class="card mb-3">
@@ -63,6 +69,53 @@
       </div>
     {% endfor %}
 
+    {% if not is_create and plan %}
+    <div class="row g-3 mt-3">
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="h5 d-flex justify-content-between align-items-center">
+              {% trans "Autoavaliação" %}
+              {% if plan.status == 'approved' or plan.status == 'concluded' or plan.status == 'evaluated' %}
+                <span class="badge bg-success">{{ plan.get_status_display }}</span>
+              {% else %}
+                <span class="badge bg-secondary">{{ plan.get_status_display }}</span>
+              {% endif %}
+            </h2>
+            {% if plan.self_evaluation %}
+              <p class="mb-3">{{ plan.self_evaluation|linebreaksbr }}</p>
+            {% else %}
+              <p class="text-muted mb-3">{% trans "Ainda não registaste a tua autoavaliação para este período." %}</p>
+            {% endif %}
+            {% if request.user == plan.student %}
+              {% if plan.status == 'approved' or plan.status == 'concluded' or plan.status == 'evaluated' %}
+                <a href="{% url 'pit:plan_self_evaluate' class_id=turma.id plan_id=plan.id %}" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-journal-text"></i> {% trans "Preencher autoavaliação" %}
+                </a>
+              {% else %}
+                <button class="btn btn-outline-secondary btn-sm" type="button" disabled>
+                  <i class="bi bi-lock"></i> {% trans "Disponível após aprovação" %}
+                </button>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="h5">{% trans "Avaliação do professor" %}</h2>
+            {% if plan.teacher_evaluation %}
+              <p class="mb-0">{{ plan.teacher_evaluation|linebreaksbr }}</p>
+            {% else %}
+              <p class="text-muted mb-0">{% trans "Aguardando feedback do professor." %}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     <div class="d-flex gap-2 mt-3">
       <button type="submit" name="save" class="btn btn-primary">{% trans "Guardar" %}</button>
       {% if not is_create %}
@@ -73,5 +126,3 @@
   </form>
 </div>
 {% endblock %}
-
-

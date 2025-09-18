@@ -3,43 +3,54 @@
 
 {% block content %}
 <div class="container mt-3">
-  <h1 class="h4">{% trans "Novo Projeto" %} — {{ turma.name }}</h1>
+  <h1 class="h4">
+    {% if is_create %}{% trans "Novo Projeto" %}{% else %}{% trans "Editar Projeto" %}{% endif %}
+    — {{ turma.name }}
+  </h1>
+
+  {% if request.user.is_authenticated %}
+    <div class="mb-3">
+      {% include "ai/assistant_button.html" with origin_app="projects" class_id=turma.id context_descriptor=form.instance.title|default:_('Projeto em desenvolvimento') prefill=_('Sugere etapas e tarefas colaborativas alinhadas com o MEM.') %}
+    </div>
+  {% endif %}
   <form method="post">
     {% csrf_token %}
     <div class="card mb-3">
       <div class="card-body">
+        {{ form.non_field_errors }}
         <div class="row g-2">
           <div class="col-md-6">
-            <label class="form-label">{% trans "Título" %}</label>
+            <label class="form-label" for="id_title">{% trans "Título" %}</label>
             {{ form.title|add_class:"form-control" }}
           </div>
           <div class="col-md-6">
-            <label class="form-label">{% trans "Membros" %}</label>
+            <label class="form-label" for="id_members">{% trans "Membros" %}</label>
             {{ form.members|add_class:"form-select" }}
           </div>
         </div>
         <div class="row g-2 mt-2">
           <div class="col-md-3">
-            <label class="form-label">{% trans "Início" %}</label>
+            <label class="form-label" for="id_start_date">{% trans "Início" %}</label>
             {{ form.start_date|add_class:"form-control" }}
           </div>
           <div class="col-md-3">
-            <label class="form-label">{% trans "Fim previsto" %}</label>
+            <label class="form-label" for="id_end_date">{% trans "Fim previsto" %}</label>
             {{ form.end_date|add_class:"form-control" }}
           </div>
           <div class="col-md-6">
-            <label class="form-label">{% trans "Produto final" %}</label>
+            <label class="form-label" for="id_product_description">{% trans "Produto final" %}</label>
             {{ form.product_description|add_class:"form-control" }}
           </div>
         </div>
         <div class="mt-2">
-          <label class="form-label">{% trans "Descrição/tema" %}</label>
+          <label class="form-label" for="id_description">{% trans "Descrição/tema" %}</label>
           {{ form.description|add_class:"form-control" }}
         </div>
       </div>
     </div>
 
     <h2 class="h5">{% trans "Tarefas" %}</h2>
+    {{ formset.non_form_errors }}
     {{ formset.management_form }}
     {% for f in formset.forms %}
       <div class="card mb-2">
@@ -66,17 +77,25 @@
               {{ f.order|add_class:"form-control" }}
             </div>
           </div>
-          {% if f.DELETE %}<div class="form-check mt-2">{{ f.DELETE }} <label class="form-check-label">{% trans "Remover" %}</label></div>{% endif %}
+          {% if f.DELETE %}
+            <div class="form-check mt-2">
+              {{ f.DELETE }} <label class="form-check-label">{% trans "Remover" %}</label>
+            </div>
+          {% endif %}
         </div>
       </div>
     {% endfor %}
 
     <div class="d-flex gap-2 mt-3">
-      <button type="submit" class="btn btn-primary">{% trans "Guardar" %}</button>
-      <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-secondary">{% trans "Cancelar" %}</a>
+      <button type="submit" class="btn btn-primary">
+        {% if is_create %}{% trans "Guardar" %}{% else %}{% trans "Guardar alterações" %}{% endif %}
+      </button>
+      {% if is_create %}
+        <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-secondary">{% trans "Cancelar" %}</a>
+      {% else %}
+        <a href="{% url 'projects:project_detail' class_id=turma.id project_id=project.id %}" class="btn btn-secondary">{% trans "Voltar" %}</a>
+      {% endif %}
     </div>
   </form>
 </div>
 {% endblock %}
-
-

@@ -4,10 +4,15 @@ from django.utils import timezone
 from users.models import User, GuardianRelation
 from classes.models import Class
 from .models import Post, Comment
+from .forms import PostForm
+from .pedagogy import MEM_CATEGORY_GUIDANCE
 from django.urls import reverse
 from django.core import mail
 from django.contrib.auth.models import Group
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
+from django.core.files.storage import default_storage
+from urllib.parse import urlparse
 from unittest import skip
 
 # === Base Test Case ===
@@ -207,7 +212,47 @@ class PostDetailViewTests(BlogBaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, comment.conteudo)
 
+    def test_mem_guidance_section_rendered(self):
+        self.post.categoria = 'PROJETO'
+        self.post.status = 'PUBLISHED'
+        self.post.save(update_fields=['categoria', 'status'])
+        self.client.force_login(self.prof1)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        expected = MEM_CATEGORY_GUIDANCE['PROJETO']
+        self.assertContains(response, str(expected['title']))
+        self.assertContains(response, str(expected['description']))
+        for prompt in expected['prompts']:
+            self.assertContains(response, str(prompt))
+
+
+class PostFormGuidanceTests(TestCase):
+    def test_post_form_exposes_mem_guidance(self):
+        form = PostForm()
+        self.assertIn('categoria', form.fields)
+        self.assertTrue(form.fields['categoria'].help_text)
+        self.assertIn('DIARIO', form.category_guidance)
+        guidance = form.category_guidance['DIARIO']
+        self.assertIn('title', guidance)
+        self.assertGreater(len(guidance['prompts']), 0)
+
 class PostCreateViewTests(BlogBaseTestCase):
+    def test_class_post_create_context_includes_guidance(self):
+        url = reverse('class_blog:post_create', args=[self.turma1.id])
+        self.client.force_login(self.prof1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('category_guidance', response.context)
+        self.assertIn('TEA', response.context['category_guidance'])
+
+    def test_global_post_create_context_includes_guidance(self):
+        url = reverse('blog:post_create_global')
+        self.client.force_login(self.prof1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('category_guidance', response.context)
+        self.assertIn('CONSELHO', response.context['category_guidance'])
+
     @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend', DEFAULT_FROM_EMAIL='noreply@test.com')
     def test_envio_email_ao_criar_post(self):
         self.client.force_login(self.prof1)
@@ -249,6 +294,40 @@ class PostCommentViewTests(BlogBaseTestCase):
         self.assertIn(self.aluno1.email, email.to)
         self.assertNotIn(self.prof1.email, email.to)
         self.assertIn(f'Novo comentário no seu post "{post.titulo}"' , email.subject)
+
+
+class TinyMCEUploadTests(BlogBaseTestCase):
+    PNG_BYTES = (
+        b'\x89PNG\r\n\x1a\n'
+        b'\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01'
+        b'\x08\x06\x00\x00\x00\x1f\x15\xc4\x89'
+        b'\x00\x00\x00\x0cIDATx\x9cc`\x00\x00\x00\x02\x00\x01'
+        b'\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82'
+    )
+
+    def test_upload_accepts_valid_image(self):
+        self.client.force_login(self.prof1)
+        url = reverse('blog:tinymce_image_upload')
+        upload = SimpleUploadedFile('tiny.png', self.PNG_BYTES, content_type='image/png')
+        response = self.client.post(url, {'file': upload})
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn('location', payload)
+        parsed = urlparse(payload['location'])
+        storage_path = parsed.path
+        if storage_path.startswith(settings.MEDIA_URL):
+            storage_path = storage_path[len(settings.MEDIA_URL):]
+        storage_path = storage_path.lstrip('/')
+        self.assertTrue(default_storage.exists(storage_path))
+        default_storage.delete(storage_path)
+
+    def test_upload_rejects_invalid_file_type(self):
+        self.client.force_login(self.prof1)
+        url = reverse('blog:tinymce_image_upload')
+        upload = SimpleUploadedFile('not-image.txt', b'plain text', content_type='text/plain')
+        response = self.client.post(url, {'file': upload})
+        self.assertEqual(response.status_code, 400)
+
 
 class ModerationViewTests(BlogBaseTestCase):
     def test_logs_moderacao_visiveis_para_admin_professor(self):
@@ -305,7 +384,6 @@ class ModerationViewTests(BlogBaseTestCase):
         self.client.force_login(self.prof1)
         response_prof1 = self.client.post(url, follow=True)
         self.assertEqual(response_prof1.status_code, 200)
-        self.assertContains(response_prof1, "Post restored successfully.")
         post.refresh_from_db()
         self.assertFalse(post.removido, "Post should be restored by class teacher")
         

@@ -5,6 +5,12 @@
 <div class="container mt-3">
   <h1 class="h4">{% trans "Conselho de Turma" %} — {{ turma.name }}</h1>
 
+  {% if request.user.is_authenticated %}
+    <div class="mb-3">
+      {% include "ai/assistant_button.html" with origin_app="council" class_id=turma.id context_descriptor=_('Conselho de turma') prefill=_('Ajuda-nos a preparar o próximo conselho e a acompanhar decisões anteriores.') %}
+    </div>
+  {% endif %}
+
   <div class="d-flex gap-2 mb-3">
     <a href="{% url 'council:decision_create' class_id=turma.id %}" class="btn btn-primary btn-sm">{% trans "Nova decisão" %}</a>
     <a href="{% url 'council:proposal_create' class_id=turma.id %}" class="btn btn-outline-primary btn-sm">{% trans "Nova proposta (aluno)" %}</a>
@@ -47,5 +53,4 @@
   <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-secondary btn-sm mt-3">{% trans "Voltar à turma" %}</a>
 </div>
 {% endblock %}
-
 

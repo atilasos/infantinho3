@@ -94,11 +94,14 @@ class Post(models.Model):
 
     # Choices for the main category of the post - REMOVED 'DIARIO'
     CATEGORIA_CHOICES = [
-        # ('DIARIO', _('Class Diary')), 
-        ('AVISO', _('Announcement')),
-        ('PROJETO', _('Project Update')),
-        ('TRABALHO', _('Student Work')),
-        ('OUTRO', _('Other')),
+        ('DIARIO', _('Diário de Turma')),
+        ('TEA', _('Registo do Trabalho de Estudo Autónomo')),
+        ('PROJETO', _('Projeto Cooperativo')),
+        ('CONSELHO', _('Conselho de Cooperação Educativa')),
+        ('TRABALHO', _('Partilha de Produções')),
+        ('AVISO', _('Aviso ou Comunicação à Comunidade')),
+        ('REFLEXAO', _('Reflexão sobre a Vida da Turma')),
+        ('OUTRO', _('Outro Registo Pedagógico')),
     ]
     # REMOVED CATEGORIA_DIARIO_CHOICES
     # CATEGORIA_DIARIO_CHOICES = [...] 
@@ -106,10 +109,10 @@ class Post(models.Model):
     # Main category of the post.
     categoria = models.CharField(
         _('category'),
-        max_length=20, 
-        choices=CATEGORIA_CHOICES, 
-        default='OUTRO', 
-        help_text=_('The main category of the post.')
+        max_length=20,
+        choices=CATEGORIA_CHOICES,
+        default='DIARIO',
+        help_text=_('Escolhe o instrumento MEM que melhor corresponde ao registo.')
     )
     # REMOVED subcategoria_diario field
     # subcategoria_diario = models.CharField(...) 

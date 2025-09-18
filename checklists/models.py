@@ -38,6 +38,11 @@ class ChecklistItem(models.Model):
     code = models.CharField(_("code"), max_length=20, blank=True) # e.g., OC1, L5
     text = models.TextField(_("text"), default="Default text - please update")
     order = models.PositiveIntegerField(_("order"), default=0) # For ordering within template
+    contracted_in_council = models.BooleanField(
+        _("negotiated in council"),
+        default=False,
+        help_text=_('Mark if this objective foi contratualizado em Conselho de Cooperação Educativa.')
+    )
 
     class Meta:
         ordering = ['template', 'order', 'code']

@@ -1,6 +1,8 @@
 # blog/forms.py
 from django import forms
-from .models import Post, Comment, Class
+from .models import Post, Comment
+from classes.models import Class
+from .pedagogy import MEM_CATEGORY_GUIDANCE
 from django.utils.translation import gettext_lazy as _
 # Import the standard widget since django-ckeditor-uploader is not installed
 # from ckeditor.widgets import CKEditorWidget # REMOVED
@@ -51,6 +53,9 @@ class PostForm(forms.ModelForm):
         # Customize category widget
         self.fields['categoria'].widget = forms.Select(choices=Post.CATEGORIA_CHOICES)
         self.fields['categoria'].widget.attrs.update({'class': 'form-select'})
+        self.fields['categoria'].help_text = _(
+            'Escolhe o instrumento MEM mais adequado ao registo e segue as orientações pedagógicas.'
+        )
         
         # REMOVED subcategoria customizations
         # self.fields['subcategoria_diario'].widget = ...
@@ -58,6 +63,15 @@ class PostForm(forms.ModelForm):
 
         self.fields['image'].required = False 
         self.fields['attachment'].required = False 
+        # Expose guidance so templates can render contextual prompts
+        self.category_guidance = {
+            key: {
+                'title': str(data['title']),
+                'description': str(data['description']),
+                'prompts': [str(prompt) for prompt in data['prompts']],
+            }
+            for key, data in MEM_CATEGORY_GUIDANCE.items()
+        }
 
     # No clean method needed here as the model's clean method handles 
     # the relationship between categoria and subcategoria_diario on save.

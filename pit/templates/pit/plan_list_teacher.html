@@ -21,13 +21,25 @@
         <td>{{ plan.period_label }}</td>
         <td>{{ plan.get_status_display }}</td>
         <td>
-          <form method="post" action="{% url 'pit:teacher_plan_approve' class_id=turma.id plan_id=plan.id %}">
-            {% csrf_token %}
-            <div class="btn-group btn-group-sm">
-              <button class="btn btn-outline-success" name="action" value="approve" {% if plan.status != 'submitted' %}disabled{% endif %}>{% trans "Aprovar" %}</button>
-              <button class="btn btn-outline-secondary" name="action" value="return" {% if plan.status != 'submitted' %}disabled{% endif %}>{% trans "Devolver" %}</button>
-            </div>
-          </form>
+          <div class="d-flex flex-wrap gap-2">
+            <form method="post" action="{% url 'pit:teacher_plan_approve' class_id=turma.id plan_id=plan.id %}">
+              {% csrf_token %}
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-success" name="action" value="approve" {% if plan.status != 'submitted' %}disabled{% endif %}>{% trans "Aprovar" %}</button>
+                <button class="btn btn-outline-secondary" name="action" value="return" {% if plan.status != 'submitted' %}disabled{% endif %}>{% trans "Devolver" %}</button>
+              </div>
+            </form>
+            {% if plan.status == 'approved' or plan.status == 'concluded' or plan.status == 'evaluated' %}
+              <a href="{% url 'pit:plan_teacher_evaluate' class_id=turma.id plan_id=plan.id %}"
+                 class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-chat-square-text"></i> {% trans "Avaliar" %}
+              </a>
+            {% else %}
+              <a class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">
+                <i class="bi bi-lock"></i> {% trans "Avaliar" %}
+              </a>
+            {% endif %}
+          </div>
         </td>
       </tr>
       {% empty %}
@@ -39,5 +51,3 @@
   <a href="{% url 'classes:class_detail' class_id=turma.id %}" class="btn btn-secondary btn-sm">{% trans "Voltar à turma" %}</a>
 </div>
 {% endblock %}
-
-

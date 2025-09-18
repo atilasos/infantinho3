@@ -31,6 +31,12 @@
     {# Optional: Add Help Link? #}
 </div>
 
+{% if request.user.is_authenticated %}
+  <div class="mb-4">
+    {% include "ai/assistant_button.html" with origin_app="checklists" class_id=status.student_class.id|default_if_none:'' context_descriptor=template.name prefill=_('Que sugestões tens para avançar nesta checklist?') %}
+  </div>
+{% endif %}
+
 
 <!-- Progress Bar -->
 {% with percentage=status.percent_complete|floatformat:0 %}
@@ -59,7 +65,7 @@
         {% if highlight_item_id and highlight_item_id == item.id|stringformat:"s" %}
             {% with is_highlighted=True %}{% endwith %}
         {% endif %}
-        <div class="list-group-item {% if is_highlighted %}list-group-item-warning highlight-item{% endif %}" id="item-{{ item.id }}">
+        <div class="list-group-item {% if is_highlighted %}list-group-item-warning highlight-item{% endif %} {% if item.contracted_in_council %}council-list-item{% endif %}" id="item-{{ item.id }}" data-council="{{ item.contracted_in_council|yesno:'true,false' }}">
           <div class="row align-items-center">
             {# Status Icon and Item Description Column #}
             <div class="col-md-8 col-lg-9 d-flex align-items-start gap-3 mb-2 mb-md-0">
@@ -78,8 +84,8 @@
               </span>
               <div class="flex-grow-1">
                   <strong class="d-block">{{ item.text }}</strong>
-                  {% if item.council_agreed %}
-                      <span class="badge bg-warning text-dark small" title="{% trans 'Agreed in Council' %}"><i class="bi bi-star-fill"></i> {% trans "Council Focus" %}</span>
+                  {% if item.contracted_in_council %}
+                      <span class="badge bg-warning text-dark small council-badge" title="{% trans 'Agreed in Council' %}"><i class="bi bi-star-fill"></i> {% trans "Council Focus" %}</span>
                   {% endif %}
                   {% if item.criteria %}<small class="d-block text-muted fst-italic mt-1">{% trans "Criteria:" %} {{ item.criteria }}</small>{% endif %}
               </div>
@@ -133,4 +139,13 @@
 {% block extra_js %}
 {# Load the checklist specific JS #}
 <script src="{% static 'js/checklists.js' %}" defer></script>
+<style>
+.council-list-item {
+    border-left: 4px solid #ffc107;
+    background-image: linear-gradient(90deg, rgba(255,193,7,0.18), transparent);
+}
+.council-badge {
+    font-weight: 600;
+}
+</style>
 {% endblock extra_js %}

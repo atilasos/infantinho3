@@ -3,10 +3,53 @@
 
 {% block content %}
 <div class="container mt-3">
-  <h1 class="h4">{{ project.title }} — {{ turma.name }}</h1>
-  <p class="text-muted">{{ project.description|default:_("Sem descrição.") }}</p>
-  <p><strong>{% trans "Estado" %}:</strong> {{ project.get_state_display }}</p>
-  <p><strong>{% trans "Membros" %}:</strong> {% for m in project.members.all %}{{ m.get_full_name|default:m.username }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-muted">-</span>{% endfor %}</p>
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+    <h1 class="h4 mb-0">{{ project.title }} — {{ turma.name }}</h1>
+    <div class="d-flex gap-2">
+      <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-secondary btn-sm">{% trans "Voltar" %}</a>
+      {% if can_edit %}
+        <a href="{% url 'projects:project_update' class_id=turma.id project_id=project.id %}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-pencil-square"></i> {% trans "Editar" %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if request.user.is_authenticated %}
+    <div class="mb-3">
+      {% include "ai/assistant_button.html" with origin_app="projects" class_id=turma.id context_descriptor=project.title prefill=_('Ajuda-nos a planear o próximo passo deste projeto cooperativo.') %}
+    </div>
+  {% endif %}
+
+  <p class="text-muted">{{ project.description|default:_("Sem descrição.")|linebreaksbr }}</p>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-3">
+      <small class="text-muted text-uppercase">{% trans "Estado" %}</small>
+      <div class="fw-bold">{{ project.get_state_display }}</div>
+    </div>
+    <div class="col-md-3">
+      <small class="text-muted text-uppercase">{% trans "Início" %}</small>
+      <div>{{ project.start_date|date:"Y-m-d"|default:"-" }}</div>
+    </div>
+    <div class="col-md-3">
+      <small class="text-muted text-uppercase">{% trans "Fim previsto" %}</small>
+      <div>{{ project.end_date|date:"Y-m-d"|default:"-" }}</div>
+    </div>
+    <div class="col-md-3">
+      <small class="text-muted text-uppercase">{% trans "Produto final" %}</small>
+      <div>{{ project.product_description|default:"-" }}</div>
+    </div>
+  </div>
+
+  <h2 class="h5 mt-4">{% trans "Membros" %}</h2>
+  <ul class="list-group mb-3">
+    {% for m in project.members.all %}
+      <li class="list-group-item">{{ m.get_full_name|default:m.username }}</li>
+    {% empty %}
+      <li class="list-group-item text-muted">{% trans "Sem membros associados." %}</li>
+    {% endfor %}
+  </ul>
 
   <h2 class="h5 mt-4">{% trans "Tarefas" %}</h2>
   <ul class="list-group">
@@ -14,7 +57,11 @@
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <div>
           <div class="fw-bold">{{ t.description }}</div>
-          <div class="small text-muted">{% trans "Responsável" %}: {{ t.responsible.get_full_name|default:t.responsible.username|default:"-" }} · {% trans "Data" %}: {{ t.due_date|date:"Y-m-d"|default:"-" }}</div>
+          <div class="small text-muted">
+            {% trans "Responsável" %}: {{ t.responsible.get_full_name|default:t.responsible.username|default:"-" }} ·
+            {% trans "Data" %}: {{ t.due_date|date:"Y-m-d"|default:"-" }} ·
+            {% trans "Ordem" %}: {{ t.order }}
+          </div>
         </div>
         <span class="badge text-bg-secondary">{{ t.get_state_display }}</span>
       </li>
@@ -22,9 +69,5 @@
       <li class="list-group-item text-muted">{% trans "Sem tarefas." %}</li>
     {% endfor %}
   </ul>
-
-  <a href="{% url 'projects:project_list' class_id=turma.id %}" class="btn btn-secondary btn-sm mt-3">{% trans "Voltar" %}</a>
 </div>
 {% endblock %}
-
-

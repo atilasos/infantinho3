@@ -24,6 +24,7 @@ from django.core.files.storage import default_storage
 # App-specific imports
 from .models import Post, Comment, ModerationLog
 from .forms import PostForm, CommentForm
+from .pedagogy import MEM_CATEGORY_GUIDANCE
 # Use the new/updated permission decorators
 from .permissions import (
     turma_member_required, 
@@ -35,6 +36,17 @@ from .permissions import (
 from classes.models import Class
 from users.models import GuardianRelation
 from users.decorators import group_required # Assuming this exists for teacher/admin checks
+
+def _guidance_payload():
+    """Prepare MEM guidance metadata for template rendering."""
+    return {
+        key: {
+            'title': str(data['title']),
+            'description': str(data['description']),
+            'prompts': [str(prompt) for prompt in data['prompts']],
+        }
+        for key, data in MEM_CATEGORY_GUIDANCE.items()
+    }
 
 @turma_member_required # Checks user is authenticated and related to the class
 def post_list(request, class_id):
@@ -135,7 +147,8 @@ def post_detail(request, post_id): # Removed class_id
         'can_remove_post': can_remove_post,
         'can_remove_comments': can_remove_comments,
         'can_restore_post': can_restore_post,
-        'comment_form': CommentForm() # Include blank comment form
+        'comment_form': CommentForm(), # Include blank comment form
+        'category_guidance': _guidance_payload().get(post.categoria),
     }
     return render(request, 'blog/post_detail.html', context)
 
@@ -185,6 +198,7 @@ def post_create(request, class_id):
         'turma': turma,
         'form': form,
         'edit_mode': False, # Indicate create mode
+        'category_guidance': _guidance_payload(),
     }
     return render(request, 'blog/post_form.html', context)
 
@@ -224,6 +238,7 @@ def post_edit(request, post_id): # Removed class_id
         'form': form,
         'post': post,
         'edit_mode': True, # Indicate edit mode
+        'category_guidance': _guidance_payload(),
     }
     return render(request, 'blog/post_form.html', context)
 
@@ -640,6 +655,7 @@ def post_create_global(request):
     context = {
         'form': form,
         'edit_mode': False,
+        'category_guidance': _guidance_payload(),
     }
     # Use a generic form template, maybe rename post_form.html?
     return render(request, 'blog/post_form_global.html', context)
