@@ -1,0 +1,40 @@
+{% load i18n %}
+<div class="ai-assistant-widget border rounded p-3 bg-light" data-ai-assistant
+     data-ai-endpoint="{% url 'ai:assistant' %}"
+     data-ai-feedback-endpoint="{% url 'ai:feedback' %}"
+     data-ai-origin="{{ origin_app|default:'portal' }}"
+     data-ai-class-id="{{ class_id|default:'' }}"
+     data-ai-context="{{ context_descriptor|default:'' }}"
+     data-ai-source="{{ source_element|default:'' }}">
+    <button type="button" class="btn btn-outline-primary btn-sm" data-ai-open-chat>
+        <i class="bi bi-stars me-1"></i> {% trans "Pedir ajuda à IA" %}
+    </button>
+
+    <div class="card shadow-sm ai-chat-panel d-none position-fixed" style="width: 320px; max-width: 90vw; bottom: 2rem; right: 2rem; z-index: 1080;" data-ai-panel>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="fw-semibold"><i class="bi bi-magic me-1"></i>{% trans "Assistente MEM" %}</div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-ai-close>&times;</button>
+        </div>
+        <div class="card-body small ai-chat-body" data-ai-messages style="max-height: 260px; overflow-y: auto;">
+            <p class="text-muted mb-0">{% trans "Coloca uma questão sobre a tua checklist, PIT ou projeto. Resposta curta e prática." %}</p>
+        </div>
+        <div class="card-footer">
+            <textarea class="form-control form-control-sm" rows="2" data-ai-input placeholder="{% trans 'Escreve a tua dúvida...' %}"></textarea>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <button type="button" class="btn btn-primary btn-sm" data-ai-send>
+                    <i class="bi bi-arrow-up-right-circle me-1"></i>{% trans "Enviar" %}
+                </button>
+                <div class="d-flex gap-1 align-items-center d-none" data-ai-feedback-wrapper>
+                    <span class="text-muted small">{% trans "Foi útil?" %}</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" data-ai-feedback="helpful" data-ai-feedback-label="{% trans 'Obrigado pelo feedback!' %}">
+                        <i class="bi bi-hand-thumbs-up"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-ai-feedback="not_helpful" data-ai-feedback-label="{% trans 'Vamos ajustar a resposta.' %}">
+                        <i class="bi bi-hand-thumbs-down"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="text-danger small mt-2 d-none" data-ai-error></div>
+        </div>
+    </div>
+</div>

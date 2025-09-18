@@ -33,8 +33,9 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
 # Add localhost and common dev hosts if DEBUG is True
-if DEBUG and not ALLOWED_HOSTS:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+if DEBUG:
+    defaults = {'localhost', '127.0.0.1', 'testserver'}
+    ALLOWED_HOSTS = list({host for host in ALLOWED_HOSTS if host} | defaults)
 
 
 # Application definition
@@ -65,6 +66,8 @@ INSTALLED_APPS = [
     'pit.apps.PitConfig', # Add PIT app
     'projects.apps.ProjectsConfig', # Add Projects app
     'council.apps.CouncilConfig', # Add Council app
+    'demo.apps.DemoConfig', # Demo data helpers
+    'ai.apps.AiConfig', # IA orchestration services
 ]
 
 MIDDLEWARE = [
@@ -296,8 +299,23 @@ if not DEBUG:
                 'propagate': True,
             },
         },
-    }
+}
 
+# --- IA Settings ---
+AI_SERVICE_PROVIDER = os.environ.get('AI_SERVICE_PROVIDER', 'openai')
+AI_DEFAULT_MODEL = os.environ.get('AI_DEFAULT_MODEL', 'gpt-5-mini')
+AI_MODEL_COSTS = {
+    'gpt-5-nano': os.environ.get('AI_COST_GPT5_NANO', '0.00015'),
+    'gpt-5-mini': os.environ.get('AI_COST_GPT5_MINI', '0.00090'),
+    'gpt-5': os.environ.get('AI_COST_GPT5', '0.00300'),
+}
+AI_FAKE_RESPONSES = os.environ.get('AI_FAKE_RESPONSES', 'True').lower() in {'1', 'true', 'sim', 'yes'}
+AI_RATE_LIMITS = {
+    'student': int(os.environ.get('AI_LIMIT_STUDENT', 12)),
+    'teacher': int(os.environ.get('AI_LIMIT_TEACHER', 24)),
+    'guardian': int(os.environ.get('AI_LIMIT_GUARDIAN', 6)),
+    'admin': int(os.environ.get('AI_LIMIT_ADMIN', 60)),
+}
 # --- Import environment-specific settings if they exist --- 
 # (Allows overriding settings in prod.py or local.py without version control)
 try:

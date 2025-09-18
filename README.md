@@ -11,7 +11,9 @@ O Infantinho 3.0 é um portal educativo que facilita a gestão cooperada da apre
 ## Funcionalidades Principais
 - **Gestão de Turmas e Utilizadores**: Criação e gestão de turmas, perfis de alunos, professores, encarregados de educação e administradores.
 - **Ferramentas Cooperativas MEM**: Listas de verificação, PIT, planos de projeto, diário de turma, registo de decisões.
-- **Blog/Diário de Turma**: Blog por turma para registo de atividades, reflexões e produções.
+- **Blog/Diário de Turma**: Blog por turma para registo de atividades, reflexões e produções, agora com orientações pedagógicas MEM nos formulários e nas leituras detalhadas.
+- **Planos Individuais de Trabalho**: Autoavaliação do aluno, feedback do professor e notificações automáticas em cada etapa.
+- **Projetos Cooperativos**: Criação e edição de projetos partilhados por professores e alunos, com tarefas atribuídas apenas a membros da turma.
 - **Participação Ativa dos Alunos**: Alunos criam posts, propõem e autoavaliam PITs, participam em projetos e interagem com IA.
 - **Ferramentas do Professor**: Gestão de turmas, avaliação/validação de PITs e aprendizagens.
 - **Agentes de IA Colaborativos**: Assistentes virtuais para apoio contextualizado, alinhados com documentos pedagógicos.
@@ -117,6 +119,28 @@ python manage.py compilemessages
 # 5) Iniciar servidor
 python manage.py runserver
 ```
+
+## Dados de demonstração
+
+O repositório inclui um comando que gera um cenário MEM completo (utilizadores, turmas, blog, checklists, PIT, projetos, conselho e traços de IA) para testes e demonstrações.
+
+```sh
+# criar dados
+python manage.py demo_data
+
+# recriar dados do zero
+python manage.py demo_data --reset
+
+# remover dados demo
+python manage.py demo_data --clean
+
+# opções adicionais
+python manage.py demo_data --classes=3 --alunos=12 --seed=123
+```
+
+Para segurança, o comando só corre se `DEBUG=True` ou se definir `ALLOW_DEMO_SEED=1` no ambiente. Todos os registos criados são catalogados e removidos automaticamente com `--clean`.
+
+No final da execução é apresentada uma tabela com os logins demo (email e palavra-passe `demo1234`) para validação manual.
 
 ## Dicas rápidas de Git
 

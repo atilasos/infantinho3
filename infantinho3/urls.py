@@ -57,6 +57,8 @@ urlpatterns = [
     path('', include('projects.urls', namespace='projects')),
     # Council URLs
     path('', include('council.urls', namespace='council')),
+    # AI Assistant endpoints
+    path('api/ai/', include('ai.urls', namespace='ai')),
     
     # CKEditor URLs (Only needed if using django-ckeditor-uploader)
     # path('ckeditor/', include('ckeditor_uploader.urls')), # Commented out as uploader is not used

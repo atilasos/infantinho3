@@ -524,6 +524,43 @@ Pretende-se implementar uma **arquitetura multi-agente**:
   - **Dados para IA:** Poderemos alimentar internamente documentos como o **Perfil dos Alunos** e **Aprendizagens Essenciais** para que o agente possa citar esses documentos. Isso pode ser feito inserindo resumos nos prompts ou utilizando técnicas de **retrieval augmentation**: 
     - Ex: antes de responder, buscar num índice local (podemos indexar textos dos documentos base) trechos relevantes e incluí-los no prompt.
   - Com o crescimento dos dados (posts, decisões, PITs), poderíamos treinar um modelo local de recomendação, mas isso excede escopo imediato. Inicialmente, rely on GPT's knowledge and our prompt engineering.
+- **Arquitetura renovada de orquestração IA centrada no MEM:** Para equilibrar **personalização pedagógica** com **custos controlados**, adotaremos uma pipeline multi-modelo:
+  - **AIRequestOrchestrator:** serviço no backend que recebe todas as interações IA (chat, botões de ajuda contextual). Ele constrói um objeto `AIRequest` com metadados (utilizador, turma, app origem, objetivos MEM associados) e delega o processamento.
+  - **PromptOptimizer (GPT-5 nano):** primeira etapa obrigatória. Um modelo de baixo custo (GPT-5 nano) valida segurança do pedido, identifica a intenção pedagógica (ex: "reforço de aprendizagem", "apoio a avaliação formativa", "sugestão de projeto cooperativo"), propõe melhorias de prompt e estima complexidade. Ele também decide se o pedido pode ser respondido diretamente (por exemplo, dúvidas operacionais simples) ou se deve ser encaminhado para modelos mais capazes.
+  - **ModelRouter:** regras + classificação do nano definem o destino: 
+    - `gpt-5-nano` responde diretamente pedidos muito curtos ou administrativos.
+    - `gpt-5-mini` (intermédio) cobre explicações curtas, reformulação de feedback e pequenas sugestões.
+    - `gpt-5` (pleno) só é ativado quando o nano sinaliza necessidade de raciocínio prolongado, geração de planos pedagógicos extensos ou síntese de múltiplas fontes MEM.
+  - **ContextBroker:** consolida informação pedagógica antes de invocar o modelo final. Consulta `PersonaContextStore` (ver abaixo), aplica limites de tokens e destaca prioridades MEM (autonomia, cooperação, diferenciação).
+  - **ResponseGuard (GPT-5 nano):** após obter resposta do modelo final, o nano executa uma verificação rápida para garantir que o texto cumpre orientações (linguagem apropriada, foco em desenvolvimento integral, ausência de respostas diretas a avaliações, etc.).
+  - **Logging & Insights:** cada etapa gera metadados (modelo escolhido, custo estimado, intenções MEM) guardados para auditoria e melhoria contínua.
+- **Armazenamento contextual pedagógico:**
+  - Introduziremos estruturas dedicadas, por exemplo `LearnerContextSnapshot`, `GroupLearningProfile` e `TeacherFocusAreas`, agregando dados de PIT, checklists, projetos, diário e decisões de conselho. Cada snapshot é etiquetado com competências MEM (autogestão, cooperação, participação democrática) para facilitar recomendações alinhadas.
+  - Sessões de chat utilizam `AIInteractionSession` com armazenamento de conversas resumido. Depois de algumas mensagens, o GPT-5 nano gera resumos pedagógicos para manter histórico curto e barato.
+  - Contextos são atualizados por sinais automáticos (ex: validação de item checklist, nova decisão de conselho) e podem ser enriquecidos manualmente pelo professor ("foco em leitura expressiva nas próximas duas semanas").
+- **Controlo ativo de custos:**
+  - Gatekeeping obrigatório no GPT-5 nano reduz chamadas dispendiosas.
+  - Respostas frequentes são memorizadas em cache curto (por intenção + contexto chave) e confirmadas via nano antes de reutilização.
+  - Limites configuráveis por utilizador/turma (nº de chamadas premium por dia) com alertas para o admin.
+  - Summaries automáticos (nano) comprimem contexto histórico antes de enviar aos modelos maiores, mantendo o discurso coerente sem exceder limites de tokens.
+  - Monitorizamos custo por módulo (blog, PIT, projetos) para identificar abusos e ajustar prompts.
+  - A camada de providers (`OpenAI`, `Google Vertex`) pode ser trocada em tempo real para testes comparativos; custos/tokens ficam registados por pedido para apoiar decisões de custo-benefício.
+- **Integração natural nas apps existentes:**
+  - **Blog/Diário:** botão "Refletir com IA" sugere perguntas de metacognição alinhadas às decisões de conselho recentes; nano verifica se basta uma resposta curta (mini) ou se exige síntese longa (normal).
+  - **Checklists:** IA sugere próximos passos segundo lacunas marcadas e orientações MEM de progressão; recomenda feedback encorajador ao professor.
+  - **PIT:** apoia elaboração de objetivos SMART, cruzando necessidades individuais e metas coletivas da turma; propõe estratégias de cooperação quando adequado.
+  - **Projetos:** ajuda grupos a planear fases, integrar áreas disciplinares e documentar aprendizagens cooperativas.
+  - **Conselho de Turma:** gera minutas de decisões a partir do diário e destaca compromissos a monitorizar, sempre reforçando participação democrática.
+  - Em todos os pontos, a experiência IA aparece como extensão natural de fluxos já existentes, evitando interfaces paralelas e mantendo o protagonismo de alunos e professores.
+- **APIs disponíveis e auditoria:**
+  - `POST /api/ai/assistant/` recebe `{message, origin_app, class_id?, session_id?}` e devolve o texto gerado, o modelo selecionado e metadados (`session_id`, `request_id`, custos estimados).
+  - `POST /api/ai/feedback/` regista o feedback do utilizador (`helpful`, `neutral`, `not_helpful`) em `AIResponseLog.user_feedback`, permitindo medir utilidade pedagógica.
+  - `GET /api/ai/session/<uuid>/` devolve o histórico resumido da sessão para autoanálise do aluno/professor; apenas o próprio utilizador tem acesso.
+  - `AIInteractionSession`, `AIRequest`, `AIResponseLog`, `AIUsageQuota`, `LearnerContextSnapshot` e `TeacherFocusArea` estão disponíveis no Django Admin para revisão humana, com filtros por origem, quota diária e estado de feedback.
+- **Políticas de dados e revisão contínua:**
+  - Cada pedido guarda tokens, custos estimados e decisões de guardiões, permitindo auditorias regulares com a equipa MEM e com a direção.
+  - Quotas diárias por utilizador/turma (`AIUsageQuota`) controlam despesas de API e podem ser ajustadas via `AI_RATE_LIMITS`.
+  - Feedback recolhido diretamente na interface orienta melhorias mensais nos prompts pedagógicos e sinaliza respostas que precisam de supervisão humana.
 - **Interface com Usuário:**
   - Integrar um **chatbot UI** no portal:
     - Por exemplo, um ícone "Assistente IA" que abre um chat. Dependendo se o usuário é aluno ou professor, invoca o agente correspondente.
