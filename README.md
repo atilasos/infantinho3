@@ -21,14 +21,21 @@ O Infantinho 3.0 é um portal educativo que facilita a gestão cooperada da apre
 - **Internacionalização**: Interface em Português Europeu, preparada para outros idiomas.
 
 ## Arquitetura e Tecnologias
-- **Backend**: Python (Django), ORM integrado, autenticação, i18n.
-- **Frontend**: Django Templates (MVP), possível evolução para SPA (React/Vue) no futuro.
-- **Base de Dados**: PostgreSQL (produção), SQLite (desenvolvimento).
-- **Integração Microsoft**: OAuth2/OpenID Connect via bibliotecas como social-auth-app-django.
-- **IA**: Integração com OpenAI GPT ou Google PaLM, configurável pelo administrador.
-- **Administração**: Painel para configuração de domínios, IA, língua padrão, gestão global.
-- **Segurança**: Controlo de acesso por papéis, validação de dados, conformidade RGPD.
-- **Internacionalização**: Suporte nativo a múltiplos idiomas via Django.
+- **Backend**: Django 5 (REST Framework, SimpleJWT), apps modulares (`users`, `classes`, `checklists`, `pit`, `projects`, `council`, `ai`).
+- **Frontend**: Next.js 15 (App Router, React Query, Tailwind) a consumir a API headless.
+- **Autenticação**: Single Sign-On Microsoft (Azure AD) → JWT (access + refresh cookie HTTP-only).
+- **Base de Dados**: PostgreSQL (produção) e SQLite (desenvolvimento local).
+- **Integração IA**: Orquestrador configurável (OpenAI/Google), quotas e sessions persistentes.
+- **Segurança & RGPD**: Controlo de acesso por papéis, tokens rotativos, cookies HttpOnly.
+- **Internacionalização**: Interface padrão pt-PT, preparado para multi-idioma no frontend.
+
+> ### Documentação
+> Guias detalhados vivem em `docs/`:
+> - `docs/AGENTS.md`: Guia para contribuidores/headless agents.
+> - `docs/headless_refactor_plan.md`: Roadmap técnico da migração.
+> - `docs/api-schema.yaml`: export do esquema OpenAPI gerado via `python manage.py spectacular --file docs/api-schema.yaml`.
+> - `docs/notifications.md`: resumo da estratégia de notificações por email/webhook.
+> - `docs/` _(+ restantes ficheiros de referência)_ mantém diagramas, listas e contextos.
 
 ## MVP (Produto Viável Mínimo)
 O MVP inclui:
@@ -47,9 +54,9 @@ O MVP inclui:
    python -m venv venv
    source venv/bin/activate  # ou venv\Scripts\activate no Windows
    ```
-3. Instale as dependências:
+3. Instale as dependências do backend:
    ```bash
-   pip install -r requirements.txt
+   pip install -r backend/requirements.txt
    ```
 4. Configure o banco de dados (por padrão, SQLite para dev).
 5. Execute as migrações:
@@ -60,12 +67,32 @@ O MVP inclui:
    ```bash
    python manage.py runserver
    ```
+7. (Opcional) Execute a API via [`manage.py`](manage.py) a partir da raiz ou dentro de `backend/`.
+
+### Frontend Next.js (headless)
+```bash
+cd frontend
+npm install
+npm run dev  # http://localhost:3000
+```
+
+Configure `NEXT_PUBLIC_API_BASE_URL` (ver `frontend/.env.example`) para apontar para o domínio do backend (`http://localhost:8000/api` em desenvolvimento).
+- A página `/` apresenta o blog público do colégio consumindo o endpoint aberto `/api/blog/public`.
+- O painel autenticado fica exposto em `/dashboard`, mantendo as restantes páginas (`/checklists`, `/pit`, `/diario`, `/assistente`).
+
+#### Ferramentas de apoio Frontend
+
+- `npm run generate:api` — gera `src/types/openapi.ts` a partir do esquema exposto em `/api/schema` (usa `API_SCHEMA_URL` quando necessário). O arquivo `docs/api-schema.yaml` facilita a execução offline.
+- `npm run storybook` — abre a biblioteca de componentes headless (ex.: cartões de módulo) na porta `6006`; útil para demonstrar o UI kit à direção.
+- `npm run test:e2e` — corre testes Playwright sobre o fluxo visitante → login. Execute `npx playwright install chromium` uma vez antes da primeira corrida.
+- `npm run lint` — lint React/TypeScript com as novas páginas (`/checklists`, `/pit`, `/diario`, `/assistente`).
 
 ## Estrutura do Projeto
-- `users/` — Gestão de utilizadores, papéis e autenticação
-- `classes/` — Gestão de turmas
-- `blog/` — Módulo de blog/diário de turma
-- `checklists/` — Listas de verificação de aprendizagens
+- `backend/` — Projeto Django (apps, config, static, migrations, testes)
+- `frontend/` — Aplicação Next.js 15 (App Router, Tailwind, React Query)
+- `docs/` — Documentação funcional/técnica consolidada
+- `deploy/` — Exemplos de configuração (systemd, nginx, env)
+- `TODO.md` — Roadmap incremental
 
 ## Deploy em Produção
 
@@ -82,7 +109,9 @@ O MVP inclui:
 - [ ] Configure backup regular do banco e da pasta `/media/`
 
 ### Variáveis de Ambiente
-Veja o arquivo `deploy/.env.example` para todas as variáveis necessárias.
+- Backend: `deploy/.env.example`
+- Frontend: `frontend/.env.example`
+- Opcional (backend): `NOTIFICATION_WEBHOOK_URL` para replicar avisos por HTTP além de email.
 
 ### Comandos Essenciais
 ```sh

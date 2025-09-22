@@ -1,0 +1,3836 @@
+openapi: 3.0.3
+info:
+  title: Infantinho 3.0 API
+  version: 3.0.0
+  description: Headless API para o portal educativo do Movimento da Escola Moderna.
+paths:
+  /api/ai/assistant:
+    post:
+      operationId: ai_assistant_create
+      tags:
+      - ai
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/ai/feedback:
+    post:
+      operationId: ai_feedback_create
+      tags:
+      - ai
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/ai/sessions/{session_id}:
+    get:
+      operationId: ai_sessions_retrieve
+      parameters:
+      - in: path
+        name: session_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - ai
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/logout:
+    post:
+      operationId: auth_logout_create
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/microsoft/callback:
+    get:
+      operationId: auth_microsoft_callback_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/microsoft/login:
+    get:
+      operationId: auth_microsoft_login_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/token/refresh:
+    post:
+      operationId: auth_token_refresh_create
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/blog/posts:
+    get:
+      operationId: blog_posts_list
+      parameters:
+      - in: query
+        name: categoria
+        schema:
+          type: string
+          enum:
+          - AVISO
+          - CONSELHO
+          - DIARIO
+          - OUTRO
+          - PROJETO
+          - REFLEXAO
+          - TEA
+          - TRABALHO
+        description: |-
+          Escolhe o instrumento MEM que melhor corresponde ao registo.
+
+          * `DIARIO` - Diário de Turma
+          * `TEA` - Registo do Trabalho de Estudo Autónomo
+          * `PROJETO` - Projeto Cooperativo
+          * `CONSELHO` - Conselho de Cooperação Educativa
+          * `TRABALHO` - Partilha de Produções
+          * `AVISO` - Aviso ou Comunicação à Comunidade
+          * `REFLEXAO` - Reflexão sobre a Vida da Turma
+          * `OUTRO` - Outro Registo Pedagógico
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          title: Estado
+          enum:
+          - PENDING
+          - PUBLISHED
+        description: |-
+          Estado de publicação do post.
+
+          * `PENDING` - Pendente de Aprovação
+          * `PUBLISHED` - Publicado
+      - in: query
+        name: turma_id
+        schema:
+          type: integer
+          nullable: true
+      tags:
+      - blog
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+          description: ''
+    post:
+      operationId: blog_posts_create
+      tags:
+      - blog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+  /api/blog/posts/{id}:
+    get:
+      operationId: blog_posts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Publicação.
+        required: true
+      tags:
+      - blog
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    put:
+      operationId: blog_posts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Publicação.
+        required: true
+      tags:
+      - blog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    patch:
+      operationId: blog_posts_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Publicação.
+        required: true
+      tags:
+      - blog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    delete:
+      operationId: blog_posts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Publicação.
+        required: true
+      tags:
+      - blog
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/blog/public:
+    get:
+      operationId: blog_public_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - blog
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicPost'
+          description: ''
+  /api/checklists/marks:
+    get:
+      operationId: checklists_marks_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - checklists
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedChecklistMarkList'
+          description: ''
+  /api/checklists/marks/{id}:
+    get:
+      operationId: checklists_marks_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Marcação de Checklist.
+        required: true
+      tags:
+      - checklists
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistMark'
+          description: ''
+    patch:
+      operationId: checklists_marks_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Marcação de Checklist.
+        required: true
+      tags:
+      - checklists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedChecklistMarkRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedChecklistMarkRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedChecklistMarkRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistMark'
+          description: ''
+  /api/checklists/statuses:
+    get:
+      operationId: checklists_statuses_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - checklists
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedChecklistStatusList'
+          description: ''
+  /api/checklists/statuses/{id}:
+    get:
+      operationId: checklists_statuses_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Estado da Checklist do
+          Aluno.
+        required: true
+      tags:
+      - checklists
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistStatus'
+          description: ''
+  /api/checklists/templates:
+    get:
+      operationId: checklists_templates_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - checklists
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedChecklistTemplateList'
+          description: ''
+  /api/checklists/templates/{id}:
+    get:
+      operationId: checklists_templates_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Modelo de Checklist.
+        required: true
+      tags:
+      - checklists
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistTemplate'
+          description: ''
+  /api/classes:
+    get:
+      operationId: classes_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - classes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClassList'
+          description: ''
+    post:
+      operationId: classes_create
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+          description: ''
+  /api/classes/{id}:
+    get:
+      operationId: classes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Turma.
+        required: true
+      tags:
+      - classes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+          description: ''
+    put:
+      operationId: classes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Turma.
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+          description: ''
+    patch:
+      operationId: classes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Turma.
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClassRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClassRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClassRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+          description: ''
+    delete:
+      operationId: classes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Turma.
+        required: true
+      tags:
+      - classes
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/classes/{id}/assign_members:
+    post:
+      operationId: classes_assign_members_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Turma.
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClassRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+          description: ''
+  /api/council/decisions:
+    get:
+      operationId: council_decisions_list
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: string
+          title: Categoria
+          enum:
+          - activity
+          - learning_goal
+          - other
+          - rule
+        description: |-
+          * `rule` - Regra
+          * `learning_goal` - Objetivo de Aprendizagem
+          * `activity` - Atividade/Evento
+          * `other` - Outro
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          title: Estado
+          enum:
+          - done
+          - in_progress
+          - pending
+        description: |-
+          * `pending` - Pendente
+          * `in_progress` - Em curso
+          * `done` - Cumprido
+      - in: query
+        name: student_class_id
+        schema:
+          type: integer
+          title: Turma
+      tags:
+      - council
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCouncilDecisionList'
+          description: ''
+    post:
+      operationId: council_decisions_create
+      tags:
+      - council
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouncilDecision'
+          description: ''
+  /api/council/decisions/{id}:
+    get:
+      operationId: council_decisions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Decisão de Conselho.
+        required: true
+      tags:
+      - council
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouncilDecision'
+          description: ''
+    put:
+      operationId: council_decisions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Decisão de Conselho.
+        required: true
+      tags:
+      - council
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouncilDecision'
+          description: ''
+    patch:
+      operationId: council_decisions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Decisão de Conselho.
+        required: true
+      tags:
+      - council
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCouncilDecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCouncilDecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCouncilDecisionRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouncilDecision'
+          description: ''
+    delete:
+      operationId: council_decisions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Decisão de Conselho.
+        required: true
+      tags:
+      - council
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/council/decisions/{id}/status:
+    post:
+      operationId: council_decisions_status_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Decisão de Conselho.
+        required: true
+      tags:
+      - council
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CouncilDecisionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouncilDecision'
+          description: ''
+  /api/council/proposals:
+    get:
+      operationId: council_proposals_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          title: Estado
+          enum:
+          - approved
+          - pending
+          - rejected
+          - taken_to_council
+        description: |-
+          * `pending` - Pendente
+          * `taken_to_council` - Levado a Conselho
+          * `approved` - Aprovado
+          * `rejected` - Rejeitado
+      - in: query
+        name: student_class_id
+        schema:
+          type: integer
+          title: Turma
+      tags:
+      - council
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStudentProposalList'
+          description: ''
+    post:
+      operationId: council_proposals_create
+      tags:
+      - council
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProposal'
+          description: ''
+  /api/council/proposals/{id}:
+    get:
+      operationId: council_proposals_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Proposta de Aluno.
+        required: true
+      tags:
+      - council
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProposal'
+          description: ''
+    put:
+      operationId: council_proposals_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Proposta de Aluno.
+        required: true
+      tags:
+      - council
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProposal'
+          description: ''
+    patch:
+      operationId: council_proposals_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Proposta de Aluno.
+        required: true
+      tags:
+      - council
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentProposalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentProposalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentProposalRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProposal'
+          description: ''
+    delete:
+      operationId: council_proposals_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Proposta de Aluno.
+        required: true
+      tags:
+      - council
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/council/proposals/{id}/status:
+    post:
+      operationId: council_proposals_status_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Proposta de Aluno.
+        required: true
+      tags:
+      - council
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudentProposalRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProposal'
+          description: ''
+  /api/me:
+    get:
+      operationId: me_retrieve
+      tags:
+      - me
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/pit/plans:
+    get:
+      operationId: pit_plans_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          title: Estado
+          enum:
+          - approved
+          - concluded
+          - draft
+          - evaluated
+          - submitted
+        description: |-
+          * `draft` - Rascunho
+          * `submitted` - Submetido
+          * `approved` - Aprovado
+          * `concluded` - Concluído
+          * `evaluated` - Avaliado
+      - in: query
+        name: student_class_id
+        schema:
+          type: integer
+          title: Turma
+      tags:
+      - pit
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedIndividualPlanList'
+          description: ''
+    post:
+      operationId: pit_plans_create
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualPlan'
+          description: ''
+  /api/pit/plans/{id}:
+    get:
+      operationId: pit_plans_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Plano Individual de Trabalho.
+        required: true
+      tags:
+      - pit
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualPlan'
+          description: ''
+    put:
+      operationId: pit_plans_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Plano Individual de Trabalho.
+        required: true
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualPlan'
+          description: ''
+    patch:
+      operationId: pit_plans_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Plano Individual de Trabalho.
+        required: true
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedIndividualPlanRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedIndividualPlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedIndividualPlanRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualPlan'
+          description: ''
+    delete:
+      operationId: pit_plans_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Plano Individual de Trabalho.
+        required: true
+      tags:
+      - pit
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/pit/plans/{id}/self-evaluation:
+    post:
+      operationId: pit_plans_self_evaluation_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Plano Individual de Trabalho.
+        required: true
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualPlan'
+          description: ''
+  /api/pit/plans/{id}/submit:
+    post:
+      operationId: pit_plans_submit_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Plano Individual de Trabalho.
+        required: true
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualPlan'
+          description: ''
+  /api/pit/plans/{id}/teacher-decision:
+    post:
+      operationId: pit_plans_teacher_decision_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Plano Individual de Trabalho.
+        required: true
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualPlan'
+          description: ''
+  /api/pit/plans/{id}/teacher-evaluation:
+    post:
+      operationId: pit_plans_teacher_evaluation_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Plano Individual de Trabalho.
+        required: true
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IndividualPlanRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndividualPlan'
+          description: ''
+  /api/pit/tasks:
+    get:
+      operationId: pit_tasks_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - pit
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlanTaskList'
+          description: ''
+    post:
+      operationId: pit_tasks_create
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanTaskRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PlanTaskRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PlanTaskRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTask'
+          description: ''
+  /api/pit/tasks/{id}:
+    get:
+      operationId: pit_tasks_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Tarefa do Plano.
+        required: true
+      tags:
+      - pit
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTask'
+          description: ''
+    put:
+      operationId: pit_tasks_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Tarefa do Plano.
+        required: true
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanTaskRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PlanTaskRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PlanTaskRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTask'
+          description: ''
+    patch:
+      operationId: pit_tasks_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Tarefa do Plano.
+        required: true
+      tags:
+      - pit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPlanTaskRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPlanTaskRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPlanTaskRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTask'
+          description: ''
+    delete:
+      operationId: pit_tasks_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Tarefa do Plano.
+        required: true
+      tags:
+      - pit
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/project-tasks:
+    get:
+      operationId: project_tasks_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - project-tasks
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjectTaskList'
+          description: ''
+    post:
+      operationId: project_tasks_create
+      tags:
+      - project-tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectTaskRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectTaskRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectTaskRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectTask'
+          description: ''
+  /api/project-tasks/{id}:
+    get:
+      operationId: project_tasks_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Tarefa de Projeto.
+        required: true
+      tags:
+      - project-tasks
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectTask'
+          description: ''
+    put:
+      operationId: project_tasks_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Tarefa de Projeto.
+        required: true
+      tags:
+      - project-tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectTaskRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectTaskRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectTaskRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectTask'
+          description: ''
+    patch:
+      operationId: project_tasks_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Tarefa de Projeto.
+        required: true
+      tags:
+      - project-tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectTaskRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectTaskRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectTaskRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectTask'
+          description: ''
+    delete:
+      operationId: project_tasks_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Tarefa de Projeto.
+        required: true
+      tags:
+      - project-tasks
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/projects:
+    get:
+      operationId: projects_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjectList'
+          description: ''
+    post:
+      operationId: projects_create
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /api/projects/{id}:
+    get:
+      operationId: projects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    put:
+      operationId: projects_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    patch:
+      operationId: projects_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    delete:
+      operationId: projects_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/projects/{id}/add-member:
+    post:
+      operationId: projects_add_member_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /api/projects/{id}/remove-member:
+    post:
+      operationId: projects_remove_member_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /api/projects/{id}/state:
+    post:
+      operationId: projects_state_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /api/users:
+    get:
+      operationId: users_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+    post:
+      operationId: users_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{id}:
+    get:
+      operationId: users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this utilizador.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: users_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this utilizador.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this utilizador.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: users_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this utilizador.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/{id}/deactivate:
+    post:
+      operationId: users_deactivate_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this utilizador.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{id}/promote:
+    post:
+      operationId: users_promote_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this utilizador.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    CategoriaEnum:
+      enum:
+      - DIARIO
+      - TEA
+      - PROJETO
+      - CONSELHO
+      - TRABALHO
+      - AVISO
+      - REFLEXAO
+      - OUTRO
+      type: string
+      description: |-
+        * `DIARIO` - Diário de Turma
+        * `TEA` - Registo do Trabalho de Estudo Autónomo
+        * `PROJETO` - Projeto Cooperativo
+        * `CONSELHO` - Conselho de Cooperação Educativa
+        * `TRABALHO` - Partilha de Produções
+        * `AVISO` - Aviso ou Comunicação à Comunidade
+        * `REFLEXAO` - Reflexão sobre a Vida da Turma
+        * `OUTRO` - Outro Registo Pedagógico
+    CategoryEnum:
+      enum:
+      - rule
+      - learning_goal
+      - activity
+      - other
+      type: string
+      description: |-
+        * `rule` - Regra
+        * `learning_goal` - Objetivo de Aprendizagem
+        * `activity` - Atividade/Evento
+        * `other` - Outro
+    ChecklistItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          title: Código
+          maxLength: 20
+        text:
+          type: string
+          title: Texto
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Ordem
+        contracted_in_council:
+          type: boolean
+          title: Negotiated in council
+          description: Mark if this objective foi contratualizado em Conselho de Cooperação
+            Educativa.
+      required:
+      - id
+    ChecklistItemRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          title: Código
+          maxLength: 20
+        text:
+          type: string
+          minLength: 1
+          title: Texto
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Ordem
+        contracted_in_council:
+          type: boolean
+          title: Negotiated in council
+          description: Mark if this objective foi contratualizado em Conselho de Cooperação
+            Educativa.
+    ChecklistMark:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        status_record:
+          type: integer
+          title: Estado da checklist
+        item:
+          allOf:
+          - $ref: '#/components/schemas/ChecklistItem'
+          readOnly: true
+        mark_status:
+          allOf:
+          - $ref: '#/components/schemas/MarkStatusEnum'
+          title: Estado
+        teacher_validated:
+          type: boolean
+          title: Validado pelo professor
+        comment:
+          type: string
+          title: Comentário
+        marked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Marcado em
+        marked_by:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+      required:
+      - id
+      - item
+      - marked_at
+      - marked_by
+      - status_record
+    ChecklistStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        template:
+          allOf:
+          - $ref: '#/components/schemas/ChecklistTemplate'
+          readOnly: true
+        student:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        student_class_id:
+          type: integer
+          title: Turma
+          readOnly: true
+        percent_complete:
+          type: number
+          format: double
+          readOnly: true
+          title: Percentagem completa
+          description: Percentagem calculada automaticamente de itens concluídos.
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Última atualização
+        marks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChecklistMark'
+          readOnly: true
+      required:
+      - id
+      - marks
+      - percent_complete
+      - student
+      - student_class_id
+      - template
+      - updated_at
+    ChecklistTemplate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nome
+          maxLength: 150
+        description:
+          type: string
+          title: Descrição
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChecklistItem'
+          readOnly: true
+      required:
+      - id
+      - items
+      - name
+    Class:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Nome da turma
+          description: 'Nome da turma, ex: "5º A", "Turma Azul".'
+          maxLength: 100
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: Ano escolar
+          description: 'Ano de início do ano letivo (ex: 2024 para 2024/2025) ou o
+            nível de ensino (ex: 5 para 5º ano).'
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+          readOnly: true
+        teachers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+          readOnly: true
+      required:
+      - id
+      - name
+      - students
+      - teachers
+      - year
+    ClassRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Nome da turma
+          description: 'Nome da turma, ex: "5º A", "Turma Azul".'
+          maxLength: 100
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: Ano escolar
+          description: 'Ano de início do ano letivo (ex: 2024 para 2024/2025) ou o
+            nível de ensino (ex: 5 para 5º ano).'
+      required:
+      - name
+      - year
+    CouncilDecision:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date:
+          type: string
+          format: date
+          title: Data
+        description:
+          type: string
+          title: Descrição
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CategoryEnum'
+          title: Categoria
+        status:
+          allOf:
+          - $ref: '#/components/schemas/CouncilDecisionStatusEnum'
+          readOnly: true
+          title: Estado
+        responsible:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category
+      - created_at
+      - date
+      - description
+      - id
+      - responsible
+      - status
+      - updated_at
+    CouncilDecisionRequest:
+      type: object
+      properties:
+        student_class_id:
+          type: integer
+          writeOnly: true
+        date:
+          type: string
+          format: date
+          title: Data
+        description:
+          type: string
+          minLength: 1
+          title: Descrição
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CategoryEnum'
+          title: Categoria
+        responsible_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+      required:
+      - category
+      - date
+      - description
+      - student_class_id
+    CouncilDecisionStatusEnum:
+      enum:
+      - pending
+      - in_progress
+      - done
+      type: string
+      description: |-
+        * `pending` - Pendente
+        * `in_progress` - Em curso
+        * `done` - Cumprido
+    IndividualPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        period_label:
+          type: string
+          title: Período
+          description: 'Identificador do período (ex.: "Semana 5 - Out 2025").'
+          maxLength: 100
+        start_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data de início
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data de fim
+        status:
+          allOf:
+          - $ref: '#/components/schemas/IndividualPlanStatusEnum'
+          readOnly: true
+          title: Estado
+        general_objectives:
+          type: string
+          title: Objetivos gerais
+        self_evaluation:
+          type: string
+          readOnly: true
+          title: Autoavaliação do aluno
+        teacher_evaluation:
+          type: string
+          readOnly: true
+          title: Avaliação do professor
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanTask'
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - period_label
+      - self_evaluation
+      - status
+      - student
+      - tasks
+      - teacher_evaluation
+      - updated_at
+    IndividualPlanRequest:
+      type: object
+      properties:
+        student_class_id:
+          type: integer
+          writeOnly: true
+        period_label:
+          type: string
+          minLength: 1
+          title: Período
+          description: 'Identificador do período (ex.: "Semana 5 - Out 2025").'
+          maxLength: 100
+        start_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data de início
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data de fim
+        general_objectives:
+          type: string
+          title: Objetivos gerais
+      required:
+      - period_label
+      - student_class_id
+    IndividualPlanStatusEnum:
+      enum:
+      - draft
+      - submitted
+      - approved
+      - concluded
+      - evaluated
+      type: string
+      description: |-
+        * `draft` - Rascunho
+        * `submitted` - Submetido
+        * `approved` - Aprovado
+        * `concluded` - Concluído
+        * `evaluated` - Avaliado
+    MarkStatusEnum:
+      enum:
+      - NOT_STARTED
+      - IN_PROGRESS
+      - COMPLETED
+      - VALIDATED
+      type: string
+      description: |-
+        * `NOT_STARTED` - Não Iniciado
+        * `IN_PROGRESS` - Em Progresso
+        * `COMPLETED` - Concluído
+        * `VALIDATED` - Validado
+    NullEnum:
+      enum:
+      - null
+    PaginatedChecklistMarkList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChecklistMark'
+    PaginatedChecklistStatusList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChecklistStatus'
+    PaginatedChecklistTemplateList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChecklistTemplate'
+    PaginatedClassList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Class'
+    PaginatedCouncilDecisionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CouncilDecision'
+    PaginatedIndividualPlanList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/IndividualPlan'
+    PaginatedPlanTaskList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanTask'
+    PaginatedPostList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+    PaginatedProjectList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+    PaginatedProjectTaskList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectTask'
+    PaginatedStudentProposalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentProposal'
+    PaginatedUserList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    PatchedChecklistMarkRequest:
+      type: object
+      properties:
+        status_record:
+          type: integer
+          title: Estado da checklist
+        item_id:
+          type: integer
+          writeOnly: true
+        mark_status:
+          allOf:
+          - $ref: '#/components/schemas/MarkStatusEnum'
+          title: Estado
+        teacher_validated:
+          type: boolean
+          title: Validado pelo professor
+        comment:
+          type: string
+          title: Comentário
+    PatchedClassRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Nome da turma
+          description: 'Nome da turma, ex: "5º A", "Turma Azul".'
+          maxLength: 100
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: Ano escolar
+          description: 'Ano de início do ano letivo (ex: 2024 para 2024/2025) ou o
+            nível de ensino (ex: 5 para 5º ano).'
+    PatchedCouncilDecisionRequest:
+      type: object
+      properties:
+        student_class_id:
+          type: integer
+          writeOnly: true
+        date:
+          type: string
+          format: date
+          title: Data
+        description:
+          type: string
+          minLength: 1
+          title: Descrição
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CategoryEnum'
+          title: Categoria
+        responsible_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+    PatchedIndividualPlanRequest:
+      type: object
+      properties:
+        student_class_id:
+          type: integer
+          writeOnly: true
+        period_label:
+          type: string
+          minLength: 1
+          title: Período
+          description: 'Identificador do período (ex.: "Semana 5 - Out 2025").'
+          maxLength: 100
+        start_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data de início
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data de fim
+        general_objectives:
+          type: string
+          title: Objetivos gerais
+    PatchedPlanTaskRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          minLength: 1
+          title: Descrição
+          maxLength: 255
+        subject:
+          type: string
+          title: Disciplina/área
+          maxLength: 100
+        state:
+          allOf:
+          - $ref: '#/components/schemas/PlanTaskStateEnum'
+          title: Estado
+        evidence_link:
+          type: string
+          format: uri
+          title: Ligação para evidência
+          maxLength: 200
+        teacher_feedback:
+          type: string
+          title: Feedback do professor
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Ordem
+    PatchedPostRequest:
+      type: object
+      properties:
+        turma_id:
+          type: integer
+          nullable: true
+        titulo:
+          type: string
+          title: Título
+          description: Título opcional para a publicação.
+          maxLength: 200
+        conteudo:
+          type: string
+          minLength: 1
+          title: Conteúdo
+        categoria:
+          allOf:
+          - $ref: '#/components/schemas/CategoriaEnum'
+          description: |-
+            Escolhe o instrumento MEM que melhor corresponde ao registo.
+
+            * `DIARIO` - Diário de Turma
+            * `TEA` - Registo do Trabalho de Estudo Autónomo
+            * `PROJETO` - Projeto Cooperativo
+            * `CONSELHO` - Conselho de Cooperação Educativa
+            * `TRABALHO` - Partilha de Produções
+            * `AVISO` - Aviso ou Comunicação à Comunidade
+            * `REFLEXAO` - Reflexão sobre a Vida da Turma
+            * `OUTRO` - Outro Registo Pedagógico
+    PatchedProjectRequest:
+      type: object
+      properties:
+        student_class_id:
+          type: integer
+          writeOnly: true
+        title:
+          type: string
+          minLength: 1
+          title: Título
+          maxLength: 200
+        description:
+          type: string
+          title: Descrição/tema
+        start_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data início
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data fim prevista
+        product_description:
+          type: string
+          title: Produto final previsto
+          maxLength: 255
+        member_ids:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          writeOnly: true
+    PatchedProjectTaskRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          minLength: 1
+          title: Descrição
+          maxLength: 255
+        responsible_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+        due_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data limite
+        state:
+          allOf:
+          - $ref: '#/components/schemas/ProjectTaskStateEnum'
+          title: Estado
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Ordem
+    PatchedStudentProposalRequest:
+      type: object
+      properties:
+        student_class_id:
+          type: integer
+          writeOnly: true
+        text:
+          type: string
+          minLength: 1
+          title: Texto
+    PatchedUserRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          title: Primeiro nome
+          maxLength: 150
+        last_name:
+          type: string
+          title: Último nome
+          maxLength: 150
+        role:
+          nullable: true
+          title: Função
+          description: |-
+            A função principal do utilizador no sistema.
+
+            * `aluno` - Aluno
+            * `professor` - Professor
+            * `admin` - Administrador
+            * `encarregado` - Encarregado de Educação
+          oneOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        photo:
+          type: string
+          format: binary
+          nullable: true
+          title: Foto de perfil
+          description: Foto de perfil opcional do utilizador.
+    PlanTask:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        plan:
+          type: integer
+          readOnly: true
+          title: Plano
+        description:
+          type: string
+          title: Descrição
+          maxLength: 255
+        subject:
+          type: string
+          title: Disciplina/área
+          maxLength: 100
+        state:
+          allOf:
+          - $ref: '#/components/schemas/PlanTaskStateEnum'
+          title: Estado
+        evidence_link:
+          type: string
+          format: uri
+          title: Ligação para evidência
+          maxLength: 200
+        teacher_feedback:
+          type: string
+          title: Feedback do professor
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Ordem
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - id
+      - plan
+      - updated_at
+    PlanTaskRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          minLength: 1
+          title: Descrição
+          maxLength: 255
+        subject:
+          type: string
+          title: Disciplina/área
+          maxLength: 100
+        state:
+          allOf:
+          - $ref: '#/components/schemas/PlanTaskStateEnum'
+          title: Estado
+        evidence_link:
+          type: string
+          format: uri
+          title: Ligação para evidência
+          maxLength: 200
+        teacher_feedback:
+          type: string
+          title: Feedback do professor
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Ordem
+      required:
+      - description
+    PlanTaskStateEnum:
+      enum:
+      - pending
+      - in_progress
+      - done
+      - validated
+      type: string
+      description: |-
+        * `pending` - Pendente
+        * `in_progress` - Em andamento
+        * `done` - Feito
+        * `validated` - Validado
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        turma_id:
+          type: integer
+          nullable: true
+        autor:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        titulo:
+          type: string
+          title: Título
+          description: Título opcional para a publicação.
+          maxLength: 200
+        conteudo:
+          type: string
+          title: Conteúdo
+        categoria:
+          allOf:
+          - $ref: '#/components/schemas/CategoriaEnum'
+          description: |-
+            Escolhe o instrumento MEM que melhor corresponde ao registo.
+
+            * `DIARIO` - Diário de Turma
+            * `TEA` - Registo do Trabalho de Estudo Autónomo
+            * `PROJETO` - Projeto Cooperativo
+            * `CONSELHO` - Conselho de Cooperação Educativa
+            * `TRABALHO` - Partilha de Produções
+            * `AVISO` - Aviso ou Comunicação à Comunidade
+            * `REFLEXAO` - Reflexão sobre a Vida da Turma
+            * `OUTRO` - Outro Registo Pedagógico
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PostStatusEnum'
+          readOnly: true
+          title: Estado
+          description: |-
+            Estado de publicação do post.
+
+            * `PENDING` - Pendente de Aprovação
+            * `PUBLISHED` - Publicado
+        publicado_em:
+          type: string
+          format: date-time
+          readOnly: true
+        approved_by:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Aprovado em
+          description: Data e hora em que a publicação foi aprovada.
+        removido:
+          type: boolean
+          readOnly: true
+          description: Indica se a publicação foi removida pela moderação.
+        motivo_remocao:
+          type: string
+          readOnly: true
+          title: Motivo da remoção
+          description: Motivo indicado para remover a publicação.
+      required:
+      - approved_at
+      - approved_by
+      - autor
+      - conteudo
+      - id
+      - motivo_remocao
+      - publicado_em
+      - removido
+      - status
+    PostRequest:
+      type: object
+      properties:
+        turma_id:
+          type: integer
+          nullable: true
+        titulo:
+          type: string
+          title: Título
+          description: Título opcional para a publicação.
+          maxLength: 200
+        conteudo:
+          type: string
+          minLength: 1
+          title: Conteúdo
+        categoria:
+          allOf:
+          - $ref: '#/components/schemas/CategoriaEnum'
+          description: |-
+            Escolhe o instrumento MEM que melhor corresponde ao registo.
+
+            * `DIARIO` - Diário de Turma
+            * `TEA` - Registo do Trabalho de Estudo Autónomo
+            * `PROJETO` - Projeto Cooperativo
+            * `CONSELHO` - Conselho de Cooperação Educativa
+            * `TRABALHO` - Partilha de Produções
+            * `AVISO` - Aviso ou Comunicação à Comunidade
+            * `REFLEXAO` - Reflexão sobre a Vida da Turma
+            * `OUTRO` - Outro Registo Pedagógico
+      required:
+      - conteudo
+    PostStatusEnum:
+      enum:
+      - PENDING
+      - PUBLISHED
+      type: string
+      description: |-
+        * `PENDING` - Pendente de Aprovação
+        * `PUBLISHED` - Publicado
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Título
+          maxLength: 200
+        description:
+          type: string
+          title: Descrição/tema
+        state:
+          allOf:
+          - $ref: '#/components/schemas/ProjectStateEnum'
+          readOnly: true
+          title: Estado
+        start_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data início
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data fim prevista
+        product_description:
+          type: string
+          title: Produto final previsto
+          maxLength: 255
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectTask'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - members
+      - state
+      - tasks
+      - title
+      - updated_at
+    ProjectRequest:
+      type: object
+      properties:
+        student_class_id:
+          type: integer
+          writeOnly: true
+        title:
+          type: string
+          minLength: 1
+          title: Título
+          maxLength: 200
+        description:
+          type: string
+          title: Descrição/tema
+        start_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data início
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data fim prevista
+        product_description:
+          type: string
+          title: Produto final previsto
+          maxLength: 255
+        member_ids:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          writeOnly: true
+      required:
+      - student_class_id
+      - title
+    ProjectStateEnum:
+      enum:
+      - active
+      - completed
+      - canceled
+      type: string
+      description: |-
+        * `active` - Ativo
+        * `completed` - Concluído
+        * `canceled` - Cancelado
+    ProjectTask:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project:
+          type: integer
+          readOnly: true
+          title: Projeto
+        description:
+          type: string
+          title: Descrição
+          maxLength: 255
+        responsible:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        due_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data limite
+        state:
+          allOf:
+          - $ref: '#/components/schemas/ProjectTaskStateEnum'
+          title: Estado
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Ordem
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - id
+      - project
+      - responsible
+      - updated_at
+    ProjectTaskRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          minLength: 1
+          title: Descrição
+          maxLength: 255
+        responsible_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+        due_date:
+          type: string
+          format: date
+          nullable: true
+          title: Data limite
+        state:
+          allOf:
+          - $ref: '#/components/schemas/ProjectTaskStateEnum'
+          title: Estado
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: Ordem
+      required:
+      - description
+    ProjectTaskStateEnum:
+      enum:
+      - todo
+      - in_progress
+      - done
+      type: string
+      description: |-
+        * `todo` - Por fazer
+        * `in_progress` - Em progresso
+        * `done` - Feito
+    PublicPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        titulo:
+          type: string
+          title: Título
+          description: Título opcional para a publicação.
+          maxLength: 200
+        conteudo:
+          type: string
+          title: Conteúdo
+        categoria:
+          allOf:
+          - $ref: '#/components/schemas/CategoriaEnum'
+          description: |-
+            Escolhe o instrumento MEM que melhor corresponde ao registo.
+
+            * `DIARIO` - Diário de Turma
+            * `TEA` - Registo do Trabalho de Estudo Autónomo
+            * `PROJETO` - Projeto Cooperativo
+            * `CONSELHO` - Conselho de Cooperação Educativa
+            * `TRABALHO` - Partilha de Produções
+            * `AVISO` - Aviso ou Comunicação à Comunidade
+            * `REFLEXAO` - Reflexão sobre a Vida da Turma
+            * `OUTRO` - Outro Registo Pedagógico
+        publicado_em:
+          type: string
+          format: date-time
+        turma_id:
+          type: integer
+          nullable: true
+          readOnly: true
+        autor:
+          readOnly: true
+        excerpt:
+          type: string
+          readOnly: true
+      required:
+      - autor
+      - conteudo
+      - excerpt
+      - id
+      - turma_id
+    RoleEnum:
+      enum:
+      - aluno
+      - professor
+      - admin
+      - encarregado
+      type: string
+      description: |-
+        * `aluno` - Aluno
+        * `professor` - Professor
+        * `admin` - Administrador
+        * `encarregado` - Encarregado de Educação
+    StudentProposal:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        author:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        text:
+          type: string
+          title: Texto
+        date_submitted:
+          type: string
+          format: date
+          readOnly: true
+          title: Data de submissão
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StudentProposalStatusEnum'
+          readOnly: true
+          title: Estado
+      required:
+      - author
+      - date_submitted
+      - id
+      - status
+      - text
+    StudentProposalRequest:
+      type: object
+      properties:
+        student_class_id:
+          type: integer
+          writeOnly: true
+        text:
+          type: string
+          minLength: 1
+          title: Texto
+      required:
+      - student_class_id
+      - text
+    StudentProposalStatusEnum:
+      enum:
+      - pending
+      - taken_to_council
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `pending` - Pendente
+        * `taken_to_council` - Levado a Conselho
+        * `approved` - Aprovado
+        * `rejected` - Rejeitado
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: Utilizador
+          description: Obrigatório. 150 carateres ou menos. Apenas letras, dígitos
+            @/./+/-/_.
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Endereço de email
+        first_name:
+          type: string
+          title: Primeiro nome
+          maxLength: 150
+        last_name:
+          type: string
+          title: Último nome
+          maxLength: 150
+        full_name:
+          type: string
+          readOnly: true
+        role:
+          nullable: true
+          title: Função
+          description: |-
+            A função principal do utilizador no sistema.
+
+            * `aluno` - Aluno
+            * `professor` - Professor
+            * `admin` - Administrador
+            * `encarregado` - Encarregado de Educação
+          oneOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        status:
+          type: string
+          readOnly: true
+          title: Estado
+          description: 'Estado do utilizador, ex: ''convidado'' ou ''ativo''.'
+        is_guest:
+          type: string
+          readOnly: true
+        photo:
+          type: string
+          format: uri
+          nullable: true
+          title: Foto de perfil
+          description: Foto de perfil opcional do utilizador.
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Última entrada
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Data de registo
+      required:
+      - date_joined
+      - email
+      - full_name
+      - id
+      - is_guest
+      - last_login
+      - status
+      - username
+    UserRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          title: Primeiro nome
+          maxLength: 150
+        last_name:
+          type: string
+          title: Último nome
+          maxLength: 150
+        role:
+          nullable: true
+          title: Função
+          description: |-
+            A função principal do utilizador no sistema.
+
+            * `aluno` - Aluno
+            * `professor` - Professor
+            * `admin` - Administrador
+            * `encarregado` - Encarregado de Educação
+          oneOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        photo:
+          type: string
+          format: binary
+          nullable: true
+          title: Foto de perfil
+          description: Foto de perfil opcional do utilizador.
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
