@@ -31,7 +31,9 @@ export function AppShell({ title, description, actions, children }: AppShellProp
 
   const initials = useMemo(() => {
     if (!user) return 'Guest';
-    const names = [user.first_name, user.last_name].filter(Boolean);
+    const names = [user.first_name, user.last_name].filter(
+      (v): v is string => Boolean(v),
+    );
     if (!names.length) {
       return user.username.slice(0, 2).toUpperCase();
     }

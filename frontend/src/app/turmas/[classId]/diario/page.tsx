@@ -272,8 +272,8 @@ export default function ClassDiaryPage() {
   const session = sessionData.session;
   const columns: DiaryColumnResponse[] = sessionData.columns;
   const canModerate = data.can_moderate;
-  const isViewingActive = session && session.id === activeSessionId;
-  const canAdd = isViewingActive && data.can_add_entries;
+  const isViewingActive = Boolean(session && session.id === activeSessionId);
+  const canAdd: boolean = Boolean(isViewingActive && data.can_add_entries);
   const sessions: DiarySessionResponse[] =
     sessionsQuery.data ?? (session ? [session as DiarySessionResponse] : []);
 
@@ -335,13 +335,13 @@ export default function ClassDiaryPage() {
             </div>
           ) : null}
           {canModerate ? (
-            <button
+          <button
               type="button"
               onClick={() => startSessionMutation.mutate()}
-              disabled={startSessionMutation.isLoading}
+            disabled={startSessionMutation.isPending}
               className="inline-flex items-center rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:bg-amber-300"
             >
-              {startSessionMutation.isLoading ? 'A iniciar…' : session ? 'Arquivar e iniciar novo período' : 'Iniciar primeiro período'}
+            {startSessionMutation.isPending ? 'A iniciar…' : session ? 'Arquivar e iniciar novo período' : 'Iniciar primeiro período'}
             </button>
           ) : null}
         </div>

@@ -1,19 +1,12 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+// Use system fonts in environments without Google Fonts access
 import './globals.css';
 
 import { QueryProvider } from '@/providers/query-provider';
 import { AuthProvider } from '@/providers/auth-provider';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = { variable: "--font-geist-sans" } as const;
+const geistMono = { variable: "--font-geist-mono" } as const;
 
 export const metadata: Metadata = {
   title: 'Infantinho 3.0',

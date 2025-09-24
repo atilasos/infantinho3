@@ -52,3 +52,6 @@ export default function MicrosoftCallbackPage() {
     </main>
   );
 }
+
+// Avoid prerendering this page; it depends on search params and client-only effects
+export const dynamic = 'force-dynamic';

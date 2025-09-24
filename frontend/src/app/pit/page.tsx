@@ -49,7 +49,7 @@ const taskStateLabels: Record<TaskState, string> = {
   validated: 'Validada',
 };
 
-function formatDate(value: string | null) {
+function formatDate(value: string | null | undefined) {
   if (!value) return '—';
   try {
     return new Intl.DateTimeFormat('pt-PT', { day: '2-digit', month: 'short' }).format(new Date(value));
@@ -118,7 +118,7 @@ export default function PlansPage() {
                   <div>
                     <h2 className="text-lg font-semibold text-slate-800">{plan.period_label}</h2>
                     <p className="text-sm text-slate-600">
-                      {formatDate(plan.start_date)} → {formatDate(plan.end_date)}
+                      {formatDate(plan.start_date ?? null)} → {formatDate(plan.end_date ?? null)}
                     </p>
                   </div>
                   <span className={`inline-flex max-w-[220px] items-center rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em] ${meta.tone}`}>

@@ -94,6 +94,11 @@ export default function AssistantPage() {
       });
 
       if (!response.ok) {
+        const errData = await response.json().catch(() => ({} as any));
+        if (errData && (errData.code === 'guardrail' || errData.error)) {
+          setError((errData.error as string) || 'Conteúdo bloqueado pelos guardrails.');
+          return;
+        }
         throw new Error('O assistente não respondeu.');
       }
 
@@ -291,3 +296,6 @@ export default function AssistantPage() {
     </AppShell>
   );
 }
+
+// Avoid prerendering; this page relies on useSearchParams at runtime
+export const dynamic = 'force-dynamic';

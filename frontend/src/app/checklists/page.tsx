@@ -228,3 +228,6 @@ export default function ChecklistsPage() {
     </AppShell>
   );
 }
+
+// Avoid prerender to allow useSearchParams without Suspense
+export const dynamic = 'force-dynamic';
