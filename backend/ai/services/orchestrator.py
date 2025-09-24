@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional
 
 from django.db import transaction
 
+from django.conf import settings
 from ai.exceptions import AIServiceError, RateLimitError, UnsafeContentError
 from ai.models import AIInteractionSession, AIRequest, AIResponseLog
 from ai.services.cache import AIResponseCache
@@ -64,6 +65,7 @@ class AIRequestOrchestrator:
             class_context=class_context,
             origin_app=origin_app,
             extras=extras,
+            raw_query=raw_query,
         )
 
         optimization = self.optimizer.optimize(raw_query, persona, context_data.payload)
@@ -120,12 +122,30 @@ class AIRequestOrchestrator:
         )
 
         provider = get_provider()
+        # If teacher has multiple classes and none selected, or student is ambiguous, add a short clarification line
+        disambig = context_data.payload.get("disambiguation")
+        clarification = ""
+        if disambig and disambig.get("type") == "class":
+            opts = ", ".join(o.get("name") for o in (disambig.get("options") or []) if o.get("name"))
+            clarification = f"Nota: o professor tem várias turmas. Confirme uma turma: {opts}."
         system_prompt = self._build_system_prompt(persona, context_data.payload)
+        if clarification:
+            system_prompt = system_prompt + "\n" + clarification
         messages = [
             {"role": "system", "content": system_prompt},
             *conversation_messages,
             {"role": "user", "content": optimization.optimized_prompt},
         ]
+
+        # Log selected model + intent for traceability
+        import logging
+        logging.getLogger(__name__).info(
+            "AI Orchestrator intent=%s suggested=%s selected=%s persona=%s",
+            optimization.intent,
+            optimization.suggested_model,
+            selected_model,
+            persona,
+        )
 
         response = provider.chat_completion(
             messages,
@@ -253,7 +273,22 @@ class AIRequestOrchestrator:
             f"Perfil do interlocutor: {profile_text}.",
             f"Objetivos prioritários da checklist: {focus_text}.",
             "Não menciones modelos de IA, prompts internos ou detalhes técnicos.",
+            "Se o pedido estiver em português, responde em Português Europeu (pt-PT).",
         ]
+        if getattr(settings, "AI_ENFORCE_PT", True):
+            guidance_lines.append(
+                "Evita palavras/frases noutras línguas; se surgirem, reescreve para pt-PT."
+            )
+
+        if getattr(settings, "MEM_ENABLE", False):
+            mem_block = settings.MEM_GUIDELINES or (
+                "Princípios MEM: construtivismo social; cooperação; autonomia; participação democrática. "
+                "Instrumentos: Checklists de Aprendizagens (autoavaliação/validação), PIT (planeamento individual), "
+                "Projetos (trabalho cooperativo), Diário (reflexão/registo), Conselho (decisões coletivas). "
+                "Ao responder: sugere sempre próximos passos concretos (individual, em par/pequeno grupo, com professor/família), "
+                "liga-os a um instrumento MEM adequado e usa linguagem clara e acolhedora (pt‑PT)."
+            )
+            guidance_lines.append(f"MEM: {mem_block}")
 
         if persona == "student":
             guidance_lines.extend(
