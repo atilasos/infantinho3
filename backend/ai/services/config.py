@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+import json
 from decimal import Decimal
 from typing import Dict, Optional
 
@@ -12,6 +13,7 @@ from ai.constants import (
     DEFAULT_TIMEOUT_SECONDS,
     SUPPORTED_PROVIDERS,
     PROVIDER_OPENAI,
+    PROVIDER_OLLAMA,
 )
 
 
@@ -27,6 +29,19 @@ class ProviderConfig:
 
 def _env(key: str, default: Optional[str] = None) -> Optional[str]:
     return os.environ.get(key, getattr(settings, key, default) if hasattr(settings, key) else default)
+
+
+def _json_env(key: str) -> Optional[Dict[str, str]]:
+    raw = _env(key)
+    if not raw:
+        return None
+    try:
+        parsed = json.loads(raw)
+        if isinstance(parsed, dict):
+            return parsed  # type: ignore[return-value]
+    except Exception:
+        return None
+    return None
 
 
 def get_provider_config() -> ProviderConfig:
@@ -45,6 +60,24 @@ def get_provider_config() -> ProviderConfig:
             api_key=_env("OPENAI_API_KEY"),
             api_base=_env("OPENAI_API_BASE", "https://api.openai.com/v1"),
             default_model=getattr(settings, "AI_DEFAULT_MODEL", "gpt-5"),
+        )
+
+    if configured_name == PROVIDER_OLLAMA:
+        # Ollama local server (no API key required by default)
+        raw_opts = _json_env("OLLAMA_OPTIONS") or {}
+        # Accept either {"num_ctx":4096} or {"options":{...}}
+        if isinstance(raw_opts, dict) and "options" in raw_opts and isinstance(raw_opts.get("options"), dict):
+            ollama_options = raw_opts.get("options") or {}
+        else:
+            ollama_options = raw_opts
+        return ProviderConfig(
+            name=PROVIDER_OLLAMA,
+            api_key=_env("OLLAMA_API_KEY", ""),
+            api_base=_env("OLLAMA_API_BASE", "http://localhost:11434"),
+            default_model=getattr(settings, "AI_DEFAULT_MODEL", "llama3.1"),
+            extra_params={
+                "options": ollama_options or {},
+            },
         )
 
     return ProviderConfig(
