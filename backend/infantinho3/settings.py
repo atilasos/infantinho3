@@ -383,6 +383,9 @@ AI_MODEL_COSTS = {
     'gpt-5-nano': os.environ.get('AI_COST_GPT5_NANO', '0.00015'),
     'gpt-5-mini': os.environ.get('AI_COST_GPT5_MINI', '0.00090'),
     'gpt-5': os.environ.get('AI_COST_GPT5', '0.00300'),
+    # Common local models for Ollama (approximate zero cost in local dev)
+    'llama3.1': os.environ.get('AI_COST_LLAM A31', '0.00000'),
+    'qwen2.5:7b': os.environ.get('AI_COST_QWEN25_7B', '0.00000'),
 }
 AI_FAKE_RESPONSES = os.environ.get('AI_FAKE_RESPONSES', 'True').lower() in {'1', 'true', 'sim', 'yes'}
 AI_RATE_LIMITS = {
@@ -390,6 +393,30 @@ AI_RATE_LIMITS = {
     'teacher': int(os.environ.get('AI_LIMIT_TEACHER', 24)),
     'guardian': int(os.environ.get('AI_LIMIT_GUARDIAN', 6)),
     'admin': int(os.environ.get('AI_LIMIT_ADMIN', 60)),
+}
+
+# --- MEM Guidance ---
+MEM_ENABLE = os.environ.get('MEM_ENABLE', 'True').lower() in {'1', 'true', 'yes', 'sim'}
+MEM_GUIDELINES = os.environ.get('MEM_GUIDELINES', '').strip()
+
+# Guardrails strictness (dev can relax)
+AI_GUARD_STRICT = os.environ.get('AI_GUARD_STRICT', 'True').lower() in {'1', 'true', 'yes', 'sim'}
+AI_ENFORCE_PT = os.environ.get('AI_ENFORCE_PT', 'True').lower() in {'1', 'true', 'yes', 'sim'}
+# Tiered model configuration (nano/mini/normal)
+AI_MODEL_TIERS = {
+    'nano': os.environ.get('AI_MODEL_TIER_NANO', 'gpt-5-nano'),
+    'mini': os.environ.get('AI_MODEL_TIER_MINI', 'gpt-5-mini'),
+    'normal': os.environ.get('AI_MODEL_TIER_NORMAL', 'gpt-5'),
+}
+
+# Map persona -> preferred model (overrides router defaults when set)
+# Valid keys: 'student', 'teacher', 'guardian', 'admin', 'staff'
+AI_MODEL_BY_PERSONA = {
+    'student': os.environ.get('AI_MODEL_STUDENT', ''),
+    'teacher': os.environ.get('AI_MODEL_TEACHER', ''),
+    'guardian': os.environ.get('AI_MODEL_GUARDIAN', ''),
+    'admin': os.environ.get('AI_MODEL_ADMIN', ''),
+    'staff': os.environ.get('AI_MODEL_STAFF', ''),
 }
 # --- Import environment-specific settings if they exist --- 
 # (Allows overriding settings in prod.py or local.py without version control)
