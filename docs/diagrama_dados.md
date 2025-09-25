@@ -12,10 +12,11 @@
 - **Post** (blog/diário de turma)
 - **Comment** (comentários nos posts)
 - **ChecklistTemplate, ChecklistItem, ChecklistStatus, ChecklistMark** (listas de verificação de aprendizagens)
+- **PitTemplate, TemplateSection, TemplateSuggestion** (modelo do PIT)
+- **IndividualPlan, PlanTask, PlanSuggestion** (PIT semanal do aluno)
 
 ### Entidades para Fases Futuras
 - **GuardianRelation** (ligação encarregado-aluno)
-- **IndividualPlan, PlanTask** (PIT – Plano Individual de Trabalho)
 - **Project, ProjectTask** (Projetos cooperativos)
 - **CouncilDecision, StudentProposal** (Conselho de turma e propostas)
 
@@ -135,11 +136,16 @@ erDiagram
         int id
         int aluno_id
         int turma_id
+        int template_id
+        int template_version
         string periodo
         string status
         text objetivos
         text autoavaliacao
         text avaliacao_prof
+        bool sugestoes_importadas
+        bool pendencias_importadas
+        int origin_plan_id
     }
     PlanTask {
         int id
@@ -150,7 +156,46 @@ erDiagram
         text evidencias
         text avaliacao
     }
+    PitTemplate {
+        int id
+        string nome
+        string ciclo
+        int version
+        bool ativo
+    }
+    TemplateSection {
+        int id
+        int template_id
+        string titulo
+        string area_code
+        int ordem
+    }
+    TemplateSuggestion {
+        int id
+        int template_id
+        int section_id
+        string texto
+        bool is_pending
+        int ordem
+    }
+    PlanSuggestion {
+        int id
+        int plan_id
+        string texto
+        string origem
+        bool is_pending
+        int ordem
+        int template_suggestion_id
+        int from_task_id
+    }
     IndividualPlan ||--o{ PlanTask : "tem tarefas"
+    IndividualPlan ||--o{ PlanSuggestion : "tem sugestões"
+    IndividualPlan }o--|| PitTemplate : "aplica modelo"
+    PitTemplate ||--o{ TemplateSection : "tem secções"
+    PitTemplate ||--o{ TemplateSuggestion : "tem sugestões"
+    TemplateSection ||--o{ TemplateSuggestion : "contextualiza"
+    TemplateSuggestion ||--o{ PlanSuggestion : "origina"
+    PlanTask ||--o{ PlanSuggestion : "gera pendências"
     User ||--o{ IndividualPlan : "PITs"
     Class ||--o{ IndividualPlan : "PITs da turma"
     

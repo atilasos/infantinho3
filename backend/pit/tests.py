@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -5,8 +7,19 @@ from django.contrib.auth import get_user_model
 from django.core import mail
 from classes.models import Class
 from rest_framework.test import APITestCase, APIClient
+from users.models import GuardianRelation
 
-from .models import IndividualPlan, PlanTask
+from .models import (
+    IndividualPlan,
+    PlanTask,
+    PitTemplate,
+    TemplateSection,
+    TemplateSuggestion,
+    PlanSuggestion,
+    PlanLogEntry,
+)
+from .services import generate_weekly_plan
+from council.models import CouncilDecision
 
 
 User = get_user_model()
@@ -142,6 +155,10 @@ class PitAPITests(APITestCase):
             student=cls.student,
             student_class=cls.turma,
             period_label='Semana API',
+            start_date=date(2026, 3, 1),
+            end_date=date(2026, 3, 7),
+            status=IndividualPlan.PlanStatus.DRAFT,
+            general_objectives='Consolidar leitura e escrita.',
         )
         cls.task = PlanTask.objects.create(
             plan=cls.plan,
@@ -196,6 +213,9 @@ class PitAPITests(APITestCase):
         self.plan.refresh_from_db()
         self.assertEqual(self.plan.status, IndividualPlan.PlanStatus.CONCLUDED)
         self.assertEqual(self.plan.self_evaluation, 'Refleti cuidadosamente.')
+        log = PlanLogEntry.objects.filter(plan=self.plan).latest('created_at')
+        self.assertEqual(log.action, PlanLogEntry.Action.STATUS_CHANGE)
+        self.assertEqual(log.actor, self.student)
 
     def test_teacher_evaluation_api(self):
         self.plan.status = IndividualPlan.PlanStatus.CONCLUDED
@@ -207,6 +227,18 @@ class PitAPITests(APITestCase):
         self.plan.refresh_from_db()
         self.assertEqual(self.plan.status, IndividualPlan.PlanStatus.EVALUATED)
         self.assertEqual(self.plan.teacher_evaluation, 'Excelente progresso.')
+        log = PlanLogEntry.objects.filter(plan=self.plan).latest('created_at')
+        self.assertEqual(log.action, PlanLogEntry.Action.STATUS_CHANGE)
+        self.assertEqual(log.actor, self.teacher)
+
+    def test_export_pdf_returns_binary(self):
+        self.client.force_authenticate(user=self.student)
+        url = reverse('pit-plan-export-pdf', args=[self.plan.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+        self.assertTrue(response.content.startswith(b'%PDF'))
+        self.assertIn('attachment; filename=', response['Content-Disposition'])
 
     def test_task_updates(self):
         self.client.force_authenticate(user=self.student)
@@ -215,3 +247,197 @@ class PitAPITests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.task.refresh_from_db()
         self.assertEqual(self.task.state, PlanTask.TaskState.IN_PROGRESS)
+        log = PlanLogEntry.objects.filter(plan=self.plan).latest('created_at')
+        self.assertEqual(log.action, PlanLogEntry.Action.UPDATED)
+        self.assertEqual(log.actor, self.student)
+
+    def test_task_delete_logs_entry(self):
+        self.client.force_authenticate(user=self.teacher)
+        task = PlanTask.objects.create(plan=self.plan, description='Apagar', subject='Matemática')
+        url = reverse('pit-task-detail', args=[task.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+        log = PlanLogEntry.objects.filter(plan=self.plan).latest('created_at')
+        self.assertEqual(log.action, PlanLogEntry.Action.UPDATED)
+        self.assertEqual(log.actor, self.teacher)
+
+    def test_plan_patch_logs_entry(self):
+        self.client.force_authenticate(user=self.student)
+        url = reverse('pit-plan-detail', args=[self.plan.id])
+        response = self.client.patch(url, {'general_objectives': 'Rever leitura intensiva'}, format='json')
+        self.assertEqual(response.status_code, 200)
+        log = PlanLogEntry.objects.filter(plan=self.plan).latest('created_at')
+        self.assertEqual(log.action, PlanLogEntry.Action.UPDATED)
+        self.assertEqual(log.actor, self.student)
+
+    def test_student_cannot_access_other_plan(self):
+        other_student = User.objects.create_user(
+            username='other-student', email='other@student.pt', password='x', role='aluno', status='ativo'
+        )
+        other_plan = IndividualPlan.objects.create(
+            student=other_student,
+            student_class=self.turma,
+            period_label='Semana secreta',
+        )
+        self.client.force_authenticate(user=self.student)
+        url = reverse('pit-plan-detail', args=[other_plan.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_parent_can_view_child_plan(self):
+        guardian = User.objects.create_user(
+            username='guardian', email='guardian@demo.pt', password='x', role='encarregado', status='ativo'
+        )
+        GuardianRelation.objects.create(encarregado=guardian, aluno=self.student)
+        self.client.force_authenticate(user=guardian)
+        url = reverse('pit-plan-detail', args=[self.plan.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_parent_cannot_edit_child_plan(self):
+        guardian = User.objects.create_user(
+            username='guardian', email='guardian2@demo.pt', password='x', role='encarregado', status='ativo'
+        )
+        GuardianRelation.objects.create(encarregado=guardian, aluno=self.student)
+        self.client.force_authenticate(user=guardian)
+        url = reverse('pit-plan-detail', args=[self.plan.id])
+        response = self.client.patch(url, {'general_objectives': 'Tentativa'}, format='json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_professor_can_access_students_plan(self):
+        self.client.force_authenticate(user=self.teacher)
+        url = reverse('pit-plan-detail', args=[self.plan.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_professor_cannot_access_other_class_plan(self):
+        other_class = Class.objects.create(name='Outro', year=2027)
+        student_other = User.objects.create_user(
+            username='aluno2', email='aluno2@demo.pt', password='x', role='aluno', status='ativo'
+        )
+        other_class.students.add(student_other)
+        other_plan = IndividualPlan.objects.create(
+            student=student_other,
+            student_class=other_class,
+            period_label='Semana 2',
+        )
+        self.client.force_authenticate(user=self.teacher)
+        url = reverse('pit-plan-detail', args=[other_plan.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_student_cannot_create_task_for_other_student(self):
+        other_student = User.objects.create_user(
+            username='other2', email='other2@demo.pt', password='x', role='aluno', status='ativo'
+        )
+        other_plan = IndividualPlan.objects.create(
+            student=other_student,
+            student_class=self.turma,
+            period_label='Semana 99',
+        )
+        self.client.force_authenticate(user=self.student)
+        url = reverse('pit-task-list')
+        response = self.client.post(
+            url,
+            {
+                'plan': other_plan.id,
+                'description': 'Tarefa não autorizada',
+                'subject': 'Português',
+                'state': PlanTask.TaskState.PENDING,
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_encarregado_cannot_create_task(self):
+        guardian = User.objects.create_user(
+            username='guardian3', email='guardian3@demo.pt', password='x', role='encarregado', status='ativo'
+        )
+        GuardianRelation.objects.create(encarregado=guardian, aluno=self.student)
+        self.client.force_authenticate(user=guardian)
+        url = reverse('pit-task-list')
+        response = self.client.post(
+            url,
+            {
+                'plan': self.plan.id,
+                'description': 'Tentativa encarregado',
+                'subject': 'Matemática',
+                'state': PlanTask.TaskState.PENDING,
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, 403)
+
+
+class PitGenerationServiceTests(TestCase):
+    def setUp(self):
+        self.teacher = User.objects.create_user(
+            username='prof-svc', email='prof-svc@example.com', password='x', role='professor', status='ativo'
+        )
+        self.student = User.objects.create_user(
+            username='al-svc', email='al-svc@example.com', password='x', role='aluno', status='ativo'
+        )
+        self.turma = Class.objects.create(name='7.ºC', year=7)
+        self.turma.teachers.add(self.teacher)
+        self.turma.students.add(self.student)
+
+        self.template = PitTemplate.objects.create(
+            name='Modelo Base', version=2, created_by=self.teacher, student_class=self.turma
+        )
+        self.section = TemplateSection.objects.create(template=self.template, title='TEA', order=1)
+        TemplateSuggestion.objects.create(
+            template=self.template,
+            section=self.section,
+            text='Ler 20 minutos por dia.',
+            order=1,
+            is_pending=False,
+        )
+
+    def test_service_generates_plan_with_template(self):
+        result = generate_weekly_plan(student=self.student, student_class=self.turma)
+        plan = result.plan
+        self.assertEqual(plan.template, self.template)
+        self.assertEqual(plan.template_version, self.template.version)
+        self.assertTrue(plan.suggestions_imported)
+        self.assertEqual(plan.suggestions.count(), 1)
+        self.assertEqual(plan.sections.count(), 1)
+        self.assertEqual(result.created_sections, 1)
+        self.assertEqual(plan.log_entries.count(), 1)
+        log_entry = plan.log_entries.first()
+        self.assertEqual(log_entry.action, log_entry.Action.GENERATED)
+
+    def test_service_transports_pending_tasks(self):
+        origin_plan = IndividualPlan.objects.create(
+            student=self.student,
+            student_class=self.turma,
+            template=self.template,
+            template_version=self.template.version,
+            period_label='Semana anterior',
+            start_date=date.today() - timedelta(days=14),
+            end_date=date.today() - timedelta(days=8),
+        )
+        PlanTask.objects.create(plan=origin_plan, description='Tarefa pendente', state='pending', order=1)
+        PlanTask.objects.create(plan=origin_plan, description='Tarefa concluída', state='done', order=2)
+
+        result = generate_weekly_plan(student=self.student, student_class=self.turma)
+        plan = result.plan
+        texts = list(plan.suggestions.values_list('text', flat=True))
+        self.assertTrue(any('Tarefa pendente' in text for text in texts))
+        self.assertTrue(plan.pendings_imported)
+
+    def test_service_imports_recent_council_decisions(self):
+        CouncilDecision.objects.create(
+            student_class=self.turma,
+            date=date.today() - timedelta(days=3),
+            description='Organizar escala do TEA',
+            category=CouncilDecision.Category.ACTIVITY,
+            status=CouncilDecision.Status.PENDING,
+            responsible=self.teacher,
+        )
+
+        result = generate_weekly_plan(student=self.student, student_class=self.turma)
+        self.assertGreaterEqual(result.created_council, 1)
+        plan = result.plan
+        self.assertTrue(
+            plan.suggestions.filter(origin=PlanSuggestion.SuggestionSource.COUNCIL).exists()
+        )

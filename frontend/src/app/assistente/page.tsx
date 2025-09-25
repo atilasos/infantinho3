@@ -94,7 +94,7 @@ export default function AssistantPage() {
       });
 
       if (!response.ok) {
-        const errData = await response.json().catch(() => ({} as any));
+        const errData = await response.json().catch(() => ({}) as Record<string, unknown>);
         if (errData && (errData.code === 'guardrail' || errData.error)) {
           setError((errData.error as string) || 'Conteúdo bloqueado pelos guardrails.');
           return;

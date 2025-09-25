@@ -97,6 +97,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'impersonate.middleware.ImpersonateMiddleware', # Add impersonate middleware
+    'core.middleware.AuditLogMiddleware',
 ]
 
 ROOT_URLCONF = 'infantinho3.urls'

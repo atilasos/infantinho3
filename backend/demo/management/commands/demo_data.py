@@ -12,8 +12,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
+from django.db import connections, transaction
 from django.utils import timezone
 
 from ai.models import AIInteractionSession, AIRequest, AIResponseLog, AIUsageQuota, LearnerContextSnapshot, TeacherFocusArea
@@ -23,7 +25,14 @@ from classes.models import Class
 from council.models import CouncilDecision, StudentProposal
 from demo.models import DemoBatch, DemoRecord
 from diary.models import DiaryEntry, DiarySession
-from pit.models import IndividualPlan, PlanTask
+from pit.models import (
+    IndividualPlan,
+    PlanTask,
+    PitTemplate,
+    TemplateSection,
+    TemplateSuggestion,
+)
+from pit.services import generate_weekly_plan
 from projects.models import Project, ProjectTask
 from users.models import GuardianRelation
 
@@ -322,20 +331,32 @@ class DemoSeeder:
 
     def create_checklists(self):
         templates = self.ensure_templates()
-        status_list = ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'VALIDATED']
+        mark_cycle = ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'VALIDATED']
+        state_cycle = [
+            ChecklistStatus.LVState.DRAFT,
+            ChecklistStatus.LVState.SUBMITTED,
+            ChecklistStatus.LVState.NEEDS_REVISION,
+            ChecklistStatus.LVState.VALIDATED,
+        ]
         for student in self.demo_students:
             turma = student.classes_attended.first()
             for template in templates:
+                state = self.rng.choice(state_cycle)
                 status = ChecklistStatus.objects.create(
                     template=template,
                     student=student,
                     student_class=turma,
+                    template_version=template.version,
+                    state=state,
+                    student_notes='Notas registadas automaticamente para demonstração.'
                 )
+                if state in {ChecklistStatus.LVState.SUBMITTED, ChecklistStatus.LVState.NEEDS_REVISION, ChecklistStatus.LVState.VALIDATED}:
+                    status.submitted_at = timezone.now() - timedelta(days=self.rng.randint(1, 5))
+                    status.save(update_fields=['submitted_at'])
                 self.mark(status, 'Checklist status')
-                items = list(template.items.all())
                 marks_to_create = []
-                for item in items:
-                    mark_status = self.rng.choice(status_list)
+                for item in template.items.all():
+                    mark_status = self.rng.choice(mark_cycle)
                     mark = ChecklistMark(
                         status_record=status,
                         item=item,
@@ -351,38 +372,153 @@ class DemoSeeder:
                 self.summary['checklists'] += 1
         self.stdout.write('  Checklists preenchidas com estados variados.')
 
-    def create_pits(self):
-        statuses = [choice[0] for choice in IndividualPlan.PlanStatus.choices]
-        for student in self.demo_students:
-            turma = student.classes_attended.first()
-            label = f"{self.now.year}/P{self.rng.randint(1, 3)}"
-            plan = IndividualPlan.objects.create(
-                student=student,
-                student_class=turma,
-                period_label=label,
-                start_date=date.today() - timedelta(days=14),
-                end_date=date.today() + timedelta(days=30),
-                status=self.rng.choice(statuses),
-                general_objectives='Consolidar operações com frações e melhorar a leitura expressiva.',
+    def create_pit_templates(self) -> list[PitTemplate]:
+        if hasattr(self, '_pit_templates'):
+            return self._pit_templates
+
+        templates = list(PitTemplate.objects.order_by('-updated_at')[:3])
+        if templates:
+            self._pit_templates = templates
+            return templates
+
+        creator = self.demo_teachers[0] if self.demo_teachers else None
+        template = PitTemplate.objects.create(
+            name='PIT Semanal MEM (Demo)',
+            description='Modelo base semanal com áreas TEA, Projetos e Comunidade.',
+            cycle_label='2.º ciclo',
+            version=1,
+            created_by=creator,
+        )
+        sections = TemplateSection.objects.bulk_create(
+            [
+                TemplateSection(template=template, title='Trabalho de Estudo Autónomo', area_code='TEA', order=1),
+                TemplateSection(template=template, title='Projetos e Comunicações', area_code='PROJETOS', order=2),
+                TemplateSection(template=template, title='Comunidade e Tarefas da Turma', area_code='COMUNIDADE', order=3),
+            ]
+        )
+        suggestions = TemplateSuggestion.objects.bulk_create(
+            [
+                TemplateSuggestion(template=template, section=sections[0], text='Rever leitura diária durante TEA.', order=1),
+                TemplateSuggestion(template=template, section=sections[1], text='Preparar comunicação do projeto cooperativo.', order=2),
+                TemplateSuggestion(template=template, section=sections[2], text='Organizar responsabilidades da sala.', order=3, is_pending=True),
+            ]
+        )
+        self.mark(template, 'Modelo PIT demo')
+        for section in sections:
+            self.mark(section, 'Secção modelo PIT')
+        for suggestion in suggestions:
+            self.mark(suggestion, 'Sugestão modelo PIT')
+
+        self._pit_templates = [template]
+        return self._pit_templates
+
+    @staticmethod
+    def week_bounds(target: date) -> tuple[date, date]:
+        start = target - timedelta(days=target.weekday())
+        end = start + timedelta(days=6)
+        return start, end
+
+    def _get_or_generate_plan(self, *, student: User, turma: Class, target_date: date):
+        try:
+            result = generate_weekly_plan(student=student, student_class=turma, target_date=target_date)
+            return result.plan
+        except ValidationError:
+            start, end = self.week_bounds(target_date)
+            label = f"Semana {start.strftime('%d/%m')} – {end.strftime('%d/%m')}"
+            plan = (
+                IndividualPlan.objects.filter(student=student, student_class=turma, period_label=label)
+                .order_by('-created_at')
+                .first()
             )
-            self.mark(plan, 'PIT demo')
-            tasks = []
-            for idx in range(1, 5):
-                task_state = self.rng.choice(['pending', 'in_progress', 'done', 'validated'])
-                tasks.append(
-                    PlanTask(
-                        plan=plan,
-                        description=f'Tarefa {idx} - {self.rng.choice(DISCIPLINES)}',
-                        subject=self.rng.choice(DISCIPLINES),
-                        state=task_state,
-                        order=idx,
-                    )
+            return plan
+
+    def _populate_plan_tasks(self, plan: IndividualPlan) -> None:
+        plan.tasks.all().delete()
+        discipline_pool = DISCIPLINES[:]
+        self.rng.shuffle(discipline_pool)
+        tasks = []
+        for idx in range(1, 5):
+            discipline = discipline_pool[idx % len(discipline_pool)]
+            state = self.rng.choice([
+                PlanTask.TaskState.PENDING,
+                PlanTask.TaskState.IN_PROGRESS,
+                PlanTask.TaskState.DONE,
+                PlanTask.TaskState.VALIDATED,
+            ])
+            tasks.append(
+                PlanTask(
+                    plan=plan,
+                    description=f'{discipline}: atividade #{idx}',
+                    subject=discipline,
+                    state=state,
+                    order=idx,
                 )
-            created = PlanTask.objects.bulk_create(tasks)
-            for task in created:
-                self.mark(task, 'PIT tarefa')
+            )
+        created = PlanTask.objects.bulk_create(tasks)
+        for task in created:
+            self.mark(task, 'PIT tarefa')
+
+    def _prepare_plan_common(self, plan: IndividualPlan, *, status: str, objectives: str, start: date, end: date) -> None:
+        plan.general_objectives = objectives
+        plan.status = status
+        plan.start_date = start
+        plan.end_date = end
+        plan.save(update_fields=['general_objectives', 'status', 'start_date', 'end_date', 'updated_at'])
+        self._populate_plan_tasks(plan)
+        self.mark(plan, 'PIT demo')
+        for suggestion in plan.suggestions.all():
+            self.mark(suggestion, 'PIT sugestão')
+        for section in plan.sections.all():
+            self.mark(section, 'PIT secção')
+
+    def create_pits(self):
+        templates = self.create_pit_templates()
+        active_cycle = [
+            IndividualPlan.PlanStatus.DRAFT,
+            IndividualPlan.PlanStatus.SUBMITTED,
+            IndividualPlan.PlanStatus.APPROVED,
+            IndividualPlan.PlanStatus.CONCLUDED,
+        ]
+
+        for index, student in enumerate(self.demo_students):
+            turma = student.classes_attended.first()
+            if not turma:
+                continue
+
+            # plano ativo (semana atual)
+            active_target = date.today()
+            active_plan = self._get_or_generate_plan(student=student, turma=turma, target_date=active_target)
+            if not active_plan:
+                continue
+            start, end = self.week_bounds(active_target)
+            active_status = active_cycle[index % len(active_cycle)]
+            self._prepare_plan_common(
+                active_plan,
+                status=active_status,
+                objectives='Consolidar operações com frações e melhorar a leitura expressiva.',
+                start=start,
+                end=end,
+            )
             self.summary['pits'] += 1
-        self.stdout.write('  PITs criados para cada aluno.')
+
+            # plano histórico avaliado
+            history_target = active_target - timedelta(days=21)
+            history_plan = self._get_or_generate_plan(student=student, turma=turma, target_date=history_target)
+            if history_plan and history_plan.id != active_plan.id:
+                h_start, h_end = self.week_bounds(history_target)
+                self._prepare_plan_common(
+                    history_plan,
+                    status=IndividualPlan.PlanStatus.EVALUATED,
+                    objectives='Plano concluído com foco em leitura orientada e escrita criativa.',
+                    start=h_start,
+                    end=h_end,
+                )
+                history_plan.self_evaluation = 'Refleti sobre o meu progresso e identifiquei próximas metas.'
+                history_plan.teacher_evaluation = 'Professor validou as aprendizagens e recomendou reforço em leitura expressiva.'
+                history_plan.save(update_fields=['self_evaluation', 'teacher_evaluation', 'updated_at'])
+                self.summary['pits'] += 1
+
+        self.stdout.write('  PITs criados com planos ativos e histórico avaliado.')
 
     def create_projects(self):
         for turma in self.demo_classes:
@@ -567,13 +703,17 @@ class Command(BaseCommand):
 
         if options['clean']:
             self.clean_demo_data()
+            self.ensure_database_ready()
             return
 
         if options['reset']:
             self.clean_demo_data()
+            self.ensure_database_ready()
         elif DemoRecord.objects.exists():
             self.stdout.write(self.style.WARNING('Já existem dados demo. Use --reset para recriar ou --clean para remover.'))
             return
+        else:
+            self.ensure_database_ready()
 
         rng = random.Random(options['seed'])
         batch = DemoBatch.objects.create(description=f"{options['classes']} turmas × {options['alunos']} alunos")
@@ -618,6 +758,21 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Dados demo removidos.'))
         for label, total in counts.items():
             self.stdout.write(f'  {label}: {total}')
+
+    def ensure_database_ready(self):
+        default_db = settings.DATABASES['default']
+        engine = default_db.get('ENGINE', '')
+
+        if engine.endswith('sqlite3'):
+            db_name = default_db.get('NAME')
+            if db_name:
+                if not os.path.isabs(db_name):
+                    db_name = os.path.join(settings.BASE_DIR, db_name)
+                os.makedirs(os.path.dirname(db_name) or '.', exist_ok=True)
+
+        connections.close_all()
+        self.stdout.write('> A garantir estrutura de base de dados…')
+        call_command('migrate', interactive=False, verbosity=0)
 
     def print_summary(self, seeder: DemoSeeder):
         self.stdout.write(self.style.MIGRATE_HEADING('Resumo dos dados demo'))

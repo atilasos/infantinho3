@@ -2,6 +2,8 @@
 from rest_framework import viewsets, mixins
 from rest_framework.exceptions import PermissionDenied
 
+from django.utils.translation import gettext_lazy as _
+
 from checklists.models import ChecklistTemplate, ChecklistStatus, ChecklistMark
 from core.permissions import IsAuthenticatedAndActive
 from .serializers import (
@@ -11,9 +13,10 @@ from .serializers import (
 )
 
 
-class ChecklistTemplateViewSet(viewsets.ReadOnlyModelViewSet):
+class ChecklistTemplateViewSet(viewsets.ModelViewSet):
     serializer_class = ChecklistTemplateSerializer
     permission_classes = [IsAuthenticatedAndActive]
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options']
 
     def get_queryset(self):
         user = self.request.user
@@ -32,10 +35,34 @@ class ChecklistTemplateViewSet(viewsets.ReadOnlyModelViewSet):
             ).distinct()
         return base_qs.none()
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        if not self._can_manage_templates(user):
+            raise PermissionDenied(_('Apenas professores ou administradores podem criar modelos.'))
+        serializer.save(created_by=user)
 
-class ChecklistStatusViewSet(viewsets.ReadOnlyModelViewSet):
+    def perform_update(self, serializer):
+        user = self.request.user
+        if not self._can_manage_templates(user):
+            raise PermissionDenied(_('Apenas professores ou administradores podem atualizar modelos.'))
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+        if not self._can_manage_templates(user):
+            raise PermissionDenied(_('Apenas professores ou administradores podem remover modelos.'))
+        instance.delete()
+
+    @staticmethod
+    def _can_manage_templates(user):
+        role = getattr(user, 'role', None)
+        return bool(user.is_superuser or role in {'professor', 'admin'})
+
+
+class ChecklistStatusViewSet(viewsets.ModelViewSet):
     serializer_class = ChecklistStatusSerializer
     permission_classes = [IsAuthenticatedAndActive]
+    http_method_names = ['get', 'post', 'patch', 'head', 'options']
 
     def get_queryset(self):
         user = self.request.user
@@ -53,6 +80,21 @@ class ChecklistStatusViewSet(viewsets.ReadOnlyModelViewSet):
         if role == 'encarregado':
             return base_qs.filter(student__encarregados_relations__encarregado=user)
         return base_qs.none()
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        instance = serializer.instance
+        role = getattr(user, 'role', None)
+
+        if role == 'aluno' and instance.student_id != user.id:
+            raise PermissionDenied(_('Aluno não pode alterar LV de outro aluno.'))
+        if role == 'professor' and not instance.student_class.teachers.filter(id=user.id).exists() and not (user.is_superuser or role == 'admin'):
+            raise PermissionDenied(_('Professor não associado à turma.'))
+
+        serializer.save()
 
 
 class ChecklistMarkViewSet(mixins.UpdateModelMixin,

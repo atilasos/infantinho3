@@ -37,7 +37,9 @@ class ChecklistModelTests(TestCase):
         )
 
     def test_template_creation(self):
-        self.assertEqual(str(self.template), 'Math Basics')
+        self.assertEqual(str(self.template), 'Math Basics v1')
+        self.assertEqual(self.template.version, 1)
+        self.assertTrue(self.template.is_published)
         self.assertEqual(self.template.items.count(), 2)
 
     def test_item_creation(self):
@@ -396,3 +398,99 @@ class ChecklistAPITests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.mark.refresh_from_db()
         self.assertTrue(self.mark.teacher_validated)
+
+    def test_professor_creates_template_with_items(self):
+        self.client.force_authenticate(user=self.teacher)
+        url = reverse('checklist-template-list')
+        payload = {
+            'name': 'Novo Modelo Avaliação',
+            'description': 'Modelo criado via API.',
+            'version': 1,
+            'class_ids': [self.turma.id],
+            'items': [
+                {'code': 'OBJ1', 'text': 'Objetivo 1', 'order': 1, 'contracted_in_council': False},
+                {'code': 'OBJ2', 'text': 'Objetivo 2', 'order': 2, 'contracted_in_council': True},
+            ],
+        }
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, 201, response.data)
+        template_id = response.data['id']
+        template = ChecklistTemplate.objects.get(id=template_id)
+        self.assertEqual(template.items.count(), 2)
+        self.assertEqual(template.classes.count(), 1)
+
+    def test_student_cannot_create_template(self):
+        self.client.force_authenticate(user=self.student)
+        url = reverse('checklist-template-list')
+        response = self.client.post(url, {'name': 'Modelo inválido', 'version': 1}, format='json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_professor_updates_template_items(self):
+        self.client.force_authenticate(user=self.teacher)
+        url = reverse('checklist-template-detail', args=[self.template.id])
+        payload = {
+            'name': 'API Template Atualizado',
+            'description': 'Atualizado',
+            'version': 2,
+            'items': [
+                {'id': self.item.id, 'code': 'API1', 'text': 'Objetivo API editado', 'order': 1, 'contracted_in_council': False},
+                {'code': 'API2', 'text': 'Novo objetivo', 'order': 2, 'contracted_in_council': False},
+            ],
+        }
+        response = self.client.patch(url, payload, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.template.refresh_from_db()
+        self.assertEqual(self.template.version, 2)
+        self.assertEqual(self.template.items.count(), 2)
+        self.assertTrue(self.template.items.filter(code='API2').exists())
+
+    def test_student_creates_status_from_template(self):
+        self.client.force_authenticate(user=self.student)
+        url = reverse('checklist-status-list')
+        fresh_template = ChecklistTemplate.objects.create(name='Template Novo')
+        fresh_template.classes.add(self.turma)
+        ChecklistItem.objects.create(template=fresh_template, code='N1', text='Item novo', order=1)
+        payload = {
+            'template_id': fresh_template.id,
+            'student_class_id': self.turma.id,
+        }
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, 201, response.data)
+        status_id = response.data['id']
+        status = ChecklistStatus.objects.get(id=status_id)
+        self.assertEqual(status.student, self.student)
+        self.assertEqual(status.template_version, fresh_template.version)
+        self.assertEqual(status.marks.count(), fresh_template.items.count())
+
+    def test_student_cannot_duplicate_status(self):
+        self.client.force_authenticate(user=self.student)
+        url = reverse('checklist-status-list')
+        payload = {
+            'template_id': self.template.id,
+            'student_class_id': self.turma.id,
+        }
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_student_updates_notes_and_submits(self):
+        template = ChecklistTemplate.objects.create(name='Template Autosave', version=2)
+        template.classes.add(self.turma)
+        ChecklistItem.objects.create(template=template, code='AUTO', text='Item autosave', order=1)
+        status = ChecklistStatus.objects.create(
+            template=template,
+            template_version=template.version,
+            student=self.student,
+            student_class=self.turma,
+        )
+        status.initialise_marks()
+        self.client.force_authenticate(user=self.student)
+        url = reverse('checklist-status-detail', args=[status.id])
+        resp_notes = self.client.patch(url, {'student_notes': 'Notas automáticas'}, format='json')
+        self.assertEqual(resp_notes.status_code, 200)
+        status.refresh_from_db()
+        self.assertEqual(status.student_notes, 'Notas automáticas')
+        resp_submit = self.client.patch(url, {'state': 'submitted'}, format='json')
+        self.assertEqual(resp_submit.status_code, 200)
+        status.refresh_from_db()
+        self.assertEqual(status.state, ChecklistStatus.LVState.SUBMITTED)
+        self.assertIsNotNone(status.submitted_at)

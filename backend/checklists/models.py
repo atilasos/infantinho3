@@ -12,11 +12,22 @@ User = settings.AUTH_USER_MODEL
 
 class ChecklistTemplate(models.Model):
     """ Template for a checklist, e.g., 'Português 5º Ano'. """
-    name = models.CharField(_("name"), max_length=150, unique=True)
+    name = models.CharField(_("name"), max_length=150)
     # Add fields like applicable_year, subject if needed for filtering
     # applicable_year = models.IntegerField(_("applicable year"), null=True, blank=True)
     description = models.TextField(_("description"), blank=True)
+    version = models.PositiveIntegerField(_('version'), default=1)
+    is_published = models.BooleanField(_('published'), default=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='authored_checklist_templates',
+        verbose_name=_('author'),
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     classes = models.ManyToManyField(
         Class, 
         blank=True, # Permite que um template não esteja associado a nenhuma turma
@@ -25,12 +36,15 @@ class ChecklistTemplate(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ['name', '-version']
         verbose_name = _("Checklist Template")
         verbose_name_plural = _("Checklist Templates")
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'version'], name='unique_template_name_version')
+        ]
 
     def __str__(self):
-        return self.name
+        return f"{self.name} v{self.version}"
 
 class ChecklistItem(models.Model):
     """ An individual item/learning objective within a ChecklistTemplate. """
@@ -136,11 +150,13 @@ class ChecklistMark(models.Model):
             self.status_record.update_percent_complete()
 
 class ChecklistStatus(models.Model):
-    """
-    Tracks the overall status of a specific student's progress on a specific checklist template
-    within a specific class context.
-    Serves as the parent object for individual item marks (ChecklistMark).
-    """
+    """Instância da LV para um aluno/turma específica."""
+
+    class LVState(models.TextChoices):
+        DRAFT = 'draft', _('Draft')
+        SUBMITTED = 'submitted', _('Submitted')
+        VALIDATED = 'validated', _('Validated')
+        NEEDS_REVISION = 'needs_revision', _('Needs revision')
     template = models.ForeignKey(
         ChecklistTemplate, 
         on_delete=models.CASCADE, 
@@ -166,6 +182,11 @@ class ChecklistStatus(models.Model):
         default=0,
         help_text=_('Automatically calculated percentage of completed items.')
     )
+    template_version = models.PositiveIntegerField(_('template version'), default=1)
+    state = models.CharField(_('state'), max_length=20, choices=LVState.choices, default=LVState.DRAFT)
+    student_notes = models.TextField(_('student notes'), blank=True)
+    started_at = models.DateTimeField(_('started at'), default=timezone.now)
+    submitted_at = models.DateTimeField(_('submitted at'), null=True, blank=True)
     updated_at = models.DateTimeField(_('last updated'), auto_now=True)
 
     class Meta:
@@ -195,3 +216,23 @@ class ChecklistStatus(models.Model):
         if self.percent_complete != new_percent:
             self.percent_complete = new_percent
             self.save(update_fields=['percent_complete', 'updated_at'])
+
+    def initialise_marks(self):
+        existing_items = set(self.marks.values_list('item_id', flat=True))
+        pending = []
+        for item in self.template.items.all():
+            if item.id not in existing_items:
+                pending.append(
+                    ChecklistMark(
+                        status_record=self,
+                        item=item,
+                        mark_status='NOT_STARTED',
+                    )
+                )
+        if pending:
+            ChecklistMark.objects.bulk_create(pending)
+
+    def submit(self):
+        self.state = self.LVState.SUBMITTED
+        self.submitted_at = timezone.now()
+        self.save(update_fields=['state', 'submitted_at', 'updated_at'])
