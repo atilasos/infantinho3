@@ -303,7 +303,7 @@ export default function PlanEditorPage() {
       return;
     }
     const state = String(form.get('state') ?? TASK_STATE_FALLBACK) as TaskState;
-    const subject = section?.area_code ?? String(form.get('subject') ?? '').trim() || null;
+    const subject = (section?.area_code ?? String(form.get('subject') ?? '').trim()) || null;
     await createTaskMutation.mutateAsync({
       description,
       state,

@@ -9,9 +9,12 @@ export type ClassSummary = Pick<components['schemas']['Class'], 'id' | 'name' | 
 export type ChecklistStatus = components['schemas']['ChecklistStatus'] & {
   state?: 'draft' | 'submitted' | 'validated' | 'needs_revision';
   student_notes?: string;
+  student_class?: { id: number; name: string };
 };
 export type ChecklistMark = components['schemas']['ChecklistMark'];
-export type ChecklistTemplate = components['schemas']['ChecklistTemplate'];
+export type ChecklistTemplate = components['schemas']['ChecklistTemplate'] & {
+  classes?: { id: number; name: string }[];
+};
 export type IndividualPlan = components['schemas']['IndividualPlan'];
 export type PlanTask = components['schemas']['PlanTask'];
 export type Project = components['schemas']['Project'];
