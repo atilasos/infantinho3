@@ -318,6 +318,150 @@ class AIUsageQuota(models.Model):
         self.save(update_fields=["requests_made", "cost_accumulated", "last_reset_at"])
 
 
+# ============================================================================
+# STUDENT PROFILE - ZDP Tracking
+# ============================================================================
+
+class StudentProfile(models.Model):
+    """
+    Perfil do aluno para personalização da IA baseada em ZDP.
+    Tracks learning progress, preferences, and collaboration patterns.
+    """
+    
+    ZDP_AUTONOMOUS = 'autonomous'
+    ZDP_MINIMAL = 'minimal_support'
+    ZDP_INTERMEDIATE = 'intermediate'
+    ZDP_SUBSTANTIAL = 'substantial_support'
+    ZDP_INTENSIVE = 'intensive'
+    
+    ZDP_LEVEL_CHOICES = [
+        (ZDP_AUTONOMOUS, _('Autónomo')),
+        (ZDP_MINIMAL, _('Apoio mínimo')),
+        (ZDP_INTERMEDIATE, _('Apoio intermédio')),
+        (ZDP_SUBSTANTIAL, _('Apoio substancial')),
+        (ZDP_INTENSIVE, _('Apoio intensivo')),
+    ]
+    
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='ai_student_profile',
+    )
+    
+    # ZDP tracking
+    zdp_level = models.CharField(
+        max_length=20,
+        choices=ZDP_LEVEL_CHOICES,
+        default=ZDP_INTERMEDIATE,
+        help_text=_('Nível atual de apoio na ZDP'),
+    )
+    
+    # Learning preferences (JSON)
+    learning_preferences = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text=_('Preferências de aprendizagem: visual, auditiva, cinestésica, etc.'),
+    )
+    
+    # Collaboration patterns
+    preferred_collaborators = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name='collaboration_partners',
+        help_text=_('Colegas com quem trabalha bem'),
+    )
+    collaboration_success_rate = models.FloatField(
+        default=0.5,
+        help_text=_('Taxa de sucesso em trabalhos colaborativos (0-1)'),
+    )
+    
+    # Strengths and growth areas
+    strengths = models.JSONField(
+        default=list,
+        blank=True,
+        help_text=_('Lista de áreas fortes: ["matemática", "leitura", ...]'),
+    )
+    growth_areas = models.JSONField(
+        default=list,
+        blank=True,
+        help_text=_('Lista de áreas a desenvolver'),
+    )
+    
+    # Interaction history
+    total_interactions = models.PositiveIntegerField(default=0)
+    successful_scaffolds = models.PositiveIntegerField(
+        default=0,
+        help_text=_('Vezes em que o scaffolding nível 1-2 foi suficiente'),
+    )
+    needed_full_support = models.PositiveIntegerField(
+        default=0,
+        help_text=_('Vezes em que precisou de nível 3 (resposta completa)'),
+    )
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = _('Perfil de Aluno (IA)')
+        verbose_name_plural = _('Perfis de Alunos (IA)')
+    
+    def __str__(self):
+        return f"{self.user} - ZDP: {self.get_zdp_level_display()}"
+    
+    def record_interaction(self, scaffolding_level: int, successful: bool = True):
+        """
+        Regista uma interação e atualiza o perfil ZDP.
+        
+        Args:
+            scaffolding_level: 1, 2, or 3 (nível de apoio dado)
+            successful: Se o aluno conseguiu avançar após o apoio
+        """
+        self.total_interactions += 1
+        
+        if scaffolding_level in (1, 2) and successful:
+            self.successful_scaffolds += 1
+        elif scaffolding_level == 3:
+            self.needed_full_support += 1
+        
+        # Atualiza ZDP level baseado no histórico recente
+        self._update_zdp_level()
+        self.save()
+    
+    def _update_zdp_level(self):
+        """Calcula o nível ZDP baseado no histórico de interações."""
+        if self.total_interactions < 5:
+            return  # Não há dados suficientes
+        
+        # Calcula taxa de scaffolding bem-sucedido
+        if self.successful_scaffolds + self.needed_full_support > 0:
+            success_rate = self.successful_scaffolds / (self.successful_scaffolds + self.needed_full_support)
+        else:
+            success_rate = 0.5
+        
+        # Mapeia para nível ZDP
+        if success_rate >= 0.9:
+            self.zdp_level = self.ZDP_AUTONOMOUS
+        elif success_rate >= 0.75:
+            self.zdp_level = self.ZDP_MINIMAL
+        elif success_rate >= 0.5:
+            self.zdp_level = self.ZDP_INTERMEDIATE
+        elif success_rate >= 0.25:
+            self.zdp_level = self.ZDP_SUBSTANTIAL
+        else:
+            self.zdp_level = self.ZDP_INTENSIVE
+    
+    def get_profile_dict(self) -> dict:
+        """Retorna dict para usar em prompts personalizados."""
+        return {
+            'zdp_level': self.zdp_level,
+            'learning_preferences': self.learning_preferences,
+            'strengths': self.strengths,
+            'growth_areas': self.growth_areas,
+            'collaboration_success_rate': self.collaboration_success_rate,
+        }
+
+
 __all__ = [
     "AIInteractionSession",
     "AIRequest",
@@ -326,4 +470,5 @@ __all__ = [
     "GroupLearningProfile",
     "TeacherFocusArea",
     "AIUsageQuota",
+    "StudentProfile",
 ]
