@@ -75,9 +75,58 @@ def project_create(request, class_id):
 def project_detail(request, class_id, project_id):
     turma = get_object_or_404(Class, id=class_id)
     project = get_object_or_404(Project, id=project_id, student_class=turma)
+    
+    # Check if user can edit (member of project or teacher/admin)
+    user = request.user
+    is_member = project.members.filter(id=user.id).exists()
+    is_teacher = hasattr(user, 'role') and user.role == 'professor' and turma in user.classes_taught.all()
+    is_admin = user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')
+    can_edit = is_member or is_teacher or is_admin
+    
     return render(request, 'projects/project_detail.html', {
         'turma': turma,
         'project': project,
+        'can_edit': can_edit,
+    })
+
+
+@login_required
+@class_member_required
+def project_edit(request, class_id, project_id):
+    """Edit an existing project. Only members, teachers, or admins can edit."""
+    turma = get_object_or_404(Class, id=class_id)
+    project = get_object_or_404(Project, id=project_id, student_class=turma)
+    user = request.user
+    
+    # Permission check: member of project, teacher of class, or admin
+    is_member = project.members.filter(id=user.id).exists()
+    is_teacher = hasattr(user, 'role') and user.role == 'professor' and turma in user.classes_taught.all()
+    is_admin = user.is_superuser or (hasattr(user, 'role') and user.role == 'admin')
+    
+    if not (is_member or is_teacher or is_admin):
+        messages.error(request, _('Não tens permissão para editar este projeto.'))
+        return redirect('projects:project_detail', class_id=class_id, project_id=project_id)
+    
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        formset = ProjectTaskFormSet(request.POST, instance=project)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            messages.success(request, _('Projeto atualizado.'))
+            return redirect('projects:project_detail', class_id=class_id, project_id=project_id)
+        else:
+            messages.error(request, _('Corrige os erros abaixo.'))
+    else:
+        form = ProjectForm(instance=project)
+        formset = ProjectTaskFormSet(instance=project)
+    
+    return render(request, 'projects/project_form.html', {
+        'turma': turma,
+        'form': form,
+        'formset': formset,
+        'project': project,
+        'is_edit': True,
     })
 
 

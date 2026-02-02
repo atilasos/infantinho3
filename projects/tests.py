@@ -12,9 +12,11 @@ class ProjectsFlowTests(TestCase):
     def setUp(self):
         self.teacher = User.objects.create_user(username='prof', email='prof@escola.pt', password='x', role='professor', status='ativo')
         self.student = User.objects.create_user(username='aluno', email='aluno@escola.pt', password='x', role='aluno', status='ativo')
+        self.student2 = User.objects.create_user(username='aluno2', email='aluno2@escola.pt', password='x', role='aluno', status='ativo')
         self.turma = Class.objects.create(name='5º A', year=2025)
         self.turma.teachers.add(self.teacher)
         self.turma.students.add(self.student)
+        self.turma.students.add(self.student2)
 
     def test_teacher_can_create_project(self):
         self.client.login(username='prof', password='x')
@@ -50,6 +52,59 @@ class ProjectsFlowTests(TestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Jornal da Escola')
+
+    def test_project_member_can_edit(self):
+        """Test that a project member can edit the project."""
+        project = Project.objects.create(student_class=self.turma, title='Projeto Teste')
+        project.members.add(self.student)
+        
+        self.client.login(username='aluno', password='x')
+        url = reverse('projects:project_edit', kwargs={'class_id': self.turma.id, 'project_id': project.id})
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        
+        # Update title (using only fields in the form)
+        data = {
+            'title': 'Projeto Atualizado',
+            'description': project.description or '',
+            'start_date': '',
+            'end_date': '',
+            'product_description': '',
+            'members': [self.student.id],
+            'tasks-TOTAL_FORMS': '0',
+            'tasks-INITIAL_FORMS': '0',
+            'tasks-MIN_NUM_FORMS': '0',
+            'tasks-MAX_NUM_FORMS': '1000',
+        }
+        resp = self.client.post(url, data=data)
+        # Debug: print form errors if any
+        if resp.status_code == 200:
+            print("Form errors:", resp.context.get('form').errors if resp.context and 'form' in resp.context else 'N/A')
+            print("Formset errors:", resp.context.get('formset').errors if resp.context and 'formset' in resp.context else 'N/A')
+        self.assertEqual(resp.status_code, 302)
+        project.refresh_from_db()
+        self.assertEqual(project.title, 'Projeto Atualizado')
+
+    def test_non_member_cannot_edit(self):
+        """Test that a non-member student cannot edit the project."""
+        project = Project.objects.create(student_class=self.turma, title='Projeto Teste')
+        project.members.add(self.student)  # student is member, not student2
+        
+        self.client.login(username='aluno2', password='x')
+        url = reverse('projects:project_edit', kwargs={'class_id': self.turma.id, 'project_id': project.id})
+        resp = self.client.get(url)
+        # Should redirect with error message
+        self.assertEqual(resp.status_code, 302)
+
+    def test_teacher_can_edit_any_project(self):
+        """Test that a teacher can edit any project in their class."""
+        project = Project.objects.create(student_class=self.turma, title='Projeto Aluno')
+        project.members.add(self.student)
+        
+        self.client.login(username='prof', password='x')
+        url = reverse('projects:project_edit', kwargs={'class_id': self.turma.id, 'project_id': project.id})
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
 
 
 # Create your tests here.
