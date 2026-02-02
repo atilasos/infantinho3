@@ -1,0 +1,86 @@
+[
+  {
+    "codigo": "MAT-5-NO-01",
+    "disciplina": "Matemática",
+    "ano": 5,
+    "dominio": "Números e Operações",
+    "texto_oficial": "Compreender e usar números naturais, números decimais e números fracionários, desenvolvendo o sentido de número, incluindo a compreensão da estrutura do sistema de numeração decimal.",
+    "objetivo_aluno": "Consigo entender e usar números naturais, decimais e fracionários no meu dia a dia. Sei como funcionam e como posso usá-los para resolver problemas.",
+    "exemplo_pratico": "Por exemplo, consigo usar números para medir ingredientes quando cozinho com a minha família, dividir um bolo em partes iguais para os meus amigos ou calcular o troco quando vou às compras.",
+    "como_sei_que_consegui": [
+      "Sei contar e usar números grandes, como 1000, sem me perder.",
+      "Consigo dividir um chocolate em partes iguais para os meus irmãos e explicar como fiz isso.",
+      "Entendo como ler preços em lojas, como 2,50€, e como calcular o total das compras."
+    ]
+  },
+  {
+    "codigo": "MAT-5-NO-02",
+    "disciplina": "Matemática",
+    "ano": 5,
+    "dominio": "Números e Operações",
+    "texto_oficial": "Compreender o significado das operações aritméticas fundamentais e das suas propriedades, e desenvolver estratégias de cálculo mental e algoritmos de cálculo para resolver problemas em diversos contextos.",
+    "objetivo_aluno": "Consigo entender o que são as operações de soma, subtração, multiplicação e divisão e usar truques para calcular mais rápido, mesmo na cabeça!",
+    "exemplo_pratico": "Por exemplo, consigo usar a multiplicação para dividir doces igualmente entre amigos ou a soma para calcular quanto gastarei no supermercado.",
+    "como_sei_que_consegui": [
+      "Sei fazer contas mentais rápidas, como 7 vezes 8.",
+      "Consegos resolver problemas do dia a dia, como calcular troco ou dividir brinquedos.",
+      "Sei explicar por que 5 + 3 é igual a 3 + 5."
+    ]
+  },
+  {
+    "codigo": "MAT-5-NO-03",
+    "disciplina": "Matemática",
+    "ano": 5,
+    "dominio": "Números e Operações",
+    "texto_oficial": "Resolver problemas que envolvam a compreensão das relações multiplicativas entre números naturais, incluindo situações de proporcionalidade direta.",
+    "objetivo_aluno": "Consigo resolver problemas usando multiplicações e divisões, entendendo como os números se relacionam entre si.",
+    "exemplo_pratico": "Por exemplo, consigo calcular quantos pacotes de bolachas preciso comprar para fazer um lanche para 24 amigos, sabendo que cada pacote tem 8 bolachas.",
+    "como_sei_que_consegui": [
+      "Sei resolver problemas usando multiplicações e divisões.",
+      "Consigo explicar como os números estão relacionados em situações do dia a dia.",
+      "Faço contas para descobrir quantidades, preços e outras coisas que envolvem multiplicar ou dividir."
+    ]
+  },
+  {
+    "codigo": "MAT-5-GM-01",
+    "disciplina": "Matemática",
+    "ano": 5,
+    "dominio": "Geometria e Medida",
+    "texto_oficial": "Compreender e usar as noções de perímetro, área e ângulo, reconhecendo relações entre as grandezas e as unidades de medida, e resolver problemas em contextos diversos.",
+    "objetivo_aluno": "Consigo medir e calcular coisas usando perímetro, área e ângulos. Entendo como estas medidas se relacionam umas com as outras e resolvo problemas do dia-a-dia usando estas ideias.",
+    "exemplo_pratico": "Por exemplo, consigo calcular quantos metros de fita preciso para decorar a borda de um quadro ou quantos azulejos são necessários para cobrir uma parede. Também sei como medir ângulos para construir coisas ou desenhar.",
+    "como_sei_que_consegui": [
+      "Consigo explicar o que é perímetro e como o calculo usando uma fita métrica.",
+      "Sei calcular a área de uma sala para saber quantos tapetes cabem nela.",
+      "Resolvo problemas usando ângulos, como ajustar uma mesa que está torta."
+    ]
+  },
+  {
+    "codigo": "MAT-5-GM-02",
+    "disciplina": "Matemática",
+    "ano": 5,
+    "dominio": "Geometria e Medida",
+    "texto_oficial": "Reconhecer e representar formas geométricas no plano e no espaço, utilizando diferentes representações e instrumentos, e compreender propriedades das figuras.",
+    "objetivo_aluno": "Consigo reconhecer e desenhar formas geométricas, tanto planas como tridimensionais, usando diferentes ferramentas e entendo como elas funcionam.",
+    "exemplo_pratico": "Por exemplo, consigo identificar um quadrado no chão da minha sala de aula, desenhar um círculo com um compasso, ou entender como uma pirâmide é diferente de um cubo usando blocos de construção.",
+    "como_sei_que_consegui": [
+      "Reconheço formas geométricas em objetos do dia a dia, como janelas, mesas ou brinquedos.",
+      "Consigo desenhar formas corretamente usando régua, compasso e outras ferramentas.",
+      "Explico as diferenças entre formas planas e formas no espaço, como um quadrado e um cubo."
+    ]
+  },
+  {
+    "codigo": "MAT-5-OT-01",
+    "disciplina": "Matemática",
+    "ano": 5,
+    "dominio": "Organização e Tratamento de Dados",
+    "texto_oficial": "Recolher, organizar e representar dados, interpretar e comunicar informação contida em gráficos e tabelas, e formular questões que possam ser respondidas com base em dados.",
+    "objetivo_aluno": "Consigo juntar informações importantes e mostrar-nas de forma clara para todos entenderem.",
+    "exemplo_pratico": "Por exemplo, consigo perguntar aos meus amigos qual é a sua cor favorita e fazer um gráfico com as respostas.",
+    "como_sei_que_consegui": [
+      "Consigo perguntar a várias pessoas e anotar as respostas num papel.",
+      "Sei organizar as respostas em listas ou desenhar gráficos simples como barras ou bolinhas.",
+      "Consigo explicar o que os gráficos e tabelas me mostram e fazer perguntas usando as informações que recolhi."
+    ]
+  }
+]
