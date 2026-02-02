@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Dict
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "mistral-small3.2"
+MODEL = "llama3.2:3b"  # Lighter model, good for Portuguese
 
 PROMPT_TEMPLATE = """Tu és um especialista em pedagogia do Movimento da Escola Moderna (MEM) em Portugal.
 A tua tarefa é traduzir objetivos curriculares oficiais (Aprendizagens Essenciais) em linguagem acessível a crianças de {ano}º ano.

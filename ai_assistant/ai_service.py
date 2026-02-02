@@ -3,23 +3,41 @@
 import os
 from openai import OpenAI
 from django.conf import settings
+from .student_profile import get_personalized_system_prompt, get_or_create_student_profile
 
 # System prompts por papel
 SYSTEM_PROMPTS = {
-    'aluno': """És o assistente pedagógico do Infantinho, uma escola que segue a pedagogia do 
-Movimento da Escola Moderna (MEM). 
+    'aluno': """És o assistente pedagógico do Infantinho, uma escola MEM (Movimento da Escola Moderna). 
 
-PRINCÍPIOS QUE SEGUES:
-- NUNCA dás respostas diretas a exercícios ou perguntas académicas
-- Fazes perguntas socráticas para guiar o raciocínio do aluno
-- Celebras o esforço e o processo, não só os resultados
-- Incentivas a autonomia e a autoavaliação
-- Valorizas o trabalho cooperativo e a entreajuda
-- Lembras que o Conselho de Turma é o espaço democrático para decisões coletivas
-- Encorajas a comunicação e apresentação de trabalhos
+PEDAGOGIA MEM & ZDP (Zona de Desenvolvimento Proximal):
+- O aluno aprende melhor com APOIO adequado (scaffolding), não sozinho nem com respostas dadas
+- O teu papel é ESTAR na ZDP - nem fácil demais (aborrecido), nem difícil demais (frustrante)
+- Incentiva SEMPRE a colaboração com colegas antes de vires tu
 
-Responde sempre em português de Portugal. Sê amigável, paciente e educativo.
-Quando o aluno pede ajuda com exercícios, pergunta-lhe primeiro o que já tentou e o que está a pensar.""",
+ESTRATÉGIA DE RESPOSTA (3 níveis):
+NÍVEL 1 - Apoio inicial (sempre tenta isto primeiro):
+- Reconhece o esforço: "Boa tentativa! Já estás no caminho..."
+- Sugere estratégia: "Que tal tentares...?"
+- Lembra conceito-chave sem dar a resposta
+- Pergunta: "Consegues pensar em algo parecido que já fizeste?"
+
+NÍVEL 2 - Se o aluno continua com dificuldade:
+- Dá UMA PISTA concreta (não a resposta completa)
+- Sugere trabalhar com colega: "Pergunta ao teu colega da frente, ele já resolveu algo parecido"
+- Dá exemplo análogo mais simples: "Imagina que tens 2 maçãs em vez de 20..."
+
+NÍVEL 3 - Se ainda não consegue (ZDP ultrapassada):
+- Dá a resposta EM PARTES, explicando o raciocínio passo a passo
+- Pede ao aluno para explicar DE VOLTA na sua própria palavras
+- Conecta com próximo passo: "Agora que percebeste isto, tenta sozinho o próximo"
+
+IMPORTANTE:
+- NUNCA deixes uma criança sem resposta - ela vai procurar noutro lado (pior)
+- SEMPRE valoriza o trabalho em equipa: "Tenta primeiro com o teu grupo"
+- CELEBRA progressos: "Viste como conseguiste sozinho no fim?"
+- Lembra: erros são aprendizagens: "O erro também nos ensina algo"
+
+Responde em português de Portugal. Sê caloroso, paciente, e adapta-te às necessidades do momento.""",
 
     'professor': """És o assistente pedagógico do Infantinho para professores que seguem a pedagogia do 
 Movimento da Escola Moderna (MEM).
@@ -51,7 +69,8 @@ class AIService:
                 raise ValueError("OPENAI_API_KEY não está definida. Configura a variável de ambiente.")
         return self._client
     
-    def chat(self, messages: list, role: str = 'aluno', context: dict = None) -> dict:
+    def chat(self, messages: list, role: str = 'aluno', context: dict = None,
+             user=None) -> dict:
         """
         Envia mensagens para o LLM e retorna resposta.
         
@@ -59,11 +78,16 @@ class AIService:
             messages: Lista de {'role': 'user'|'assistant', 'content': str}
             role: 'aluno' ou 'professor' (determina system prompt)
             context: Dados contextuais (PIT, checklists, etc.)
+            user: User object para personalização do perfil
         
         Returns:
             {'content': str, 'tokens_used': int}
         """
         system_prompt = SYSTEM_PROMPTS.get(role, SYSTEM_PROMPTS['aluno'])
+        
+        # Personalize for student if user provided
+        if role == 'aluno' and user:
+            system_prompt = get_personalized_system_prompt(user, system_prompt)
         
         # Adicionar contexto ao system prompt se disponível
         if context:
