@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Assistente IA Desativado" %}{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 4rem 2rem;">
+    <h2>🤖 {% trans "Assistente IA Desativado" %}</h2>
+    <p>{% trans "O assistente de IA está temporariamente desativado." %}</p>
+    <p>{% trans "Por favor, contacta o teu professor ou administrador para mais informações." %}</p>
+    <a href="{% url 'classes:class_list' %}" class="btn btn-primary">
+        {% trans "Voltar às Turmas" %}
+    </a>
+</div>
+{% endblock %}

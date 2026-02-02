@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'pit.apps.PitConfig', # Add PIT app
     'projects.apps.ProjectsConfig', # Add Projects app
     'council.apps.CouncilConfig', # Add Council app
+    'ai_assistant.apps.AiAssistantConfig', # Add AI Assistant app
 ]
 
 MIDDLEWARE = [

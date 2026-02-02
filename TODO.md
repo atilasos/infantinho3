@@ -45,7 +45,7 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
 - [x] 2.1 Modelos de Dados
     - [x] 2.1.1 Criar modelo `Post`:
         - Campos: turma (FK), autor (FK), título (opcional), conteúdo (RichText), data/hora, categoria/tipo (choices), visibilidade (default: interna).
-    - [ ] 2.1.2 Criar modelo `Comment`:
+    - [x] 2.1.2 Criar modelo `Comment`:
         - Campos: post (FK), autor (FK), conteúdo, data/hora.
     - [x] 2.1.3 Adicionar métodos auxiliares nos modelos:
         - Ex: is_editable_by(user), get_category_display(), is_visible_to(user), remover(user, motivo=None), etc.
@@ -57,17 +57,17 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
         - Professores podem editar/remover qualquer post da sua turma; alunos apenas os seus.
     - [x] 2.2.2 Decorators/mixins para views protegidas por turma e papel.
 - [x] 2.3 Views e URLs
-    - [ ] 2.3.1 Listar posts da turma:
+    - [x] 2.3.1 Listar posts da turma:
         - URL: `/turmas/<id>/blog/`
         - Filtros: categoria, data.
         - Paginação.
-    - [ ] 2.3.2 Ver post individual:
+    - [x] 2.3.2 Ver post individual:
         - URL: `/turmas/<id>/blog/post/<id>/`
         - Exibir comentários.
-    - [ ] 2.3.3 Criar post:
+    - [x] 2.3.3 Criar post:
         - URL: `/turmas/<id>/blog/novo/`
         - Formulário com CKEditor.
-    - [ ] 2.3.4 Editar/remover post:
+    - [x] 2.3.4 Editar/remover post:
         - URLs: `/turmas/<id>/blog/post/<id>/editar/`, `/remover/`
         - Permissões conforme regras.
     - [x] 2.3.5 Adicionar/remover comentário (AJAX ou formulário simples):
@@ -151,7 +151,7 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
  - [x] 5.2 Views Aluno: criar/editar PIT, submeter
  - [x] 5.3 Views Professor: aprovar PIT, visualizar
 - [ ] 5.4 Formulários de autoavaliação (aluno) e avaliação (professor)
- - [ ] 5.5 Notificações básicas (submissão, aprovação, avaliação)
+ - [x] 5.5 Notificações básicas (submissão, aprovação, avaliação) - IMPLEMENTADO
  - [x] 5.6 Garantir restrição: só um PIT por período
  - [x] 5.7 Testes de fluxo principal e casos de concorrência
 - [ ] 5.8 Integração leve com checklists (botão para abrir checklist)
@@ -159,14 +159,14 @@ Este ficheiro serve como guia prático para o desenvolvimento incremental do por
 ## Fase 6 – Módulo Projetos Cooperativos
  - [x] 6.1 Criar modelos Project e ProjectTask
  - [x] 6.2 Views: criar projeto (prof/aluno), adicionar membros, listar/detalhar projetos
-- [ ] 6.3 Permissões: só membros editam
-- [ ] 6.4 Testes: criar projeto, adicionar update
+- [x] 6.3 Permissões: só membros editam - IMPLEMENTADO (2026-02-02)
+- [x] 6.4 Testes: criar projeto, adicionar update - IMPLEMENTADO (5 testes)
 
 ## Fase 7 – Módulo Conselho de Turma
-- [ ] 7.1 Criar modelos CouncilDecision e StudentProposal
-- [ ] 7.2 Views: propor pauta (aluno), listar propostas, aprovar/discutir (professor), registar decisão
-- [ ] 7.3 Ligação opcional com Diário (parsear posts marcados como decisões)
-- [ ] 7.4 Testes: propor, aprovar, listar decisão
+- [x] 7.1 Criar modelos CouncilDecision e StudentProposal
+- [x] 7.2 Views: propor pauta (aluno), listar propostas, aprovar/discutir (professor), registar decisão
+- [ ] 7.3 Ligação opcional com Diário (parsear posts marcados como decisões) - OPCIONAL
+- [x] 7.4 Testes: propor, aprovar, listar decisão - IMPLEMENTADO (2 testes)
 
 ## Fase 8 – Integração de IA (Protótipo)
 - [ ] 8.1 Implementar `ai_service` para chamada à API (OpenAI GPT-3.5 ou similar)
