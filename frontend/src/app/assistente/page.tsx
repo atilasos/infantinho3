@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, Suspense, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import { AppShell } from '@/components/layout/app-shell';
@@ -34,7 +34,7 @@ function randomId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-export default function AssistantPage() {
+function AssistantContent() {
   const searchParams = useSearchParams();
   const { fetchWithAuth, isAuthenticated, loading } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -297,5 +297,14 @@ export default function AssistantPage() {
   );
 }
 
-// Avoid prerendering; this page relies on useSearchParams at runtime
-export const dynamic = 'force-dynamic';
+export default function AssistantPage() {
+  return (
+    <Suspense fallback={
+      <AppShell title="Assistente IA">
+        <div className="text-center text-slate-500 py-8">A carregar assistente...</div>
+      </AppShell>
+    }>
+      <AssistantContent />
+    </Suspense>
+  );
+}

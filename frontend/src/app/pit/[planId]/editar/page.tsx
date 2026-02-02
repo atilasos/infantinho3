@@ -849,7 +849,7 @@ function PlanSectionCard({
                   task={task}
                   section={section}
                   onSave={async (payload) => {
-                    await onUpdateTask({ id: task.id, data: payload });
+                    return await onUpdateTask({ id: task.id, data: payload });
                     setExpandedTaskId(null);
                   }}
                 />

@@ -54,7 +54,7 @@ function formatUserDisplayName(user: IndividualPlan['student'] | AppUser | undef
   const last = typeof user.last_name === 'string' ? user.last_name : '';
   const combined = `${first} ${last}`.trim();
   if (combined) return combined;
-  if (user.name) return user.name;
+  if ('full_name' in user && user.full_name) return user.full_name;
   if (user.email) return user.email;
   if (user.username) return user.username;
   return `Utilizador #${user.id ?? '?'}`;
@@ -122,7 +122,7 @@ export default function PitDashboardPage({ children }: { children?: React.ReactN
       const classId = plan.student_class?.id ?? null;
       const entry = grouped.get(classId) ?? {
         turma: plan.student_class ?? null,
-        plans: [],
+        plans: [] as IndividualPlan[],
       };
       entry.plans.push(plan);
       grouped.set(classId, entry);

@@ -74,6 +74,13 @@ REGRAS DE TRADUÇÃO:
 4. Inclui exemplo prático do dia-a-dia
 5. Mantém entusiasmo e positividade
 
+**IMPORTANTE - PORTUGUÊS DE PORTUGAL (PT-PT) OBRIGATÓRIO:**
+- Usa terminologia e expressões de Portugal, NÃO do Brasil
+- Evita: "você", "muito legal", "trem", "ônibus", "celular", "bróder"
+- Usa: "tu", "fixe", "comboio", "autocarro", "telemóvel", "amigo"
+- Verbos: "posso" (não "podei"), "consigo" (não "consigo não"), "faço" (não "fasso")
+- Se não tiveres a certeza de uma palavra, usa sinónimo mais comum em Portugal
+
 FORMATO DE RESPOSTA (Markdown):
 
 ### {code}: {domain}

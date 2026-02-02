@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useAuth } from '@/providers/auth-provider';
 
-export default function MicrosoftCallbackPage() {
+function CallbackContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { handleAzureCallback } = useAuth();
@@ -32,26 +32,33 @@ export default function MicrosoftCallbackPage() {
     void completeCallback();
   }, [handleAzureCallback, router, searchParams]);
 
+  if (error) {
+    return (
+      <div className="max-w-md space-y-3">
+        <h1 className="text-xl font-semibold text-rose-600">Erro no login</h1>
+        <p className="text-sm text-slate-600">{error}</p>
+        <p className="text-sm text-slate-600">
+          Volte à página de <a href="/login" className="font-medium text-sky-600 hover:underline">login</a> e tente novamente.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-3 bg-slate-100 px-6 text-center">
-      <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Infantinho 3.0</p>
-      {error ? (
-        <div className="max-w-md space-y-3">
-          <h1 className="text-xl font-semibold text-rose-600">Erro no login</h1>
-          <p className="text-sm text-slate-600">{error}</p>
-          <p className="text-sm text-slate-600">
-            Volte à página de <a href="/login" className="font-medium text-sky-600 hover:underline">login</a> e tente novamente.
-          </p>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center gap-3">
-          <h1 className="text-xl font-semibold text-slate-800">Estamos a ligar a sua conta…</h1>
-          <p className="text-sm text-slate-600">Este processo demora apenas alguns segundos.</p>
-        </div>
-      )}
-    </main>
+    <div className="flex flex-col items-center gap-3">
+      <h1 className="text-xl font-semibold text-slate-800">Estamos a ligar a sua conta…</h1>
+      <p className="text-sm text-slate-600">Este processo demora apenas alguns segundos.</p>
+    </div>
   );
 }
 
-// Avoid prerendering this page; it depends on search params and client-only effects
-export const dynamic = 'force-dynamic';
+export default function MicrosoftCallbackPage() {
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center gap-3 bg-slate-100 px-6 text-center">
+      <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Infantinho 3.0</p>
+      <Suspense fallback={<p className="text-sm text-slate-600">A carregar...</p>}>
+        <CallbackContent />
+      </Suspense>
+    </main>
+  );
+}

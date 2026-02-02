@@ -15,7 +15,9 @@ export type ChecklistMark = components['schemas']['ChecklistMark'];
 export type ChecklistTemplate = components['schemas']['ChecklistTemplate'] & {
   classes?: { id: number; name: string }[];
 };
-export type IndividualPlan = components['schemas']['IndividualPlan'];
+export type IndividualPlan = components['schemas']['IndividualPlan'] & {
+  student_class?: ClassSummary;
+};
 export type PlanTask = components['schemas']['PlanTask'];
 export type Project = components['schemas']['Project'];
 export type ProjectTask = components['schemas']['ProjectTask'];

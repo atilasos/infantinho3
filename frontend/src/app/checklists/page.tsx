@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -30,7 +30,7 @@ function formatDateTime(value?: string | null) {
   }
 }
 
-export default function ChecklistsPage() {
+function ChecklistsContent() {
   const { fetchWithAuth, isAuthenticated, loading } = useAuth();
   const searchParams = useSearchParams();
   const classIdParam = searchParams.get('class_id');
@@ -229,5 +229,14 @@ export default function ChecklistsPage() {
   );
 }
 
-// Avoid prerender to allow useSearchParams without Suspense
-export const dynamic = 'force-dynamic';
+export default function ChecklistsPage() {
+  return (
+    <Suspense fallback={
+      <AppShell title="Listas de Verificação">
+        <div className="text-center text-slate-500 py-8">A carregar...</div>
+      </AppShell>
+    }>
+      <ChecklistsContent />
+    </Suspense>
+  );
+}

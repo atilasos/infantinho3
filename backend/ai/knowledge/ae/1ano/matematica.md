@@ -1,6 +1,6 @@
 # Matematica - 1º Ano
 
-**Gerado:** 2026-02-02 15:52
+**Gerado:** 2026-02-02 16:27
 **Modelo:** llama3.2:3b
 **Fonte:** Aprendizagens Essenciais (DGE)
 
@@ -12,52 +12,57 @@
 > Compreender e usar números naturais, inteiros, racionais e decimais, desenvolvendo o sentido de número.
 
 **Para o Aluno:**
-Consigo contar e escrever números para todos os dias! Consigo entender quando me dizem quantas coisas temos ou quanto tempo leva fazer algo.
+Consigo contar com os meus dedos para aprender a ler números. Eu sei que posso escrever o número 5 no papel.
 
 **Exemplo Prático:**
-Por exemplo, consigo saber que posso comprar 2 lanches para o almoço se tiver R$ 5.00.
+Por exemplo, eu consigo encontrar o preço dos brinquedos no supermercado.
 
 **Como sei que consegui:**
 - Posso contar até 10 com os meus dedos.
-- Consigo comparar quantidades de coisas (1 xícara = 1, não é igual a 2).
-- Consegui contar o tempo que leva para fazer um passeio de bicicleta.
+- Eu sei que o número 3 significa três coisas.
+- Consigo contar a quantidade de bolinhas que tenho em minha mochila.
 
 **Estratégias de Apoio:**
-- Pode-se usar blocos de madeira para contar.
-- É importante comparar quantidades de coisas com as mãos.
+- Faço uma lista de números ao longo do mês para praticar cada um.
+- Consigo encontrar exemplos de números na vida cotidiana, como o preço dos comboios.
 
 ### MAT-1-02: Álgebra
 
+**Original (DGE):**
+> Identificar padrões, relações e regularidades, e usar expressões algébricas para representar situações.
+
 **Para o Aluno:**
-Consigo identificar padrões e regularidades em números e símbolos.
+Consigo identificar padrões em problemas matemáticos! Faço isso fazendo [ação concreta, por exemplo, "resolver um problema de soma ou subtração"].
 
 **Exemplo Prático:**
-Por exemplo, quando estou a contar dinheiro, consigo ver que cada sete euros tem 5 centavos.
+Por exemplo, consigo entender que quando tenho 5 fichas e dou 2 para o meu amigo, eu tenho agora 3 fichas. Faço isso fazendo calcular a diferença entre as fichas que tinha e as que deu.
 
 **Como sei que consegui:**
-- Quando encontro um número que é múltiplo de 3, sei que posso dividir por 3.
-- Consigo criar uma sequência de números com diferenças regulares.
-- Quando estou a resolver problemas, consigo usar símbolos para representar as respostas.
+- Posso reconhecer padrões em problemas matemáticos quando os resolvo corretamente.
+- Consigo usar simbolos simples para representar situações, como números ou letras.
+- Faço isso fazendo uso da minha habilidade de resolver problemas de forma lógica.
 
 **Estratégias de Apoio:**
-- Pergunta-se: "Qual é o próximo número na sequência?"
-- Utiliza um bloco de blocos para criar uma sequência de números e encontrar a diferença.
-- Pratique resolver problemas com símbolos, como 2x + 5 = 11.
+- Fixe em problemas que tenham símbolos, como equações com x e y.
+- Pratique resolver problemas de soma ou subtração usando números ou letras.
 
 ### MAT-1-03: Geometria
 
+**Original (DGE):**
+Reconhecer e representar formas geométricas, compreendendo propriedades e relações.
+
 **Para o Aluno:**
-Consigo reconhecer formas geométricas no mundo ao meu redor! Consigo fazer um quadrado com pedras ou blocos. Consigo desenhar um círculo com um lápis.
+Consigo reconhecer e desenhar formas básicas, como círculos e quadrados, no papel. Eu sei que as formas geométricas têm diferentes formas e tamanhos.
 
 **Exemplo Prático:**
-Por exemplo, consigo reconhecer formas geométricas quando estou a montar uma construção de bloques ou a criar um mosaico com peças coloridas.
+Por exemplo, eu consigo identificar os quadros de paralelepípedos nos comboios que passam pelo meu bairro.
 
 **Como sei que consegui:**
-- Consigo identificar quadrados em todos os lados do meu quarto.
-- Consigo fazer um círculo com o meu lápis e compará-lo com um que meus pais fazem na cozinha.
-- Consigo contar quantas arestas tem um hexágono quando estou a jogar com as minhas amigas.
+- Eu posso desenhar um círculo usando uma caneta.
+- Eu sei que um quadrado tem quatro lados iguais.
+- Eu consigo contar o número de quadradinhos em um mosaico de tijolos.
 
 **Estratégias de Apoio:**
-- Use uma mesa de desenho grande para praticar o desenho de formas geométricas.
-- Coloque pedras ou blocos coloridos em diferentes formas e tente identificá-las comigo.
+- Faço questão de usar papel e lápis para desenhar formas geométricas antes de dormir.
+- Consigo encontrar exemplos de formas geométricas nos jogos de tabuleiro que eu gosto de jogar com meus amigos.
 
