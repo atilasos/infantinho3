@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactElement } from 'react';
 import type { ChecklistMark, ChecklistStatus } from '@/types/api';
 
 export type MarkStatus = Exclude<ChecklistMark['mark_status'], undefined>;
@@ -31,7 +32,7 @@ const markOptions: Array<{ value: MarkStatus; label: string }> = [
   { value: 'VALIDATED', label: statusLabels.VALIDATED },
 ];
 
-const statusIcons: Record<MarkStatus, JSX.Element> = {
+const statusIcons: Record<MarkStatus, ReactElement> = {
   NOT_STARTED: (
     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-slate-500" aria-hidden>
       <circle cx="8" cy="8" r="3" />

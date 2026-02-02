@@ -15,10 +15,12 @@
   "dependencies": {
     "@tanstack/react-query": "^5.89.0",
     "@tanstack/react-query-devtools": "^5.89.0",
+    "clsx": "^2.1.1",
     "js-cookie": "^3.0.5",
     "next": "15.5.3",
     "react": "^19.1.1",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

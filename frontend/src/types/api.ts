@@ -2,6 +2,8 @@ import type { components } from './openapi';
 
 export type AppUser = components['schemas']['User'] & {
   must_change_password?: boolean;
+  is_superuser?: boolean;
+  is_staff?: boolean;
 };
 export type ClassSummary = Pick<components['schemas']['Class'], 'id' | 'name' | 'year'>;
 export type ChecklistStatus = components['schemas']['ChecklistStatus'] & {
