@@ -196,7 +196,7 @@ def main():
     
     print("✅ Ollama OK\n")
     
-    base_dir = Path(__file__).parent / "knowledge" / "ae"
+    base_dir = Path("/tmp/infantinho3/backend/ai/knowledge/ae")
     total = 0
     
     # Process all years and subjects
