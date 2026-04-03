@@ -1,5 +1,7 @@
 # Repository Guidelines
 
+> Nota: para contexto pedagógico (MEM) e regras de copy/UX, ver `../docs/MEM_OPERACIONAL.md` e o `../AGENTS.md` na raiz.
+
 ## Project Structure & Module Organization
 - `manage.py` orquestra as tarefas Django; configurações principais ficam em `infantinho3/`.
 - Apps centrais: `users/`, `classes/`, `blog/`, `checklists/`, `projects/`, `pit/`, `council/`, `ai/`, `diary/`, cada um com models, forms, views e `tests.py` dedicados.
@@ -7,8 +9,8 @@
 - `media_dev/` é apenas para uploads locais; limpe ou ignore antes de commitar.
 
 ## Build, Test, and Development Commands
-- `python -m venv venv && source venv/bin/activate`: cria/ativa o ambiente virtual.
-- `pip install -r requirements.txt`: instala dependências bloqueadas para Django 5.2.
+- `python3 -m venv .venv && source .venv/bin/activate`: cria/ativa o ambiente virtual.
+- `pip install -r backend/requirements.txt`: instala dependências do backend Django 5.2.
 - `python manage.py migrate`: aplica migrações de base de dados.
 - `python manage.py runserver`: sobe o servidor local em `http://localhost:8000`.
 - `python manage.py demo_data --reset`: repõe um cenário MEM completo (ativo apenas com `DEBUG=True` ou `ALLOW_DEMO_SEED=1`).
@@ -33,5 +35,6 @@
 
 ## Environment & Security Notes
 - Baseie-se em `deploy/.env.example` para configurar `.env`; mantenha o ficheiro real fora do repositório.
+- Para referência de produção, use `deploy/production.env.example`.
 - Produção espera PostgreSQL; SQLite serve apenas para desenvolvimento local.
 - Use `ALLOW_DEMO_SEED=1` com parcimónia fora de dev e limpe dados gerados após testes.

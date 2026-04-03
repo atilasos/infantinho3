@@ -73,8 +73,11 @@ Os testes verificam o hero público e o comportamento responsivo do fluxo de log
 Crie `frontend/.env.local` com:
 
 ```
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+`NEXT_PUBLIC_API_BASE_URL` continua a ser aceite por compatibilidade, mas a variável canónica é `NEXT_PUBLIC_API_URL`.
 
 Opcionalmente adicione `API_SCHEMA_URL` ao correr o script de geração de tipos.
 

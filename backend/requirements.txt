@@ -20,12 +20,12 @@ idna==3.10
 msal==1.32.0
 packaging==25.0
 pillow==11.2.1
-psycopg2-binary==2.9.10
+psycopg[binary]==3.3.3
 pycparser==2.22
 PyJWT==2.10.1
 reportlab==4.2.5
 python-dotenv==1.1.0
-requests==2.32.3
+requests==2.33.1
 social-auth-app-django==5.4.0
 sqlparse==0.5.3
 typing_extensions==4.13.2

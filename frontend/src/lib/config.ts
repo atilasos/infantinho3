@@ -1,7 +1,11 @@
 // Configuration for Infantinho 3.0 Frontend
 
 // API Base URL - Django backend
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+// `NEXT_PUBLIC_API_BASE_URL` é mantida por compatibilidade com documentação antiga.
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  'http://localhost:8000/api';
 
 // Public site base URL
 export const PUBLIC_SITE_BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';

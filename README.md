@@ -49,34 +49,48 @@ O MVP inclui:
    git clone <repo-url>
    cd infantinho3
    ```
-2. Crie e ative um ambiente virtual:
+2. Use uma versão de Python suportada para desenvolvimento local:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # ou venv\Scripts\activate no Windows
+   python3 --version  # recomendado: Python 3.13.x
    ```
-3. Instale as dependências do backend:
+3. Crie e ative um ambiente virtual:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate  # ou .venv\Scripts\activate no Windows
+   ```
+4. Instale as dependências do backend:
    ```bash
    pip install -r backend/requirements.txt
    ```
-4. Configure o banco de dados (por padrão, SQLite para dev).
-5. Execute as migrações:
+   > Em desenvolvimento local, o backend usa SQLite por defeito quando `DB_NAME` não está definido.
+5. Crie um `.env` local a partir do exemplo canónico:
+   ```bash
+   cp deploy/.env.example .env
+   ```
+6. Execute as migrações:
    ```bash
    python manage.py migrate
    ```
-6. Inicie o servidor de desenvolvimento:
+   > As migrações criam um utilizador admin inicial (`admin` / `admin`) e forçam a troca da palavra-passe no primeiro acesso.
+7. Inicie o servidor de desenvolvimento:
    ```bash
    python manage.py runserver
    ```
-7. (Opcional) Execute a API via [`manage.py`](manage.py) a partir da raiz ou dentro de `backend/`.
+8. (Opcional) Carregue dados de demonstração:
+   ```bash
+   python manage.py demo_data --reset
+   ```
+9. (Opcional) Execute a API via [`manage.py`](manage.py) a partir da raiz ou dentro de `backend/`.
 
 ### Frontend Next.js (headless)
 ```bash
 cd frontend
-npm install
+npm ci
+cp .env.example .env.local
 npm run dev  # http://localhost:3000
 ```
 
-Configure `NEXT_PUBLIC_API_BASE_URL` (ver `frontend/.env.example`) para apontar para o domínio do backend (`http://localhost:8000/api` em desenvolvimento).
+Configure `NEXT_PUBLIC_API_URL` (ver `frontend/.env.example`) para apontar para o backend (`http://localhost:8000/api` em desenvolvimento). `NEXT_PUBLIC_API_BASE_URL` continua a ser aceite apenas por compatibilidade com documentação antiga.
 - A página `/` apresenta o blog público do colégio consumindo o endpoint aberto `/api/blog/public`.
 - O painel autenticado fica exposto em `/dashboard`, mantendo as restantes páginas (`/checklists`, `/pit`, `/diario`, `/assistente`).
 
@@ -86,6 +100,16 @@ Configure `NEXT_PUBLIC_API_BASE_URL` (ver `frontend/.env.example`) para apontar 
 - `npm run storybook` — abre a biblioteca de componentes headless (ex.: cartões de módulo) na porta `6006`; útil para demonstrar o UI kit à direção.
 - `npm run test:e2e` — corre testes Playwright sobre o fluxo visitante → login. Execute `npx playwright install chromium` uma vez antes da primeira corrida.
 - `npm run lint` — lint React/TypeScript com as novas páginas (`/checklists`, `/pit`, `/diario`, `/assistente`).
+
+### Smoke test local
+
+Depois de preparar `.venv`, `.env` e `frontend/.env.local`, pode validar o caminho mínimo com:
+
+```bash
+./scripts/smoke-local.sh
+```
+
+O script valida `manage.py check`, `migrate`, um arranque HTTP mínimo do backend e o build do frontend.
 
 ## Estrutura do Projeto
 - `backend/` — Projeto Django (apps, config, static, migrations, testes)
@@ -111,13 +135,14 @@ Configure `NEXT_PUBLIC_API_BASE_URL` (ver `frontend/.env.example`) para apontar 
 ### Variáveis de Ambiente
 - Backend: `deploy/.env.example`
 - Frontend: `frontend/.env.example`
+- Produção (referência): `deploy/production.env.example`
 - Opcional (backend): `NOTIFICATION_WEBHOOK_URL` para replicar avisos por HTTP além de email.
 
 ### Comandos Essenciais
 ```sh
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r backend/requirements.txt
 cp deploy/.env.example .env  # edite com seus dados reais
 python manage.py migrate
 python manage.py collectstatic
@@ -133,14 +158,14 @@ python manage.py compilemessages
 
 ```sh
 # 1) Ativar virtualenv
-source venv/bin/activate
+source .venv/bin/activate
 
 # 2) Instalar/atualizar dependências
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 
-# 3) Migrar base de dados e (opcional) criar superuser
+# 3) Migrar base de dados
 python manage.py migrate
-# python manage.py createsuperuser
+# login inicial: admin / admin (troca obrigatória de palavra-passe)
 
 # 4) (Opcional) compilar traduções se editar ficheiros .po/.mo
 python manage.py compilemessages
